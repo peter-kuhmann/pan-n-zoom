@@ -1,20 +1,13 @@
-import { useState } from 'react';
 import './App.css';
+import Canvas from './Canvas.tsx';
+import TestImage from './assets/Session_Creation.png';
 
 function App() {
-  const [count, setCount] = useState(0);
   return (
     <>
       <h1>Vite + React</h1>
-      <div className="card">
-        <button
-          className={'btn btn-primary'}
-          onClick={() => {
-            setCount((count) => count + 1);
-          }}
-        >
-          count is {count}
-        </button>
+      <div className={'w-full h-[30rem]'}>
+        <Canvas imgSrc={TestImage} />
       </div>
     </>
   );

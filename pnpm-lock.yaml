@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@use-gesture/react':
+    specifier: ^10.2.27
+    version: 10.2.27(react@18.2.0)
+  classnames:
+    specifier: ^2.3.2
+    version: 2.3.2
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -690,6 +696,19 @@ packages:
       eslint-visitor-keys: 3.4.1
     dev: true
 
+  /@use-gesture/core@10.2.27:
+    resolution: {integrity: sha512-V4XV7hn9GAD2MYu8yBBVi5iuWBsAMfjPRMsEVzoTNGYH72tf0kFP+OKqGKc8YJFQIJx6yj+AOqxmEHOmx2/MEA==}
+    dev: false
+
+  /@use-gesture/react@10.2.27(react@18.2.0):
+    resolution: {integrity: sha512-7E5vnWCxeslWlxwZ8uKIcnUZVMTRMZ8cvSnLLKF1NkyNb3PnNiAzoXM4G1vTKJKRhgOTeI6wK1YsEpwo9ABV5w==}
+    peerDependencies:
+      react: '>= 16.8.0'
+    dependencies:
+      '@use-gesture/core': 10.2.27
+      react: 18.2.0
+    dev: false
+
   /@vitejs/plugin-react-swc@3.3.2(vite@4.4.0):
     resolution: {integrity: sha512-VJFWY5sfoZerQRvJrh518h3AcQt6f/yTuWn4/TRB+dqmYU0NX1qz7qM5Wfd+gOQqUzQW4gxKqKN3KpE/P3+zrA==}
     peerDependencies:
@@ -932,6 +951,10 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /classnames@2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
+    dev: false
 
   /color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}

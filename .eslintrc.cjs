@@ -6,7 +6,8 @@ module.exports = {
     "extends": [
         "standard-with-typescript",
         "plugin:react/recommended",
-        "prettier"
+        "prettier",
+        "plugin:react-hooks/recommended"
     ],
     "overrides": [
         {
@@ -33,6 +34,8 @@ module.exports = {
     "rules": {
         "@typescript-eslint/explicit-function-return-type": "off",
         "react/react-in-jsx-scope": "off",
-        "prettier/prettier": ["error"]
+        "prettier/prettier": ["error"],
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "error"
     }
 }
