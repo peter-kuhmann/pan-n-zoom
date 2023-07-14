@@ -31,6 +31,7 @@ export default function CreatePage() {
               id: newProjectId,
               name: `Project ${suite.projects.length + 1}`,
               image: { storageId: storedImage.id },
+              keyframes: [],
             },
           ],
         });

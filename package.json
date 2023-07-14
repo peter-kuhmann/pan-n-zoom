@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.7.0",
     "@paralleldrive/cuid2": "^2.2.1",
     "@use-gesture/react": "^10.2.27",
     "classnames": "^2.3.2",
+    "get-some-cool-emojis": "^3.2.3",
     "idb": "^7.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

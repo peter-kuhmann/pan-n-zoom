@@ -13,11 +13,16 @@ function getStoredSuiteOrThrow(): Suite | null {
   try {
     parsedJson = JSON.parse(storedSuite);
   } catch (e) {
+    console.error("Error when parsing suite localStorage raw string.", e);
     return null;
   }
 
   const validationResult = SuiteSchema.safeParse(parsedJson);
   if (!validationResult.success) {
+    console.error(
+      "Validating suite JSON failed:",
+      validationResult.error.message,
+    );
     return null;
   }
 
