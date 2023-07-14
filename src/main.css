@@ -9,3 +9,7 @@ html, body, #root {
 .btn {
     @apply normal-case;
 }
+
+.fullCentered {
+    @apply w-full h-full flex flex-col justify-center items-center;
+}

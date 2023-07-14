@@ -30,6 +30,10 @@ export async function storeImage(dataUrl: string): Promise<StoredImage> {
   };
 }
 
+export async function deleteStoredImage(id: string): Promise<void> {
+  await db.delete("images", id);
+}
+
 export async function getStoredImage(id: string): Promise<string | null> {
   const storedImage = await db.get("images", id);
   if (!storedImage) return null;

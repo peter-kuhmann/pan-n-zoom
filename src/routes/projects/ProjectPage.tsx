@@ -27,11 +27,17 @@ export default function ProjectPage() {
   }, [navigate, projectId, project]);
 
   if (storedImage.loading) {
-    return <>Loading...</>;
+    return <div className={"fullCentered"}>Loading image data ... ⏳</div>;
   }
 
   if (!storedImage.dataUrl) {
-    return <>Image data not found :(</>;
+    return (
+      <div className={"fullCentered"}>
+        <span>
+          <b>Error</b>: Image data not found 😭
+        </span>
+      </div>
+    );
   }
 
   return (
