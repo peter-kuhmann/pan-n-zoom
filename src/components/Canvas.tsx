@@ -1,5 +1,5 @@
 import { type ReactEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import useWatchSize from './useWatchSize.ts';
+import useWatchSize from '../hooks/useWatchSize.ts';
 import * as classNames from 'classnames';
 import { useGesture } from '@use-gesture/react';
 
