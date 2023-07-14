@@ -1,9 +1,4 @@
-export interface Project {
-  id: string;
-  name: string;
-}
+import { type z } from "zod";
+import { type SuiteSchema } from "@/validation/suite.ts";
 
-export interface Suite {
-  id: string;
-  projects: Project[];
-}
+export type Suite = z.infer<typeof SuiteSchema>;

@@ -1,9 +1,26 @@
 import { type Suite } from "../types/suite.ts";
-import { createId } from "@paralleldrive/cuid2";
+import {
+  getSuite,
+  registerSuiteUpdateListener,
+  updateSuite,
+} from "@/data/suite.ts";
+import { useEffect, useState } from "react";
 
-export default function useSuite(): Suite {
+export interface UseSuite {
+  suite: Suite;
+  update: (update: Partial<Suite>) => void;
+}
+
+export default function useSuite(): UseSuite {
+  const [suite, setSuite] = useState<Suite>(getSuite());
+
+  useEffect(() => {
+    const { unsubscribe } = registerSuiteUpdateListener(setSuite);
+    return unsubscribe;
+  }, []);
+
   return {
-    id: createId(),
-    projects: [],
+    suite,
+    update: updateSuite,
   };
 }

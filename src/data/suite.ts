@@ -1,0 +1,77 @@
+import { type Suite } from "@/types/suite.ts";
+import { SuiteSchema } from "@/validation/suite.ts";
+
+const SuiteLocalStorageKey = "pan-n-zoom-suite";
+
+function getStoredSuiteOrThrow(): Suite | null {
+  const storedSuite = localStorage.getItem(SuiteLocalStorageKey);
+  if (!storedSuite) {
+    return null;
+  }
+
+  let parsedJson: any = null;
+  try {
+    parsedJson = JSON.parse(storedSuite);
+  } catch (e) {
+    return null;
+  }
+
+  const validationResult = SuiteSchema.safeParse(parsedJson);
+  if (!validationResult.success) {
+    return null;
+  }
+
+  return validationResult.data;
+}
+
+function saveSuite(suite: Suite) {
+  localStorage.setItem(SuiteLocalStorageKey, JSON.stringify(suite));
+}
+
+function createSuite(): Suite {
+  const newSuite: Suite = {
+    projects: [],
+  };
+  saveSuite(newSuite);
+  return newSuite;
+}
+
+export function getSuite(): Suite {
+  let suite = getStoredSuiteOrThrow();
+  if (!suite) {
+    suite = createSuite();
+  }
+  return suite;
+}
+
+export function updateSuite(update: Partial<Suite>): Suite {
+  const updatedSuite: Suite = { ...getSuite(), ...update };
+
+  saveSuite(updatedSuite);
+
+  suiteUpdateListeners.forEach((listener) => {
+    listener(updatedSuite);
+  });
+
+  return updatedSuite;
+}
+
+export type SuiteUpdateListener = (updatedSuite: Suite) => void;
+
+const suiteUpdateListeners = new Set<SuiteUpdateListener>();
+
+export function registerSuiteUpdateListener(listener: SuiteUpdateListener): {
+  unsubscribe: () => void;
+} {
+  if (suiteUpdateListeners.has(listener)) {
+    throw new Error("Listener already registered.");
+  }
+
+  suiteUpdateListeners.add(listener);
+
+  return {
+    unsubscribe: () => {
+      suiteUpdateListeners.delete(listener);
+    },
+  };
+}

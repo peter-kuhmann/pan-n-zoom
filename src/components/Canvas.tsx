@@ -1,7 +1,14 @@
-import { type ReactEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import useWatchSize from '../hooks/useWatchSize.ts';
-import * as classNames from 'classnames';
-import { useGesture } from '@use-gesture/react';
+import {
+  type ReactEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import useWatchSize from "../hooks/useWatchSize.ts";
+import * as classNames from "classnames";
+import { useGesture } from "@use-gesture/react";
 
 interface FittingScale {
   scaleFactor: number;
@@ -15,7 +22,12 @@ function computeFittingScale(
   elementWidth: number,
   elementHeight: number,
 ): FittingScale {
-  if (containerWidth === 0 || containerHeight === 0 || elementWidth === 0 || elementHeight === 0) {
+  if (
+    containerWidth === 0 ||
+    containerHeight === 0 ||
+    elementWidth === 0 ||
+    elementHeight === 0
+  ) {
     return {
       scaleFactor: 0,
       scaledWidth: 0,
@@ -41,7 +53,11 @@ export interface CanvasProps {
 
 export default function Canvas({ imgSrc }: CanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { ref: watchSizeRef, width: containerWidth, height: containerHeight } = useWatchSize();
+  const {
+    ref: watchSizeRef,
+    width: containerWidth,
+    height: containerHeight,
+  } = useWatchSize();
   const imageRef = useRef<HTMLImageElement | null>(null);
 
   const [imageWidth, setImageWidth] = useState(0);
@@ -60,14 +76,22 @@ export default function Canvas({ imgSrc }: CanvasProps) {
   const [panning, setPanning] = useState(false);
   const [userScale, setUserScale] = useState(1.0);
 
-  const onImageLoad = useCallback<ReactEventHandler<HTMLImageElement>>((event) => {
-    const image = event.currentTarget;
-    setImageWidth(image.naturalWidth);
-    setImageHeight(image.naturalHeight);
-  }, []);
+  const onImageLoad = useCallback<ReactEventHandler<HTMLImageElement>>(
+    (event) => {
+      const image = event.currentTarget;
+      setImageWidth(image.naturalWidth);
+      setImageHeight(image.naturalHeight);
+    },
+    [],
+  );
 
   const fittingScale = useMemo<FittingScale>(() => {
-    return computeFittingScale(containerWidth, containerHeight, imageWidth, imageHeight);
+    return computeFittingScale(
+      containerWidth,
+      containerHeight,
+      imageWidth,
+      imageHeight,
+    );
   }, [containerWidth, containerHeight, imageWidth, imageHeight]);
 
   // Center image on start
@@ -118,8 +142,12 @@ export default function Canvas({ imgSrc }: CanvasProps) {
 
         const newUserScale = userScale + scaleDelta;
 
-        const newImageScaledWidth = Math.floor(fittingScale.scaledWidth * newUserScale);
-        const newImageScaledHeight = Math.floor(fittingScale.scaledHeight * newUserScale);
+        const newImageScaledWidth = Math.floor(
+          fittingScale.scaledWidth * newUserScale,
+        );
+        const newImageScaledHeight = Math.floor(
+          fittingScale.scaledHeight * newUserScale,
+        );
 
         const newImageDeltaX = imageDeltaXPercentage * newImageScaledWidth;
         const newImageDeltaY = imageDeltaYPercentage * newImageScaledHeight;
@@ -153,16 +181,21 @@ export default function Canvas({ imgSrc }: CanvasProps) {
         containerRef.current = element;
         watchSizeRef(element);
       }}
-      className={classNames('border-2 border-red-300 w-full h-full relative overflow-hidden touch-none bg-red-50', {
-        'cursor-grab': !panning,
-        'cursor-grabbing': panning,
-      })}
+      className={classNames(
+        "w-full h-full relative overflow-hidden touch-none",
+        {
+          "cursor-grab": !panning,
+          "cursor-grabbing": panning,
+        },
+      )}
     >
       <img
         ref={imageRef}
         src={imgSrc}
         onLoad={onImageLoad}
-        className={'absolute origin-top-left select-none pointer-events-none max-w-none max-h-none'}
+        className={
+          "absolute origin-top-left select-none pointer-events-none max-w-none max-h-none"
+        }
         style={{
           left: `${panX}px`,
           top: `${panY}px`,
