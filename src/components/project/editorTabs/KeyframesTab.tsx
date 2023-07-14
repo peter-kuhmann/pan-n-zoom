@@ -56,7 +56,10 @@ export default function KeyframesTab({ projectId }: { projectId: string }) {
     >
       {project.keyframes.map((keyframe, index) => {
         return (
-          <div key={`lol-${keyframe.id}}`} className={"flex flex-col gap-4"}>
+          <div
+            key={`keyframe-${keyframe.id}}`}
+            className={"flex flex-col gap-4"}
+          >
             <AddKeyframeButton
               onClick={() => {
                 addKeyframe(index);
