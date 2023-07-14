@@ -4,6 +4,7 @@ import * as classNames from "classnames";
 import { useGesture } from "@use-gesture/react";
 import { useEditorPageContext } from "@/routes/projects/EditorPage.tsx";
 import useProjectKeyframe from "@/hooks/useProjectKeyframe.ts";
+import useProject from "@/hooks/useProject.ts";
 
 interface FittingScale {
   scaleFactor: number;
@@ -127,6 +128,7 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   const imageScaledHeight = Math.floor(fittingScale.scaledHeight * userScale);
 
   const { state, activeKeyframeId } = useEditorPageContext();
+  const { project } = useProject(projectId);
   const { keyframe: activeKeyframe, update: updateActiveKeyframe } =
     useProjectKeyframe(projectId, activeKeyframeId);
 
@@ -258,32 +260,6 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
     },
   );
 
-  // const bindDragEditFrame = useGesture(
-  //   {
-  //     onTouchStart: ({ event }) => {
-  //       event.stopPropagation();
-  //     },
-  //     onDragStart: ({ event }) => {
-  //       event.stopPropagation();
-  //     },
-  //     onMouseDown: ({ event }) => {
-  //       event.stopPropagation();
-  //     },
-  //     onDrag: ({ event }) => {
-  //       event.stopPropagation();
-  //       console.log("Frame drag");
-  //
-  //       // updateActiveKeyframe({
-  //       //   x: activeKeyframe!.x + 0.001,
-  //       // });
-  //     },
-  //   },
-  //   {
-  //     drag: { preventDefault: true },
-  //     eventOptions: { passive: false },
-  //   },
-  // );
-
   return (
     <div
       ref={(element) => {
@@ -316,12 +292,39 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
       >
         <div ref={imageContainerRef} className={"w-full h-full"} />
 
+        {project && (
+          <>
+            {project.keyframes
+              .filter((keyframe) => {
+                return state === "view" || keyframe.id !== activeKeyframeId;
+              })
+              .map((keyframe, index) => {
+                return (
+                  <div
+                    key={`keyframe-indicator-${keyframe.id}`}
+                    className={classNames(
+                      "absolute z-10 px-2 text-white font-bold",
+                      "rounded-lg bg-red-600",
+                    )}
+                    style={{
+                      left: `${(keyframe.x + keyframe.width * 0.5) * 100}%`,
+                      top: `${(keyframe.y + keyframe.height * 0.5) * 100}%`,
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  >
+                    {index + 1}
+                  </div>
+                );
+              })}
+          </>
+        )}
+
         {state === "editKeyframe" && activeKeyframe && (
           <>
             <div
               ref={editFrameRef}
               className={
-                "absolute z-10 touch-none border-4 border-red-400 hover:bg-red-400/10 transition"
+                "absolute z-20 touch-none border-4 border-red-400 hover:bg-red-400/10 transition"
               }
               style={{
                 left: `${activeKeyframe.x * 100}%`,
