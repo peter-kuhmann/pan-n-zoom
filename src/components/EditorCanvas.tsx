@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useWatchSize from "../hooks/useWatchSize.ts";
 import * as classNames from "classnames";
 import { useGesture } from "@use-gesture/react";
+import { useEditorPageContext } from "@/routes/projects/EditorPage.tsx";
+import useProjectKeyframe from "@/hooks/useProjectKeyframe.ts";
 
 interface FittingScale {
   scaleFactor: number;
@@ -42,9 +44,10 @@ function computeFittingScale(
 
 export interface CanvasProps {
   imgSrc: string;
+  projectId: string;
 }
 
-export default function Canvas({ imgSrc }: CanvasProps) {
+export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const elementContainerRef = useRef<HTMLDivElement | null>(null);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -123,9 +126,77 @@ export default function Canvas({ imgSrc }: CanvasProps) {
   const imageScaledWidth = Math.floor(fittingScale.scaledWidth * userScale);
   const imageScaledHeight = Math.floor(fittingScale.scaledHeight * userScale);
 
+  const { state, activeKeyframeId } = useEditorPageContext();
+  const { keyframe: activeKeyframe, update: updateActiveKeyframe } =
+    useProjectKeyframe(projectId, activeKeyframeId);
+
+  const editFrameRef = useRef<HTMLDivElement | null>(null);
+  const editFrameCornerTopLeftRef = useRef<HTMLDivElement | null>(null);
+  const editFrameCornerTopRightRef = useRef<HTMLDivElement | null>(null);
+  const editFrameCornerBottomRightRef = useRef<HTMLDivElement | null>(null);
+  const editFrameCornerBottomLeftRef = useRef<HTMLDivElement | null>(null);
+
   useGesture(
     {
-      onDrag: ({ delta }) => {
+      onDrag: ({ delta, event }) => {
+        if (state === "editKeyframe" && activeKeyframe) {
+          if (event.target === editFrameRef.current) {
+            const deltaX = delta[0] / imageScaledWidth;
+            const deltaY = delta[1] / imageScaledHeight;
+
+            updateActiveKeyframe({
+              x: activeKeyframe.x + deltaX,
+              y: activeKeyframe.y + deltaY,
+            });
+
+            return;
+          } else if (event.target === editFrameCornerTopLeftRef.current) {
+            const deltaX = delta[0] / imageScaledWidth;
+            const deltaY = delta[1] / imageScaledHeight;
+
+            updateActiveKeyframe({
+              x: activeKeyframe.x + deltaX,
+              y: activeKeyframe.y + deltaY,
+              width: Math.max(activeKeyframe.width - deltaX, 0),
+              height: Math.max(activeKeyframe.height - deltaY, 0),
+            });
+
+            return;
+          } else if (event.target === editFrameCornerTopRightRef.current) {
+            const deltaX = delta[0] / imageScaledWidth;
+            const deltaY = delta[1] / imageScaledHeight;
+
+            updateActiveKeyframe({
+              y: activeKeyframe.y + deltaY,
+              width: Math.max(activeKeyframe.width + deltaX, 0),
+              height: Math.max(activeKeyframe.height - deltaY, 0),
+            });
+
+            return;
+          } else if (event.target === editFrameCornerBottomRightRef.current) {
+            const deltaX = delta[0] / imageScaledWidth;
+            const deltaY = delta[1] / imageScaledHeight;
+
+            updateActiveKeyframe({
+              width: Math.max(activeKeyframe.width + deltaX, 0),
+              height: Math.max(activeKeyframe.height + deltaY, 0),
+            });
+
+            return;
+          } else if (event.target === editFrameCornerBottomLeftRef.current) {
+            const deltaX = delta[0] / imageScaledWidth;
+            const deltaY = delta[1] / imageScaledHeight;
+
+            updateActiveKeyframe({
+              x: activeKeyframe.x + deltaX,
+              width: Math.max(activeKeyframe.width - deltaX, 0),
+              height: Math.max(activeKeyframe.height + deltaY, 0),
+            });
+
+            return;
+          }
+        }
+
         setPanX((old) => old + delta[0]);
         setPanY((old) => old + delta[1]);
       },
@@ -187,6 +258,32 @@ export default function Canvas({ imgSrc }: CanvasProps) {
     },
   );
 
+  // const bindDragEditFrame = useGesture(
+  //   {
+  //     onTouchStart: ({ event }) => {
+  //       event.stopPropagation();
+  //     },
+  //     onDragStart: ({ event }) => {
+  //       event.stopPropagation();
+  //     },
+  //     onMouseDown: ({ event }) => {
+  //       event.stopPropagation();
+  //     },
+  //     onDrag: ({ event }) => {
+  //       event.stopPropagation();
+  //       console.log("Frame drag");
+  //
+  //       // updateActiveKeyframe({
+  //       //   x: activeKeyframe!.x + 0.001,
+  //       // });
+  //     },
+  //   },
+  //   {
+  //     drag: { preventDefault: true },
+  //     eventOptions: { passive: false },
+  //   },
+  // );
+
   return (
     <div
       ref={(element) => {
@@ -209,9 +306,7 @@ export default function Canvas({ imgSrc }: CanvasProps) {
 
       <div
         ref={elementContainerRef}
-        className={
-          "absolute origin-top-left select-none pointer-events-none max-w-none max-h-none"
-        }
+        className={"absolute origin-top-left select-none max-w-none max-h-none"}
         style={{
           left: `${panX}px`,
           top: `${panY}px`,
@@ -219,7 +314,52 @@ export default function Canvas({ imgSrc }: CanvasProps) {
           height: `${imageScaledHeight}px`,
         }}
       >
-        <div ref={imageContainerRef} className={"w-full h-full"}></div>
+        <div ref={imageContainerRef} className={"w-full h-full"} />
+
+        {state === "editKeyframe" && activeKeyframe && (
+          <>
+            <div
+              ref={editFrameRef}
+              className={
+                "absolute z-10 touch-none border-4 border-red-400 hover:bg-red-400/10 transition"
+              }
+              style={{
+                left: `${activeKeyframe.x * 100}%`,
+                top: `${activeKeyframe.y * 100}%`,
+                width: `${activeKeyframe.width * 100}%`,
+                height: `${activeKeyframe.height * 100}%`,
+              }}
+            >
+              <div
+                ref={editFrameCornerTopLeftRef}
+                className={
+                  "absolute -left-3 -top-3 w-4 h-4 bg-white border-4 border-red-400 hover:cursor-nwse-resize"
+                }
+              />
+
+              <div
+                ref={editFrameCornerTopRightRef}
+                className={
+                  "absolute -right-3 -top-3 w-4 h-4 bg-white border-4 border-red-400 hover:cursor-nesw-resize"
+                }
+              />
+
+              <div
+                ref={editFrameCornerBottomRightRef}
+                className={
+                  "absolute -right-3 -bottom-3 w-4 h-4 bg-white border-4 border-red-400 hover:cursor-nwse-resize"
+                }
+              />
+
+              <div
+                ref={editFrameCornerBottomLeftRef}
+                className={
+                  "absolute -left-3 -bottom-3 w-4 h-4 bg-white border-4 border-red-400 hover:cursor-nesw-resize"
+                }
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

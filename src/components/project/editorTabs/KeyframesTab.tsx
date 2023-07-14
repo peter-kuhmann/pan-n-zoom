@@ -4,9 +4,13 @@ import { type ProjectKeyframe } from "@/types/project.ts";
 import { createId } from "@paralleldrive/cuid2";
 import getSomeCoolEmojis from "get-some-cool-emojis";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import * as classNames from "classnames";
+import { useEditorPageContext } from "@/routes/projects/EditorPage.tsx";
 
 export default function KeyframesTab({ projectId }: { projectId: string }) {
   const { project, update } = useProject(projectId);
+  const { state, setState, setActiveKeyframeId, activeKeyframeId } =
+    useEditorPageContext();
 
   const addKeyframe = useCallback(
     (index: number) => {
@@ -27,8 +31,11 @@ export default function KeyframesTab({ projectId }: { projectId: string }) {
       update({
         keyframes: newKeyframes,
       });
+
+      setState("editKeyframe");
+      setActiveKeyframeId(newKeyframe.id);
     },
-    [project, update],
+    [project, update, setState, setActiveKeyframeId],
   );
 
   const deleteKeyframe = useCallback(
@@ -55,6 +62,8 @@ export default function KeyframesTab({ projectId }: { projectId: string }) {
       ref={autoAnimateRef}
     >
       {project.keyframes.map((keyframe, index) => {
+        const editActive =
+          state === "editKeyframe" && activeKeyframeId === keyframe.id;
         return (
           <div
             key={`keyframe-${keyframe.id}}`}
@@ -70,6 +79,16 @@ export default function KeyframesTab({ projectId }: { projectId: string }) {
               index={index}
               onDelete={() => {
                 deleteKeyframe(index);
+              }}
+              editActive={editActive}
+              onClick={() => {
+                if (editActive) {
+                  setState("view");
+                  setActiveKeyframeId(null);
+                } else {
+                  setState("editKeyframe");
+                  setActiveKeyframeId(keyframe.id);
+                }
               }}
             />
           </div>
@@ -99,16 +118,22 @@ function Keyframe({
   index,
   keyframe,
   onDelete,
+  editActive,
+  onClick,
 }: {
   keyframe: ProjectKeyframe;
   index: number;
   onDelete: () => void;
+  editActive: boolean;
+  onClick?: () => void;
 }) {
   return (
     <div
-      className={
-        "flex flex-row justify-between items-center px-4 py-1 bg-gray-100 rounded-lg"
-      }
+      onClick={onClick}
+      className={classNames(
+        "cursor-pointer flex flex-row justify-between items-center px-4 py-1 bg-gray-100 rounded-lg border-2 transition",
+        { "border-red-400": editActive, "border-transparent": !editActive },
+      )}
     >
       <div className={"flex items-center"}>
         <span className={"text-xl mr-4"}>{keyframe.emoji}</span>

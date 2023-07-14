@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import IndexLayout from "./routes/IndexLayout.tsx";
 import IndexPage from "./routes/IndexPage.tsx";
 import CreatePage from "@/routes/projects/create/CreatePage.tsx";
-import ProjectPage from "@/routes/projects/ProjectPage.tsx";
+import EditorPage from "@/routes/projects/EditorPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
         path: "projects",
         children: [
           { path: "create", element: <CreatePage /> },
-          { path: ":projectId", element: <ProjectPage /> },
+          { path: ":projectId", element: <EditorPage /> },
         ],
       },
     ],
