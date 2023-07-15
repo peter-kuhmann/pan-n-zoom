@@ -321,45 +321,58 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
 
       <div
         className={classNames(
-          "absolute bottom-8 right-16 z-40",
-          "bg-white border border-gray-400 rounded-md overflow-hidden",
-          "flex flex-row items-center",
+          "absolute bottom-8 right-16 z-40 flex flex-row items-center gap-8",
         )}
       >
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setPinchCompensation((pc) => pc / 1.2);
-            zoomTo(userScale / 1.2, 0.5, 0.5);
-          }}
-          className={"min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition"}
+        <div
+          className={classNames(
+            "bg-white border border-gray-400 rounded-md overflow-hidden",
+            "flex flex-row items-center",
+          )}
         >
-          -
-        </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setPinchCompensation((pc) => pc / 1.2);
+              zoomTo(userScale / 1.2, 0.5, 0.5);
+            }}
+            className={"min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition"}
+          >
+            -
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setPinchCompensation((pc) => pc * (1 / userScale));
+              zoomTo(1.0, 0.5, 0.5);
+            }}
+            className={
+              "border-l border-r border-gray-400 min-w-[6rem] px-4 py-1 text-center hover:bg-gray-200 transition"
+            }
+          >
+            {userScalePercentage}
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setPinchCompensation((pc) => pc * 1.2);
+              zoomTo(userScale * 1.2, 0.5, 0.5);
+            }}
+            className={"min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition"}
+          >
+            +
+          </button>
+        </div>
+
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setPinchCompensation((pc) => pc * (1 / userScale));
-            zoomTo(1.0, 0.5, 0.5);
-          }}
-          className={
-            "border-l border-r border-gray-400 min-w-[6rem] px-4 py-1 text-center hover:bg-gray-200 transition"
-          }
+          className={classNames(
+            "bg-white border border-gray-400 rounded-md min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition",
+          )}
         >
-          {userScalePercentage}
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setPinchCompensation((pc) => pc * 1.2);
-            zoomTo(userScale * 1.2, 0.5, 0.5);
-          }}
-          className={"min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition"}
-        >
-          +
+          🎬
         </button>
       </div>
 
