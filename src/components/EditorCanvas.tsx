@@ -67,7 +67,17 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   const [panY, setPanYRaw] = useState(0);
 
   const setPanX = useCallback((modifier: (previousValue: number) => number) => {
-    setPanXRaw((previousValue) => Math.round(modifier(previousValue)));
+    setPanXRaw((previousValue) => {
+      const next = Math.round(modifier(previousValue));
+      if (isNaN(next) || Number.isNaN(next)) {
+        throw new Error(
+          `previous = ${previousValue}, next = ${next}, modified = ${modifier(
+            previousValue,
+          )}`,
+        );
+      }
+      return next;
+    });
   }, []);
   const setPanY = useCallback((modifier: (previousValue: number) => number) => {
     setPanYRaw((previousValue) => Math.round(modifier(previousValue)));
@@ -114,7 +124,14 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
     setPanX(() => (containerWidth - fittingScale.scaledWidth) / 2);
     setPanY(() => (containerHeight - fittingScale.scaledHeight) / 2);
     setUserScale(1);
-  }, [setPanX, setPanY, containerWidth, containerHeight, fittingScale]);
+  }, [
+    setPanX,
+    setPanY,
+    containerWidth,
+    containerHeight,
+    fittingScale,
+    setUserScale,
+  ]);
 
   const getElementContainerPosition = useCallback(() => {
     if (elementContainerRef.current == null) {
@@ -137,6 +154,37 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   const editFrameCornerTopRightRef = useRef<HTMLDivElement | null>(null);
   const editFrameCornerBottomRightRef = useRef<HTMLDivElement | null>(null);
   const editFrameCornerBottomLeftRef = useRef<HTMLDivElement | null>(null);
+
+  const zoomTo = useCallback<
+    (zoomFactor: number, pxPercentage: number, pyPercentage: number) => void
+  >(
+    (zoomFactor, pxPercentage, pyPercentage) => {
+      const newUserScale = zoomFactor;
+
+      const newImageScaledWidth = Math.floor(
+        fittingScale.scaledWidth * newUserScale,
+      );
+      const newImageScaledHeight = Math.floor(
+        fittingScale.scaledHeight * newUserScale,
+      );
+
+      const imageDeltaX = pxPercentage * imageScaledWidth;
+      const imageDeltaY = pyPercentage * imageScaledHeight;
+
+      const newImageDeltaX = pxPercentage * newImageScaledWidth;
+      const newImageDeltaY = pyPercentage * newImageScaledHeight;
+
+      const deltaX = newImageDeltaX - imageDeltaX;
+      const deltaY = newImageDeltaY - imageDeltaY;
+
+      setUserScale(newUserScale);
+      setPanX((old) => old - deltaX);
+      setPanY((old) => old - deltaY);
+    },
+    [imageScaledWidth, imageScaledHeight, fittingScale, setPanX, setPanY],
+  );
+
+  const [pinchCompensation, setPinchCompensation] = useState(1.0);
 
   useGesture(
     {
@@ -209,7 +257,7 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
         setPanning(false);
       },
       onPinch: ({ delta, origin }) => {
-        const scaleDelta = delta[0];
+        const scaleDelta = delta[0] * pinchCompensation;
 
         // We compute the position of the origin
         // relative to the image box as percentages.
@@ -222,27 +270,16 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
         const imageDeltaX = origin[0] - imagePosition.x;
         const imageDeltaY = origin[1] - imagePosition.y;
 
-        const imageDeltaXPercentage = imageDeltaX / imageScaledWidth;
-        const imageDeltaYPercentage = imageDeltaY / imageScaledHeight;
+        const imageDeltaXPercentage =
+          imageScaledWidth === 0 ? 0 : imageDeltaX / imageScaledWidth;
+        const imageDeltaYPercentage =
+          imageScaledHeight === 0 ? 0 : imageDeltaY / imageScaledHeight;
 
-        const newUserScale = userScale + scaleDelta;
-
-        const newImageScaledWidth = Math.floor(
-          fittingScale.scaledWidth * newUserScale,
+        zoomTo(
+          userScale + scaleDelta,
+          imageDeltaXPercentage,
+          imageDeltaYPercentage,
         );
-        const newImageScaledHeight = Math.floor(
-          fittingScale.scaledHeight * newUserScale,
-        );
-
-        const newImageDeltaX = imageDeltaXPercentage * newImageScaledWidth;
-        const newImageDeltaY = imageDeltaYPercentage * newImageScaledHeight;
-
-        const deltaX = newImageDeltaX - imageDeltaX;
-        const deltaY = newImageDeltaY - imageDeltaY;
-
-        setUserScale(newUserScale);
-        setPanX((old) => old - deltaX);
-        setPanY((old) => old - deltaY);
       },
       onWheel: ({ delta, pinching }) => {
         if (pinching !== true) {
@@ -259,6 +296,8 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
       eventOptions: { passive: false },
     },
   );
+
+  const userScalePercentage: string = `${Math.round(userScale * 100)}%`;
 
   return (
     <div
@@ -279,6 +318,50 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
           Rendering image ... 🧑‍🎨
         </span>
       )}
+
+      <div
+        className={classNames(
+          "absolute bottom-8 right-16 z-40",
+          "bg-white border border-gray-400 rounded-md overflow-hidden",
+          "flex flex-row items-center",
+        )}
+      >
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setPinchCompensation((pc) => pc / 1.2);
+            zoomTo(userScale / 1.2, 0.5, 0.5);
+          }}
+          className={"min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition"}
+        >
+          -
+        </button>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setPinchCompensation((pc) => pc * (1 / userScale));
+            zoomTo(1.0, 0.5, 0.5);
+          }}
+          className={
+            "border-l border-r border-gray-400 min-w-[6rem] px-4 py-1 text-center hover:bg-gray-200 transition"
+          }
+        >
+          {userScalePercentage}
+        </button>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setPinchCompensation((pc) => pc * 1.2);
+            zoomTo(userScale * 1.2, 0.5, 0.5);
+          }}
+          className={"min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition"}
+        >
+          +
+        </button>
+      </div>
 
       <div
         ref={elementContainerRef}
