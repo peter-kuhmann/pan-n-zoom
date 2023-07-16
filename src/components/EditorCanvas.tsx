@@ -390,28 +390,27 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
 
         {project && (
           <>
-            {project.keyframes
-              .filter((keyframe) => {
-                return state === "view" || keyframe.id !== activeKeyframeId;
-              })
-              .map((keyframe, index) => {
-                return (
-                  <div
-                    key={`keyframe-indicator-${keyframe.id}`}
-                    className={classNames(
-                      "absolute z-10 px-2 text-white font-bold",
-                      "rounded-lg bg-red-600",
-                    )}
-                    style={{
-                      left: `${(keyframe.x + keyframe.width * 0.5) * 100}%`,
-                      top: `${(keyframe.y + keyframe.height * 0.5) * 100}%`,
-                      transform: "translate(-50%, -50%)",
-                    }}
-                  >
-                    {index + 1}
-                  </div>
-                );
-              })}
+            {project.keyframes.map((keyframe, index) => {
+              const isActiveKeyframe = keyframe.id === activeKeyframeId;
+
+              return (
+                <div
+                  key={`keyframe-indicator-${keyframe.id}`}
+                  className={classNames(
+                    "absolute z-10 px-2 text-white font-bold",
+                    "rounded-lg bg-red-600 opac",
+                    { "opacity-50": isActiveKeyframe },
+                  )}
+                  style={{
+                    left: `${(keyframe.x + keyframe.width * 0.5) * 100}%`,
+                    top: `${(keyframe.y + keyframe.height * 0.5) * 100}%`,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  {index + 1}
+                </div>
+              );
+            })}
           </>
         )}
 
