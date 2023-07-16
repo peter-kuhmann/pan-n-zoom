@@ -12,6 +12,7 @@ export default function PresentProjectPage() {
   const storedImage = useStoredImage(project?.image.storageId);
   const [decoding, setDecoding] = useState(false);
   const [transitionsActive, setTransitionsActive] = useState(false);
+  const [cursorShown, setCursorShown] = useState(true);
 
   const currentPathParamKeyframeId = pathParams.keyframeId;
   const currentKeyframeId = useMemo(() => {
@@ -312,7 +313,22 @@ export default function PresentProjectPage() {
     showFirstKeyframe,
     showLastKeyframe,
     enterFullscreenMode,
+    exitPresentationMode,
+    checkIsFullscreenOn,
   ]);
+
+  // Hide cursor after 1,5s
+  useEffect(() => {
+    if (cursorShown) {
+      const timeout = setTimeout(() => {
+        setCursorShown(false);
+      }, 1500);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [cursorShown]);
 
   if (!project) {
     return <>Project does not exist. Redirecting to home screen ...</>;
@@ -333,12 +349,20 @@ export default function PresentProjectPage() {
   return (
     <div
       onMouseUp={showNextKeyframe}
-      className={
-        "w-full h-full relative overflow-hidden text-[0.8rem] bg-white"
-      }
+      className={classNames(
+        "w-full h-full relative overflow-hidden text-[0.8rem] bg-white",
+        {
+          "cursor-none": !cursorShown,
+        },
+      )}
       ref={(element) => {
         presentationContainerRef.current = element;
         presentationContainerWatchSizeRef(element);
+      }}
+      onMouseMove={(e) => {
+        if (e.movementX > 3 || e.movementY > 3) {
+          setCursorShown(true);
+        }
       }}
     >
       {decoding && (
