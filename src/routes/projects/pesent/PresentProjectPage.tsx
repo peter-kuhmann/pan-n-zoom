@@ -246,6 +246,18 @@ export default function PresentProjectPage() {
     }
   }, [navigate, project]);
 
+  const enterFullscreenMode = useCallback(() => {
+    if (presentationContainerRef.current) {
+      void presentationContainerRef.current.requestFullscreen();
+    }
+  }, []);
+
+  const checkIsFullscreenOn = useCallback(() => {
+    if (!presentationContainerRef.current) return false;
+    return document.fullscreenElement === presentationContainerRef.current;
+  }, []);
+
+  // Handle keyboard presses
   useEffect(() => {
     const leftArrowPreviousListener = (e: KeyboardEvent) => {
       if (e.code === "ArrowLeft") {
@@ -267,12 +279,28 @@ export default function PresentProjectPage() {
       }
     };
 
+    const enterFullscreenListener = (e: KeyboardEvent) => {
+      if (e.code === "KeyF") {
+        enterFullscreenMode();
+      }
+    };
+
+    const exitPresentationModeListener = (e: KeyboardEvent) => {
+      if (e.code === "Escape" && !checkIsFullscreenOn()) {
+        exitPresentationMode();
+      }
+    };
+
     document.addEventListener("keyup", leftArrowPreviousListener);
     document.addEventListener("keyup", rightArrowNextListener);
+    document.addEventListener("keyup", enterFullscreenListener);
+    document.addEventListener("keyup", exitPresentationModeListener);
 
     return () => {
       document.removeEventListener("keyup", leftArrowPreviousListener);
       document.removeEventListener("keyup", rightArrowNextListener);
+      document.removeEventListener("keyup", enterFullscreenListener);
+      document.removeEventListener("keyup", exitPresentationModeListener);
     };
   }, [
     project,
@@ -283,6 +311,7 @@ export default function PresentProjectPage() {
     showNextKeyframe,
     showFirstKeyframe,
     showLastKeyframe,
+    enterFullscreenMode,
   ]);
 
   if (!project) {
@@ -304,7 +333,9 @@ export default function PresentProjectPage() {
   return (
     <div
       onMouseUp={showNextKeyframe}
-      className={"w-full h-full relative overflow-hidden text-[0.8rem]"}
+      className={
+        "w-full h-full relative overflow-hidden text-[0.8rem] bg-white"
+      }
       ref={(element) => {
         presentationContainerRef.current = element;
         presentationContainerWatchSizeRef(element);
@@ -321,14 +352,18 @@ export default function PresentProjectPage() {
           "rounded-md bg-white overflow-hidden border border-gray-400",
           "opacity-50 hover:opacity-100 transition",
         )}
+        onMouseUp={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
       >
         <button
-          disabled={!showPreviousKeyframe}
+          disabled={!previousKeyframeId}
           className={classNames(
             "min-w-[3rem] py-0.5 focus:outline-none",
             "border-r border-gray-400",
             {
-              "hover:bg-gray-100": showPreviousKeyframe,
+              "hover:bg-gray-100": previousKeyframeId,
             },
           )}
           onClick={showPreviousKeyframe}
@@ -337,12 +372,12 @@ export default function PresentProjectPage() {
         </button>
 
         <button
-          disabled={!showNextKeyframe}
+          disabled={!nextKeyframeId}
           className={classNames(
             "min-w-[3rem] py-0.5 focus:outline-none",
             "border-r border-gray-400",
             {
-              "hover:bg-gray-100": showNextKeyframe,
+              "hover:bg-gray-100": nextKeyframeId,
             },
           )}
           onClick={showNextKeyframe}
@@ -355,17 +390,22 @@ export default function PresentProjectPage() {
         </div>
 
         <button
-          disabled={!showNextKeyframe}
           className={classNames(
             "min-w-[3rem] py-0.5 focus:outline-none",
-            "border-l border-gray-400",
-            {
-              "hover:bg-gray-100": showNextKeyframe,
-            },
+            "border-l border-gray-400 hover:bg-gray-100",
           )}
           onClick={exitPresentationMode}
         >
           ✏️
+        </button>
+        <button
+          className={classNames(
+            "min-w-[3rem] py-0.5 focus:outline-none",
+            "border-l border-gray-400 hover:bg-gray-100",
+          )}
+          onClick={enterFullscreenMode}
+        >
+          🚀
         </button>
       </div>
 
