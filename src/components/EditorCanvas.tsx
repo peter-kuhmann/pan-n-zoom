@@ -298,6 +298,7 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   );
 
   const userScalePercentage: string = `${Math.round(userScale * 100)}%`;
+  const isPlayable = project && project.keyframes.length > 0;
 
   return (
     <div
@@ -368,8 +369,13 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
         </div>
 
         <button
+          disabled={!isPlayable}
           className={classNames(
-            "bg-white border border-gray-400 rounded-md min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition",
+            "bg-white border border-gray-400 rounded-md min-w-[3rem] px-2 py-1 transition",
+            {
+              "cursor-not-allowed opacity-40": !isPlayable,
+              "hover:bg-gray-200": isPlayable,
+            },
           )}
         >
           🎬

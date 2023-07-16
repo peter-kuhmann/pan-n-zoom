@@ -30,7 +30,7 @@ export default function useProject(projectId?: string): {
             const updatedProject: Project = { ...project, ...update };
             return updatedProject;
           } else {
-            return project;
+            return suiteProject;
           }
         }),
       });
