@@ -253,6 +253,12 @@ export default function PresentProjectPage() {
     }
   }, []);
 
+  const exitFullscreenMode = useCallback(() => {
+    if (presentationContainerRef.current) {
+      void document.exitFullscreen();
+    }
+  }, []);
+
   const checkIsFullscreenOn = useCallback(() => {
     if (!presentationContainerRef.current) return false;
     return document.fullscreenElement === presentationContainerRef.current;
@@ -329,6 +335,20 @@ export default function PresentProjectPage() {
       };
     }
   }, [cursorShown]);
+
+  const [fullscreenOn, setFullscreenOn] = useState(false);
+
+  useEffect(() => {
+    const listener = () => {
+      setFullscreenOn(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", listener);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", listener);
+    };
+  }, []);
 
   if (!project) {
     return <>Project does not exist. Redirecting to home screen ...</>;
@@ -427,9 +447,15 @@ export default function PresentProjectPage() {
             "min-w-[3rem] py-0.5 focus:outline-none",
             "border-l border-gray-400 hover:bg-gray-100",
           )}
-          onClick={enterFullscreenMode}
+          onClick={() => {
+            if (fullscreenOn) {
+              exitFullscreenMode();
+            } else {
+              enterFullscreenMode();
+            }
+          }}
         >
-          🚀
+          {fullscreenOn ? "🚪" : "🚀"}
         </button>
       </div>
 
