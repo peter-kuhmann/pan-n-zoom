@@ -3,6 +3,7 @@ import useProject from "@/hooks/useProject.ts";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import useWatchSize from "@/hooks/useWatchSize.ts";
+import * as classNames from "classnames";
 
 export default function PresentProjectPage() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export default function PresentProjectPage() {
   const { project } = useProject(pathParams.projectId);
   const storedImage = useStoredImage(project?.image.storageId);
   const [decoding, setDecoding] = useState(false);
+  const [transitionsActive, setTransitionsActive] = useState(false);
 
   const currentPathParamKeyframeId = pathParams.keyframeId;
   const currentKeyframeId = useMemo(() => {
@@ -26,6 +28,7 @@ export default function PresentProjectPage() {
       : firstKeyframe.id;
   }, [project, currentPathParamKeyframeId]);
 
+  const presentationContainerRef = useRef<HTMLDivElement | null>(null);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
@@ -45,7 +48,8 @@ export default function PresentProjectPage() {
     );
   }, [project, currentKeyframeId]);
 
-  const { previousKeyframeId, nextKeyframeId } = useMemo<{
+  const { currentKeyframeIndex, previousKeyframeId, nextKeyframeId } = useMemo<{
+    currentKeyframeIndex?: number;
     previousKeyframeId?: string;
     nextKeyframeId?: string;
   }>(() => {
@@ -57,6 +61,7 @@ export default function PresentProjectPage() {
     if (keyframeIndex < 0) return {};
 
     return {
+      currentKeyframeIndex: keyframeIndex,
       previousKeyframeId:
         keyframeIndex >= 1
           ? project.keyframes[keyframeIndex - 1].id
@@ -184,45 +189,100 @@ export default function PresentProjectPage() {
     presentationContainerHeight,
   ]);
 
-  const previousSlide = useCallback(() => {
-    if (project && previousKeyframeId) {
-      navigate(`/projects/${project.id}/present/${previousKeyframeId}`);
-    }
-  }, [project, previousKeyframeId, navigate]);
+  // Active transitions
+  useEffect(() => {
+    if (
+      (keyframePositioning.width > 0 || keyframePositioning.height > 0) &&
+      !decoding &&
+      !storedImage.loading &&
+      storedImage.dataUrl
+    ) {
+      const timeout = setTimeout(() => {
+        setTransitionsActive(true);
+      }, 100);
 
-  const nextSlide = useCallback(() => {
-    if (project && nextKeyframeId) {
-      navigate(`/projects/${project.id}/present/${nextKeyframeId}`);
+      return () => {
+        clearTimeout(timeout);
+      };
     }
-  }, [project, nextKeyframeId, navigate]);
+  }, [keyframePositioning, decoding, storedImage]);
+
+  const showKeyframe = useCallback(
+    (keyframeId: string) => {
+      if (project) {
+        navigate(`/projects/${project.id}/present/${keyframeId}`);
+      }
+    },
+    [navigate, project],
+  );
+
+  const showFirstKeyframe = useCallback(() => {
+    if (project && project.keyframes.length > 0) {
+      showKeyframe(project.keyframes[0].id);
+    }
+  }, [project, showKeyframe]);
+
+  const showLastKeyframe = useCallback(() => {
+    if (project && project.keyframes.length > 0) {
+      showKeyframe(project.keyframes[project.keyframes.length - 1].id);
+    }
+  }, [project, showKeyframe]);
+
+  const showPreviousKeyframe = useCallback(() => {
+    if (previousKeyframeId) {
+      showKeyframe(previousKeyframeId);
+    }
+  }, [previousKeyframeId, showKeyframe]);
+
+  const showNextKeyframe = useCallback(() => {
+    if (nextKeyframeId) {
+      showKeyframe(nextKeyframeId);
+    }
+  }, [nextKeyframeId, showKeyframe]);
+
+  const exitPresentationMode = useCallback(() => {
+    if (project) {
+      navigate(`/projects/${project.id}`);
+    }
+  }, [navigate, project]);
 
   useEffect(() => {
     const leftArrowPreviousListener = (e: KeyboardEvent) => {
       if (e.code === "ArrowLeft") {
-        previousSlide();
+        if (e.shiftKey) {
+          showFirstKeyframe();
+        } else {
+          showPreviousKeyframe();
+        }
       }
     };
 
     const rightArrowNextListener = (e: KeyboardEvent) => {
       if (e.code === "ArrowRight") {
-        nextSlide();
+        if (e.shiftKey) {
+          showLastKeyframe();
+        } else {
+          showNextKeyframe();
+        }
       }
     };
 
-    document.addEventListener("keydown", leftArrowPreviousListener);
-    document.addEventListener("keydown", rightArrowNextListener);
+    document.addEventListener("keyup", leftArrowPreviousListener);
+    document.addEventListener("keyup", rightArrowNextListener);
 
     return () => {
-      document.removeEventListener("keydown", leftArrowPreviousListener);
-      document.removeEventListener("keydown", rightArrowNextListener);
+      document.removeEventListener("keyup", leftArrowPreviousListener);
+      document.removeEventListener("keyup", rightArrowNextListener);
     };
   }, [
     project,
     previousKeyframeId,
     nextKeyframeId,
     navigate,
-    previousSlide,
-    nextSlide,
+    showPreviousKeyframe,
+    showNextKeyframe,
+    showFirstKeyframe,
+    showLastKeyframe,
   ]);
 
   if (!project) {
@@ -237,15 +297,79 @@ export default function PresentProjectPage() {
     return <>Image data not found. Redirecting to home screen ...</>;
   }
 
+  const slideIndicatorText = `${(currentKeyframeIndex ?? 0) + 1} / ${
+    project.keyframes.length
+  }`;
+
   return (
     <div
-      className={"w-full h-full relative overflow-hidden"}
-      ref={presentationContainerWatchSizeRef}
+      onMouseUp={showNextKeyframe}
+      className={"w-full h-full relative overflow-hidden text-[0.8rem]"}
+      ref={(element) => {
+        presentationContainerRef.current = element;
+        presentationContainerWatchSizeRef(element);
+      }}
     >
       {decoding && (
-        <div className={"absolute z-10 left-0 top-0"}>Rendering image ...</div>
+        <div className={"absolute z-20 left-0 top-0"}>Rendering image ...</div>
       )}
 
+      <div
+        className={classNames(
+          "absolute bottom-4 left-1/2 -translate-x-1/2 z-10",
+          "flex flex-row items-center",
+          "rounded-md bg-white overflow-hidden border border-gray-400",
+          "opacity-50 hover:opacity-100 transition",
+        )}
+      >
+        <button
+          disabled={!showPreviousKeyframe}
+          className={classNames(
+            "min-w-[3rem] py-0.5 focus:outline-none",
+            "border-r border-gray-400",
+            {
+              "hover:bg-gray-100": showPreviousKeyframe,
+            },
+          )}
+          onClick={showPreviousKeyframe}
+        >
+          ←
+        </button>
+
+        <button
+          disabled={!showNextKeyframe}
+          className={classNames(
+            "min-w-[3rem] py-0.5 focus:outline-none",
+            "border-r border-gray-400",
+            {
+              "hover:bg-gray-100": showNextKeyframe,
+            },
+          )}
+          onClick={showNextKeyframe}
+        >
+          →
+        </button>
+
+        <div className={"px-4 min-w-[5rem] py-0.5 text-center"}>
+          {slideIndicatorText}
+        </div>
+
+        <button
+          disabled={!showNextKeyframe}
+          className={classNames(
+            "min-w-[3rem] py-0.5 focus:outline-none",
+            "border-l border-gray-400",
+            {
+              "hover:bg-gray-100": showNextKeyframe,
+            },
+          )}
+          onClick={exitPresentationMode}
+        >
+          ✏️
+        </button>
+      </div>
+
+      {/* Image will be attached by useEffect that loads and decodes image */}
       <div
         className={"w-full h-full absolute overflow-hidden"}
         ref={imageContainerRef}
@@ -254,10 +378,11 @@ export default function PresentProjectPage() {
           top: `${keyframePositioning.top}px`,
           width: `${keyframePositioning.width}px`,
           height: `${keyframePositioning.height}px`,
-          transition:
-            "width 0.8s ease, height 0.8s ease, left 0.8s ease, top 0.8s ease",
+          transition: transitionsActive
+            ? "width 0.8s ease, height 0.8s ease, left 0.8s ease, top 0.8s ease"
+            : undefined,
         }}
-      ></div>
+      />
     </div>
   );
 }
