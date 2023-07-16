@@ -38,8 +38,10 @@ export default function useProject(projectId?: string): {
     [suite, updateSuite, project],
   );
 
-  return {
-    project,
-    update,
-  };
+  return useMemo(() => {
+    return {
+      project,
+      update,
+    };
+  }, [project, update]);
 }

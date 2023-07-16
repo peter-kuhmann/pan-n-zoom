@@ -11,7 +11,7 @@ export type ProjectKeyframeUpdater = (
 export default function useProjectKeyframe(
   projectId?: string | null,
   keyframeId?: string | null,
-) {
+): { keyframe: ProjectKeyframe | null; update: ProjectKeyframeUpdater } {
   const { project, update: updateProject } = useProject(projectId ?? undefined);
 
   const keyframe = useMemo<ProjectKeyframe | null>(() => {
@@ -45,8 +45,10 @@ export default function useProjectKeyframe(
     [project, updateProject, keyframeId],
   );
 
-  return {
-    keyframe,
-    update,
-  };
+  return useMemo(() => {
+    return {
+      keyframe,
+      update,
+    };
+  }, [keyframe, update]);
 }

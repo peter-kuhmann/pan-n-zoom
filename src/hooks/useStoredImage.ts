@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getStoredImage } from "@/data/imageStorage.ts";
 
 export function useStoredImage(
   imageId?: string | null,
 ): { loading: true } | { loading: false; dataUrl: string | null } {
   const [dataUrl, setDataUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (imageId) {
@@ -22,12 +22,8 @@ export function useStoredImage(
     }
   }, [imageId]);
 
-  if (loading) {
-    return { loading: true };
-  }
-
-  return {
-    loading: false,
-    dataUrl,
-  };
+  return useMemo(() => {
+    if (loading) return { loading: true };
+    return { loading: false, dataUrl };
+  }, [dataUrl, loading]);
 }

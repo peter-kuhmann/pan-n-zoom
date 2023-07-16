@@ -5,6 +5,7 @@ import { useGesture } from "@use-gesture/react";
 import { useEditorPageContext } from "@/routes/projects/EditorPage.tsx";
 import useProjectKeyframe from "@/hooks/useProjectKeyframe.ts";
 import useProject from "@/hooks/useProject.ts";
+import { useNavigate } from "react-router-dom";
 
 interface FittingScale {
   scaleFactor: number;
@@ -49,6 +50,7 @@ export interface CanvasProps {
 }
 
 export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
+  const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const elementContainerRef = useRef<HTMLDivElement | null>(null);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -370,6 +372,9 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
 
         <button
           disabled={!isPlayable}
+          onClick={() => {
+            navigate(`/projects/${projectId}/present`);
+          }}
           className={classNames(
             "bg-white border border-gray-400 rounded-md min-w-[3rem] px-2 py-1 transition",
             {

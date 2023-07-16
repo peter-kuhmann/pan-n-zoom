@@ -4,7 +4,7 @@ import {
   registerSuiteUpdateListener,
   updateSuite,
 } from "@/data/suite.ts";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export interface UseSuite {
   suite: Suite;
@@ -19,8 +19,10 @@ export default function useSuite(): UseSuite {
     return unsubscribe;
   }, []);
 
-  return {
-    suite,
-    update: updateSuite,
-  };
+  return useMemo(() => {
+    return {
+      suite,
+      update: updateSuite,
+    };
+  }, [suite]);
 }
