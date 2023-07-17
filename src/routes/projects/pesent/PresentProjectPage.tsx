@@ -117,6 +117,7 @@ export default function PresentProjectPage() {
           setImageNaturalHeight(image.naturalHeight);
 
           if (imageContainerRef.current) {
+            imageContainerRef.current.innerHTML = "";
             imageContainerRef.current.appendChild(image);
             imageRef.current = image;
           }
