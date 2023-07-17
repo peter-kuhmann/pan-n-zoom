@@ -288,7 +288,11 @@ export default function PresentProjectPage() {
 
     const enterFullscreenListener = (e: KeyboardEvent) => {
       if (e.code === "KeyF") {
-        enterFullscreenMode();
+        if (checkIsFullscreenOn()) {
+          exitFullscreenMode();
+        } else {
+          enterFullscreenMode();
+        }
       }
     };
 
@@ -310,6 +314,7 @@ export default function PresentProjectPage() {
       document.removeEventListener("keyup", exitPresentationModeListener);
     };
   }, [
+    exitFullscreenMode,
     project,
     previousKeyframeId,
     nextKeyframeId,
