@@ -6,6 +6,7 @@ import { useEditorPageContext } from "@/routes/projects/EditorPage.tsx";
 import useProjectKeyframe from "@/hooks/useProjectKeyframe.ts";
 import useProject from "@/hooks/useProject.ts";
 import { useNavigate } from "react-router-dom";
+import { decode } from "js-base64";
 
 interface FittingScale {
   scaleFactor: number;
@@ -89,6 +90,30 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   const [userScale, setUserScale] = useState(1.0);
 
   useEffect(() => {
+    const dataUrlMatch = /data:([^;]+);base64,(.+)/.exec(imgSrc);
+    if (dataUrlMatch) {
+      const mimeType = dataUrlMatch[1];
+      const base64Data = dataUrlMatch[2];
+
+      if (mimeType === "image/svg+xml") {
+        const decodedSvg = decode(base64Data);
+        const dummyContainer = document.createElement("div");
+        dummyContainer.innerHTML = decodedSvg;
+
+        const svgElement = dummyContainer.querySelector("svg");
+        if (svgElement && imageContainerRef.current) {
+          svgElement.style.width = "100%";
+          svgElement.style.height = "100%";
+          setImageWidth(parseFloat(svgElement.getAttribute("width") ?? "0"));
+          setImageHeight(parseFloat(svgElement.getAttribute("height") ?? "0"));
+          imageContainerRef.current.innerHTML = "";
+          imageContainerRef.current.appendChild(svgElement);
+          setLoading(false);
+          return;
+        }
+      }
+    }
+
     const image = new Image();
     image.decoding = "async";
     image.src = imgSrc;

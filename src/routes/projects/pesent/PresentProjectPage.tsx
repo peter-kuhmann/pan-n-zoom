@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import useWatchSize from "@/hooks/useWatchSize.ts";
 import * as classNames from "classnames";
+import { decode } from "js-base64";
 
 export default function PresentProjectPage() {
   const navigate = useNavigate();
@@ -104,6 +105,34 @@ export default function PresentProjectPage() {
       !storedImage.loading &&
       storedImage.dataUrl
     ) {
+      const dataUrlMatch = /data:([^;]+);base64,(.+)/.exec(storedImage.dataUrl);
+      if (dataUrlMatch) {
+        const mimeType = dataUrlMatch[1];
+        const base64Data = dataUrlMatch[2];
+
+        if (mimeType === "image/svg+xml") {
+          const decodedSvg = decode(base64Data);
+          const dummyContainer = document.createElement("div");
+          dummyContainer.innerHTML = decodedSvg;
+
+          const svgElement = dummyContainer.querySelector("svg");
+          if (svgElement && imageContainerRef.current) {
+            svgElement.style.width = "100%";
+            svgElement.style.height = "100%";
+            setImageNaturalWidth(
+              parseFloat(svgElement.getAttribute("width") ?? "0"),
+            );
+            setImageNaturalHeight(
+              parseFloat(svgElement.getAttribute("height") ?? "0"),
+            );
+            imageContainerRef.current.innerHTML = "";
+            imageContainerRef.current.appendChild(svgElement);
+            setDecoding(false);
+            return;
+          }
+        }
+      }
+
       const image = new Image();
       image.src = storedImage.dataUrl;
       image.classList.add("w-full", "h-full", "max-w-none", "max-h-none");
