@@ -21,7 +21,7 @@ export default function ProductPage() {
         </p>
 
         <button
-          className={"btn dark:btn-primary"}
+          className={"btn btn-neutral"}
           onClick={() => {
             navigate("/app");
           }}

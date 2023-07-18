@@ -43,7 +43,7 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
   return (
     <div
       className={
-        "w-[20rem] px-4 py-4 hover:bg-gray-100 rounded-lg cursor-pointer transition"
+        "w-[20rem] px-4 py-4 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition"
       }
       onClick={() => {
         navigate(getProjectEditorLink(projectId));
