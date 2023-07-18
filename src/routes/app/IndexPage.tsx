@@ -1,16 +1,31 @@
 import { useNavigate } from "react-router-dom";
 import CuteCat from "@/components/cat/CuteCat.tsx";
-import useSuite from "@/hooks/useSuite.ts";
 import ProjectList from "@/components/ProjectList.tsx";
+import AppPage from "@/components/AppPage.tsx";
+import IonIcon from "@/components/IonIcon.tsx";
+import useProjects from "@/hooks/useProjects.ts";
+import { getCreateProjectLink } from "@/navigation/links.ts";
 
 export default function IndexPage() {
-  const { suite } = useSuite();
+  const projects = useProjects();
+  const navigate = useNavigate();
 
   return (
-    <div className={"p-16 flex flex-col justify-center h-full"}>
-      <h1 className={"mb-16 font-bold text-4xl text-center"}>Pan'n'Zoom</h1>
-      {suite.projects.length > 0 ? <ProjectsExistState /> : <EmptyState />}
-    </div>
+    <AppPage
+      title={"Projects"}
+      action={
+        <button
+          onClick={() => {
+            navigate(getCreateProjectLink());
+          }}
+          className={"btn btn-circle btn-sm btn-neutral btn-outline"}
+        >
+          <IonIcon name={"add-outline"} />
+        </button>
+      }
+    >
+      {projects.length > 0 ? <ProjectsExistState /> : <EmptyState />}
+    </AppPage>
   );
 }
 
@@ -39,22 +54,22 @@ function EmptyState() {
   const navigate = useNavigate();
 
   return (
-    <div className={"flex flex-col items-center gap-8"}>
-      <div className={"text-center"}>
-        Welcome to Pan'n'Zoom.
+    <div className={"flex flex-col items-center"}>
+      <CuteCat className={"w-full max-w-[10rem] mb-8"} />
+
+      <div className={"text-2xl mb-16 text-center leading-loose"}>
+        You don't have any projects yet.
         <br />
-        <b>You don't have any projects yet.</b>
+        <b>Let's create your first one!</b>
       </div>
 
-      <CuteCat className={"w-full max-w-[8rem]"} />
-
       <button
-        className={"btn"}
+        className={"btn btn-neutral"}
         onClick={() => {
-          navigate("/projects/create");
+          navigate(getCreateProjectLink());
         }}
       >
-        Create your first project 🎉
+        Create your first project <IonIcon name={"paw-outline"} />
       </button>
     </div>
   );

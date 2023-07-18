@@ -4,11 +4,13 @@ import {
   registerSuiteUpdateListener,
   updateSuite,
 } from "@/data/suite.ts";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { type Project } from "@/types/project.ts";
 
 export interface UseSuite {
   suite: Suite;
   update: (update: Partial<Suite>) => void;
+  addProject: (newProject: Project) => void;
 }
 
 export default function useSuite(): UseSuite {
@@ -19,10 +21,20 @@ export default function useSuite(): UseSuite {
     return unsubscribe;
   }, []);
 
+  const addProject = useCallback<(newProject: Project) => void>(
+    (newProject) => {
+      updateSuite({
+        projects: [...suite.projects, newProject],
+      });
+    },
+    [suite],
+  );
+
   return useMemo(() => {
     return {
       suite,
       update: updateSuite,
+      addProject,
     };
   }, [suite]);
 }

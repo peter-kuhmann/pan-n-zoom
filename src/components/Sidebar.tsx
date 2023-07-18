@@ -3,6 +3,7 @@ import CuteCat from "@/components/cat/CuteCat.tsx";
 import IonIcon from "@/components/IonIcon.tsx";
 import * as classNames from "classnames";
 import { useMemo } from "react";
+import { getProjectBasePath, getProjectListLink } from "@/navigation/links.ts";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -28,6 +29,12 @@ export default function Sidebar() {
           label={"Projects"}
           navigateTo={"/app"}
           icon={<IonIcon name={"rocket-outline"} />}
+          activeStrategy={(currentPathname) => {
+            return (
+              currentPathname === getProjectListLink() ||
+              currentPathname.startsWith(getProjectBasePath())
+            );
+          }}
         />
         <Entry
           label={"Settings"}

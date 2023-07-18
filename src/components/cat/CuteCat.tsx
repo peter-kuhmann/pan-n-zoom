@@ -1,4 +1,4 @@
-import CuteCatLightThme from "@/assets/CuteCatLightThme.svg";
+import CuteCatLightTheme from "@/assets/CuteCatLightTheme.svg";
 import CuteCatDarkTheme from "@/assets/CuteCatDarkTheme.svg";
 import * as classNames from "classnames";
 
@@ -10,7 +10,7 @@ export default function CuteCat({ className }: CuteCatProps) {
   return (
     <>
       <img
-        src={CuteCatLightThme}
+        src={CuteCatLightTheme}
         className={classNames("dark:hidden", className)}
       ></img>
       <img

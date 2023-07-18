@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import * as classNames from "classnames";
 import { type ReactEventHandler, useCallback } from "react";
 import { deleteStoredImage } from "@/data/imageStorage.ts";
+import { getProjectEditorLink } from "@/navigation/links.ts";
 
 export default function ProjectList() {
   const { suite } = useSuite();
@@ -36,7 +37,7 @@ function ProjectEntry({ project }: { project: Project }) {
         });
       });
     },
-    [suite, update, project.id],
+    [suite, update, project.id, project.image.storageId],
   );
 
   return (
@@ -49,7 +50,7 @@ function ProjectEntry({ project }: { project: Project }) {
         },
       )}
       onClick={() => {
-        navigate(`/projects/${project.id}`);
+        navigate(getProjectEditorLink(project.id));
       }}
     >
       <div className={"flex gap-4"}>

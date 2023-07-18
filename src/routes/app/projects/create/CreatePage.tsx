@@ -1,80 +1,130 @@
 import * as classNames from "classnames";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { fileToBase64 } from "@/utils/files.ts";
 import useSuite from "@/hooks/useSuite.ts";
 import { storeImage } from "@/data/imageStorage.ts";
 import { createId } from "@paralleldrive/cuid2";
 import { useNavigate } from "react-router-dom";
+import AppPage from "@/components/AppPage.tsx";
+import {
+  getProjectEditorLink,
+  getProjectListLink,
+} from "@/navigation/links.ts";
+import IonIcon from "@/components/IonIcon.tsx";
+import { type Project } from "@/types/project.ts";
 
 export default function CreatePage() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { suite, update } = useSuite();
+  const { suite, addProject } = useSuite();
+
   const navigate = useNavigate();
+  const defaultProjectName = `New Project #${suite.projects.length + 2}`;
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFileDataUrl, setSelectedFileDataUrl] = useState<string | null>(
+    null,
+  );
 
   const createProjectHandler = useCallback(() => {
-    if (!selectedFile) return;
+    if (!selectedFile || !selectedFileDataUrl) return;
 
     setIsLoading(true);
 
-    fileToBase64(selectedFile)
-      .then(async (dataUrl) => {
-        return await storeImage(dataUrl);
-      })
+    storeImage(selectedFileDataUrl)
       .then((storedImage) => {
-        const newProjectId = createId();
+        const nowIso = new Date().toISOString();
 
-        update({
-          projects: [
-            ...suite.projects,
-            {
-              id: newProjectId,
-              name: `Project ${suite.projects.length + 1}`,
-              image: { storageId: storedImage.id },
-              keyframes: [],
-            },
-          ],
-        });
+        const newProject: Project = {
+          id: createId(),
+          name: `Project ${suite.projects.length + 1}`,
+          image: {
+            fileName: selectedFile.name,
+            mimeType: selectedFile.type,
+            storageId: storedImage.id,
+          },
+          keyframes: [],
+          createdAt: nowIso,
+          updatedAt: nowIso,
+        };
 
-        navigate(`/projects/${newProjectId}`);
+        addProject(newProject);
+        navigate(getProjectEditorLink(newProject.id));
       })
       .catch(console.error)
       .finally(() => {
         setIsLoading(false);
       });
-  }, [selectedFile, suite, navigate, update]);
+  }, [selectedFile, selectedFileDataUrl, suite, navigate, addProject]);
 
-  const creationDisabled = !selectedFile || isLoading;
+  const creationDisabled = !selectedFile || !selectedFileDataUrl || isLoading;
 
   return (
-    <div className={"p-16 h-full flex flex-col items-center justify-center"}>
-      <h1 className={"font-bold text-4xl text-center mb-16"}>
-        Create a project
-      </h1>
+    <AppPage
+      title={"Create project"}
+      backTo={{ label: "Back to projects", to: getProjectListLink() }}
+    >
+      <div className={"grid grid-cols-3 gap-24 items-start"}>
+        <div className={"rounded-lg border border-gray-300 overflow-hidden"}>
+          <div className={"w-full max-w-[20rem]"}>
+            {selectedFileDataUrl ? (
+              <img
+                className={"bg-gray-50 w-full aspect-square object-contain"}
+                src={selectedFileDataUrl}
+              />
+            ) : (
+              <button
+                onClick={() => {
+                  fileInputRef.current?.click();
+                }}
+                className={
+                  "w-full text-4xl min-h-[10rem] btn btn-ghost btn-lg inline-block"
+                }
+              >
+                <IonIcon name={"image-outline"} />
+              </button>
+            )}
+          </div>
+        </div>
 
-      <input
-        type="file"
-        className="file-input file-input-bordered w-full max-w-xs mb-8"
-        accept="image/*"
-        onChange={(e) => {
-          if (e.currentTarget.files && e.currentTarget.files.length > 0) {
-            setSelectedFile(e.currentTarget.files[0]);
-          } else {
-            setSelectedFile(null);
-          }
-        }}
-      />
+        <div className={"col-span-2 flex flex-col items-start gap-8"}>
+          <input
+            defaultValue={defaultProjectName}
+            type="text"
+            className={"input input-bordered w-full max-w-md"}
+            placeholder={"Project name"}
+            required
+          />
 
-      <button
-        disabled={creationDisabled}
-        className={classNames("btn", {
-          "btn-disabled": creationDisabled,
-          "btn-loading": isLoading,
-        })}
-        onClick={createProjectHandler}
-      >
-        Create new project ➡️
-      </button>
-    </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="file-input file-input-neutral file-input-bordered w-full max-w-md"
+            accept="image/*"
+            onChange={(e) => {
+              if (e.currentTarget.files && e.currentTarget.files.length > 0) {
+                const file = e.currentTarget.files[0];
+                setSelectedFile(file);
+                void fileToBase64(file).then(setSelectedFileDataUrl);
+              } else {
+                setSelectedFile(null);
+              }
+            }}
+          />
+
+          <button
+            disabled={creationDisabled}
+            className={classNames("btn btn-neutral", {
+              "btn-disabled": creationDisabled,
+              "btn-loading": isLoading,
+            })}
+            onClick={createProjectHandler}
+          >
+            Create new project ➡️
+          </button>
+        </div>
+      </div>
+    </AppPage>
   );
 }

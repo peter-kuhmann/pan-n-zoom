@@ -13,7 +13,11 @@ export const ProjectSchema = z.object({
   id: z.string().nonempty(),
   name: z.string().nonempty(),
   image: z.object({
+    fileName: z.string().nonempty(),
+    mimeType: z.string().nonempty(),
     storageId: z.string().nonempty(),
   }),
   keyframes: z.array(ProjectKeyframeSchema),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
 });

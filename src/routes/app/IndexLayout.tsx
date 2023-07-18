@@ -12,7 +12,7 @@ export default function IndexLayout() {
       <div className={"w-1 flex-grow h-full p-6"}>
         <div
           className={classNames(
-            "w-full h-full rounded-lg shadow-lg border",
+            "w-full h-full rounded-lg shadow-lg border overflow-hidden",
             "bg-white border-gray-200",
             "dark:bg-gray-800 dark:border-gray-400",
           )}
