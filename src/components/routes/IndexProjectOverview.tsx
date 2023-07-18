@@ -78,7 +78,7 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
 
         <div>
           <div
-            className="dropdown dropdown-left"
+            className="dropdown dropdown-bottom"
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -88,7 +88,7 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
             </label>
             <ul
               tabIndex={0}
-              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-fit border border-gray-200"
+              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-fit border border-gray-200 -translate-x-1/2"
             >
               <li>
                 <button

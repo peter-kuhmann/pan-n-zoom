@@ -23,6 +23,7 @@ export default function CreatePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [projectName, setProjectName] = useState<string>(defaultProjectName);
+  const [enableNativeSvgEmbed, setEnableNativeSvgEmbed] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileDataUrl, setSelectedFileDataUrl] = useState<string | null>(
     null,
@@ -41,6 +42,7 @@ export default function CreatePage() {
           id: createId(),
           name: projectName,
           image: {
+            embedSvgNatively: enableNativeSvgEmbed,
             fileName: selectedFile.name,
             mimeType: selectedFile.type,
             storageId: storedImage.id,
@@ -57,7 +59,14 @@ export default function CreatePage() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [selectedFile, selectedFileDataUrl, suite, navigate, addProject]);
+  }, [
+    projectName,
+    selectedFile,
+    selectedFileDataUrl,
+    navigate,
+    addProject,
+    enableNativeSvgEmbed,
+  ]);
 
   const creationDisabled =
     !selectedFile ||
@@ -120,6 +129,20 @@ export default function CreatePage() {
               }
             }}
           />
+
+          <label className="label cursor-pointer">
+            <input
+              type="checkbox"
+              checked={enableNativeSvgEmbed}
+              onChange={(e) => {
+                setEnableNativeSvgEmbed(e.currentTarget.checked);
+              }}
+              className="checkbox mr-2"
+            />
+            <span className="label-text">
+              Enable native SVG embed (use with care)
+            </span>
+          </label>
 
           <button
             disabled={creationDisabled}

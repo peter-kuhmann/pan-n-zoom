@@ -108,6 +108,7 @@ export default function PresentProjectPage() {
   // Load image
   useEffect(() => {
     if (
+      project?.image.embedSvgNatively === true &&
       imageContainerRef.current &&
       !storedImage.loading &&
       storedImage.dataUrl

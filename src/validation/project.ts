@@ -13,6 +13,7 @@ export const ProjectSchema = z.object({
   id: z.string().nonempty(),
   name: z.string().nonempty(),
   image: z.object({
+    embedSvgNatively: z.boolean(),
     fileName: z.string().nonempty(),
     mimeType: z.string().nonempty(),
     storageId: z.string().nonempty(),
