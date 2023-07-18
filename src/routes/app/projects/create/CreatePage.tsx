@@ -22,6 +22,7 @@ export default function CreatePage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [projectName, setProjectName] = useState<string>(defaultProjectName);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileDataUrl, setSelectedFileDataUrl] = useState<string | null>(
     null,
@@ -38,7 +39,7 @@ export default function CreatePage() {
 
         const newProject: Project = {
           id: createId(),
-          name: `Project ${suite.projects.length + 1}`,
+          name: projectName,
           image: {
             fileName: selectedFile.name,
             mimeType: selectedFile.type,
@@ -58,7 +59,11 @@ export default function CreatePage() {
       });
   }, [selectedFile, selectedFileDataUrl, suite, navigate, addProject]);
 
-  const creationDisabled = !selectedFile || !selectedFileDataUrl || isLoading;
+  const creationDisabled =
+    !selectedFile ||
+    !selectedFileDataUrl ||
+    projectName.length === 0 ||
+    isLoading;
 
   return (
     <AppPage
@@ -90,7 +95,10 @@ export default function CreatePage() {
 
         <div className={"col-span-2 flex flex-col items-start gap-8"}>
           <input
-            defaultValue={defaultProjectName}
+            value={projectName}
+            onInput={(e) => {
+              setProjectName(e.currentTarget.value);
+            }}
             type="text"
             className={"input input-bordered w-full max-w-md"}
             placeholder={"Project name"}
