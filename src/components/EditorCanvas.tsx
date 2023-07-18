@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useWatchSize from "../hooks/useWatchSize.ts";
 import * as classNames from "classnames";
 import { useGesture } from "@use-gesture/react";
-import { useEditorPageContext } from "@/routes/projects/EditorPage.tsx";
+import { useEditorPageContext } from "@/routes/app/projects/EditorPage.tsx";
 import useProjectKeyframe from "@/hooks/useProjectKeyframe.ts";
 import useProject from "@/hooks/useProject.ts";
 import { useNavigate } from "react-router-dom";

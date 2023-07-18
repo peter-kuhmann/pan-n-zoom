@@ -1,17 +1,22 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import IndexLayout from "./routes/IndexLayout.tsx";
-import IndexPage from "./routes/IndexPage.tsx";
-import CreatePage from "@/routes/projects/create/CreatePage.tsx";
-import EditorPage from "@/routes/projects/EditorPage.tsx";
-import PresentProjectPage from "@/routes/projects/pesent/PresentProjectPage.tsx";
+import IndexLayout from "./routes/app/IndexLayout.tsx";
+import IndexPage from "./routes/app/IndexPage.tsx";
+import CreatePage from "@/routes/app/projects/create/CreatePage.tsx";
+import EditorPage from "@/routes/app/projects/EditorPage.tsx";
+import PresentProjectPage from "@/routes/app/projects/pesent/PresentProjectPage.tsx";
+import ProductPage from "@/routes/ProductPage.tsx";
 
 const router = createBrowserRouter([
   {
-    path: "/projects/:projectId/present/:keyframeId?",
+    path: "/",
+    element: <ProductPage />,
+  },
+  {
+    path: "/app/projects/:projectId/present/:keyframeId?",
     element: <PresentProjectPage />,
   },
   {
-    path: "/",
+    path: "/app",
     element: <IndexLayout />,
     children: [
       { path: "", element: <IndexPage /> },

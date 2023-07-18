@@ -5,7 +5,7 @@ import { createId } from "@paralleldrive/cuid2";
 import getSomeCoolEmojis from "get-some-cool-emojis";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import * as classNames from "classnames";
-import { useEditorPageContext } from "@/routes/projects/EditorPage.tsx";
+import { useEditorPageContext } from "@/routes/app/projects/EditorPage.tsx";
 
 export default function KeyframesTab({ projectId }: { projectId: string }) {
   const { project, update } = useProject(projectId);

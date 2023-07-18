@@ -1,4 +1,5 @@
-import CuteCatImg from "@/assets/Cat.svg";
+import CuteCatLightThme from "@/assets/CuteCatLightThme.svg";
+import CuteCatDarkTheme from "@/assets/CuteCatDarkTheme.svg";
 import * as classNames from "classnames";
 
 export interface CuteCatProps {
@@ -6,5 +7,16 @@ export interface CuteCatProps {
 }
 
 export default function CuteCat({ className }: CuteCatProps) {
-  return <img src={CuteCatImg} className={classNames(className)}></img>;
+  return (
+    <>
+      <img
+        src={CuteCatLightThme}
+        className={classNames("dark:hidden", className)}
+      ></img>
+      <img
+        src={CuteCatDarkTheme}
+        className={classNames("hidden dark:inline-block", className)}
+      ></img>
+    </>
+  );
 }
