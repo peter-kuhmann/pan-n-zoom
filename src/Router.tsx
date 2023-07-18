@@ -5,6 +5,10 @@ import CreatePage from "@/routes/app/projects/create/CreatePage.tsx";
 import EditorPage from "@/routes/app/projects/EditorPage.tsx";
 import PresentProjectPage from "@/routes/app/projects/pesent/PresentProjectPage.tsx";
 import ProductPage from "@/routes/ProductPage.tsx";
+import SettingsPage from "@/routes/app/settings/SettingsPage.tsx";
+import HelpPage from "@/routes/app/help/HelpPage.tsx";
+import ImportPage from "@/routes/app/import/ImportPage.tsx";
+import ExportPage from "@/routes/app/export/ExportPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +32,10 @@ const router = createBrowserRouter([
           { path: ":projectId", element: <EditorPage /> },
         ],
       },
+      { path: "settings", element: <SettingsPage /> },
+      { path: "export", element: <ExportPage /> },
+      { path: "import", element: <ImportPage /> },
+      { path: "help", element: <HelpPage /> },
     ],
   },
 ]);

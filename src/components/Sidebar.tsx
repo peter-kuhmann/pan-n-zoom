@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CuteCat from "@/components/cat/CuteCat.tsx";
 import IonIcon from "@/components/IonIcon.tsx";
 import * as classNames from "classnames";
+import { useMemo } from "react";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -43,20 +44,55 @@ export default function Sidebar() {
           navigateTo={"/app/import"}
           icon={<IonIcon name={"cloud-download-outline"} />}
         />
+        <Entry
+          label={"Help"}
+          navigateTo={"/app/help"}
+          icon={<IonIcon name={"help-buoy-outline"} />}
+        />
       </div>
     </div>
   );
 }
 
+type ActiveStrategy =
+  | "exact"
+  | "prefix"
+  | ((currentPathname: string, navigateTo: string) => boolean);
+
 interface EntryProps {
   icon?: React.ReactNode;
   label: string;
   navigateTo: string;
+  activeStrategy?: ActiveStrategy;
 }
 
-function Entry({ icon, label, navigateTo }: EntryProps) {
+function removeTrailingSlash(value: string) {
+  const trimmed = value.trim();
+  if (trimmed === "/") return trimmed;
+  return trimmed.replace(/\/$/, "");
+}
+
+function Entry({
+  icon,
+  label,
+  navigateTo,
+  activeStrategy = "exact",
+}: EntryProps) {
   const navigate = useNavigate();
-  const active = useLocation().pathname.startsWith(navigateTo);
+  const { pathname } = useLocation();
+
+  const normalizedNavigateTo = removeTrailingSlash(navigateTo);
+  const normalizedPathname = removeTrailingSlash(pathname);
+
+  const active = useMemo(() => {
+    if (activeStrategy === "exact") {
+      return normalizedPathname === normalizedNavigateTo;
+    } else if (activeStrategy === "prefix") {
+      return normalizedPathname.startsWith(normalizedNavigateTo);
+    } else {
+      return activeStrategy(normalizedPathname, normalizedNavigateTo);
+    }
+  }, [activeStrategy, normalizedPathname, normalizedNavigateTo]);
 
   return (
     <button
@@ -69,7 +105,7 @@ function Entry({ icon, label, navigateTo }: EntryProps) {
         },
       )}
       onClick={() => {
-        navigate(navigateTo);
+        navigate(normalizedNavigateTo);
       }}
     >
       {icon && <div>{icon}</div>}
