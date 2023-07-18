@@ -11,6 +11,7 @@ export interface UseSuite {
   suite: Suite;
   update: (update: Partial<Suite>) => void;
   addProject: (newProject: Project) => void;
+  deleteProject: (projectId: string) => void;
 }
 
 export default function useSuite(): UseSuite {
@@ -30,11 +31,23 @@ export default function useSuite(): UseSuite {
     [suite],
   );
 
+  const deleteProject = useCallback<(projectId: string) => void>(
+    (projectId) => {
+      updateSuite({
+        projects: suite.projects.filter(
+          (suiteProject) => suiteProject.id !== projectId,
+        ),
+      });
+    },
+    [suite],
+  );
+
   return useMemo(() => {
     return {
       suite,
       update: updateSuite,
       addProject,
+      deleteProject,
     };
   }, [suite]);
 }
