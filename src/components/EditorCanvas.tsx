@@ -7,6 +7,7 @@ import useProjectKeyframe from "@/hooks/useProjectKeyframe.ts";
 import useProject from "@/hooks/useProject.ts";
 import { useNavigate } from "react-router-dom";
 import { decode } from "js-base64";
+import { getProjectPresentLink } from "@/navigation/links.ts";
 
 interface FittingScale {
   scaleFactor: number;
@@ -398,7 +399,7 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
         <button
           disabled={!isPlayable}
           onClick={() => {
-            navigate(`/projects/${projectId}/present`);
+            navigate(getProjectPresentLink(projectId));
           }}
           className={classNames(
             "bg-white border border-gray-400 rounded-md min-w-[3rem] px-2 py-1 transition",

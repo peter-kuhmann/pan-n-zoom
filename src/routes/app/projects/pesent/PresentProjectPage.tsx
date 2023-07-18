@@ -5,6 +5,11 @@ import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import useWatchSize from "@/hooks/useWatchSize.ts";
 import * as classNames from "classnames";
 import { decode } from "js-base64";
+import {
+  getProjectEditorLink,
+  getProjectListLink,
+  getProjectPresentLinkWithKeyframe,
+} from "@/navigation/links.ts";
 
 export default function PresentProjectPage() {
   const navigate = useNavigate();
@@ -82,7 +87,7 @@ export default function PresentProjectPage() {
       (!storedImage.loading && !storedImage.dataUrl) ||
       project.keyframes.length === 0
     ) {
-      navigate("/");
+      navigate(getProjectListLink());
     }
   }, [navigate, project, storedImage]);
 
@@ -94,7 +99,9 @@ export default function PresentProjectPage() {
       (!currentPathParamKeyframeId ||
         currentPathParamKeyframeId !== currentKeyframeId)
     ) {
-      navigate(`/projects/${project.id}/present/${currentKeyframeId}`);
+      navigate(
+        getProjectPresentLinkWithKeyframe(project.id, currentKeyframeId),
+      );
     }
   }, [project, currentKeyframeId, currentPathParamKeyframeId, navigate]);
 
@@ -241,7 +248,7 @@ export default function PresentProjectPage() {
   const showKeyframe = useCallback(
     (keyframeId: string) => {
       if (project) {
-        navigate(`/projects/${project.id}/present/${keyframeId}`);
+        navigate(getProjectPresentLinkWithKeyframe(project.id, keyframeId));
       }
     },
     [navigate, project],
@@ -273,7 +280,7 @@ export default function PresentProjectPage() {
 
   const exitPresentationMode = useCallback(() => {
     if (project) {
-      navigate(`/projects/${project.id}`);
+      navigate(getProjectEditorLink(project.id));
     }
   }, [navigate, project]);
 

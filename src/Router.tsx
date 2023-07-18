@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     element: <ProductPage />,
   },
   {
-    path: "/app/projects/:projectId/present/:keyframeId?",
+    path: "/app/project/:projectId/present/:keyframeId?",
     element: <PresentProjectPage />,
   },
   {
