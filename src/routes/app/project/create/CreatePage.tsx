@@ -41,7 +41,7 @@ export default function CreatePage() {
           name: projectName,
           backgroundColor: "#ffffff",
           embedSvgNatively: enableNativeSvgEmbed,
-          animationDuration: 500,
+          animationDuration: 1000,
           animationType: "ease",
           image: {
             fileName: selectedFile.name,
