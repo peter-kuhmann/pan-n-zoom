@@ -14,6 +14,10 @@ export function getProjectEditorLink(projectId: string) {
   return `${getProjectBasePath()}/${projectId}`;
 }
 
+export function getProjectEditorSettingsLink(projectId: string) {
+  return `${getProjectEditorLink(projectId)}/settings`;
+}
+
 export function getProjectPresentLink(projectId: string) {
   return `${getProjectBasePath()}/${projectId}/present`;
 }

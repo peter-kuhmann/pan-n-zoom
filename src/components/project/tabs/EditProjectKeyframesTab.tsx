@@ -5,12 +5,17 @@ import { createId } from "@paralleldrive/cuid2";
 import getSomeCoolEmojis from "get-some-cool-emojis";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import * as classNames from "classnames";
-import { useEditorPageContext } from "@/routes/app/project/EditPage.tsx";
+import { useParams } from "react-router-dom";
+import EditProjectTab from "@/components/project/tabs/EditProjectTab.tsx";
+import { useProjectEditorStore } from "@/context/ProjectEditorStore.tsx";
+import { useStore } from "zustand";
 
-export default function KeyframesTab({ projectId }: { projectId: string }) {
+export default function EditProjectKeyframesTab() {
+  const projectId = useParams().projectId;
   const { project, update } = useProject(projectId);
-  const { state, setState, setActiveKeyframeId, activeKeyframeId } =
-    useEditorPageContext();
+
+  const projectEditorStore = useProjectEditorStore();
+  const { mode, activeKeyframeId } = useStore(projectEditorStore);
 
   const addKeyframe = useCallback(
     (index: number) => {
@@ -32,10 +37,12 @@ export default function KeyframesTab({ projectId }: { projectId: string }) {
         keyframes: newKeyframes,
       });
 
-      setState("editKeyframe");
-      setActiveKeyframeId(newKeyframe.id);
+      projectEditorStore.setState({
+        mode: "editKeyframe",
+        activeKeyframeId: newKeyframe.id,
+      });
     },
-    [project, update, setState, setActiveKeyframeId],
+    [project, update, projectEditorStore],
   );
 
   const deleteKeyframe = useCallback(
@@ -57,50 +64,56 @@ export default function KeyframesTab({ projectId }: { projectId: string }) {
   if (!project) return <>Project not found.</>;
 
   return (
-    <div
-      className={"h-full flex flex-col gap-4 overflow-x-scroll pb-8"}
-      ref={autoAnimateRef}
-    >
-      {project.keyframes.map((keyframe, index) => {
-        const editActive =
-          state === "editKeyframe" && activeKeyframeId === keyframe.id;
-        return (
-          <div
-            key={`keyframe-${keyframe.id}}`}
-            className={"flex flex-col gap-4"}
-          >
-            <AddKeyframeButton
-              onClick={() => {
-                addKeyframe(index);
-              }}
-            />
-            <Keyframe
-              keyframe={keyframe}
-              index={index}
-              onDelete={() => {
-                deleteKeyframe(index);
-              }}
-              editActive={editActive}
-              onClick={() => {
-                if (editActive) {
-                  setState("view");
-                  setActiveKeyframeId(null);
-                } else {
-                  setState("editKeyframe");
-                  setActiveKeyframeId(keyframe.id);
-                }
-              }}
-            />
-          </div>
-        );
-      })}
+    <EditProjectTab title={"Keyframes"}>
+      <div
+        className={"h-full flex flex-col gap-4 overflow-x-scroll pb-8"}
+        ref={autoAnimateRef}
+      >
+        {project.keyframes.map((keyframe, index) => {
+          const editActive =
+            mode === "editKeyframe" && activeKeyframeId === keyframe.id;
+          return (
+            <div
+              key={`keyframe-${keyframe.id}}`}
+              className={"flex flex-col gap-4"}
+            >
+              <AddKeyframeButton
+                onClick={() => {
+                  addKeyframe(index);
+                }}
+              />
+              <Keyframe
+                keyframe={keyframe}
+                index={index}
+                onDelete={() => {
+                  deleteKeyframe(index);
+                }}
+                editActive={editActive}
+                onClick={() => {
+                  if (editActive) {
+                    projectEditorStore.setState({
+                      mode: "view",
+                      activeKeyframeId: null,
+                    });
+                  } else {
+                    projectEditorStore.setState({
+                      mode: "editKeyframe",
+                      activeKeyframeId: keyframe.id,
+                    });
+                  }
+                }}
+              />
+            </div>
+          );
+        })}
 
-      <AddKeyframeButton
-        onClick={() => {
-          addKeyframe(project.keyframes.length);
-        }}
-      />
-    </div>
+        <AddKeyframeButton
+          onClick={() => {
+            addKeyframe(project.keyframes.length);
+          }}
+        />
+      </div>
+    </EditProjectTab>
   );
 }
 

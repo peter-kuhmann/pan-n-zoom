@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useWatchSize from "../hooks/useWatchSize.ts";
 import * as classNames from "classnames";
 import { useGesture } from "@use-gesture/react";
-import { useEditorPageContext } from "@/routes/app/project/EditPage.tsx";
 import useProjectKeyframe from "@/hooks/useProjectKeyframe.ts";
 import useProject from "@/hooks/useProject.ts";
-import { useNavigate } from "react-router-dom";
 import { decode } from "js-base64";
-import { getProjectPresentLink } from "@/navigation/links.ts";
+import { useStoredImage } from "@/hooks/useStoredImage.ts";
+import { useProjectEditorStore } from "@/context/ProjectEditorStore.tsx";
+import { useStore } from "zustand";
 
 interface FittingScale {
   scaleFactor: number;
@@ -46,13 +46,20 @@ function computeFittingScale(
   };
 }
 
-export interface CanvasProps {
-  imgSrc: string;
+export interface ProjectEditorCanvasProps {
   projectId: string;
 }
 
-export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
-  const navigate = useNavigate();
+export default function ProjectEditorCanvas({
+  projectId,
+}: ProjectEditorCanvasProps) {
+  const { mode, activeKeyframeId } = useStore(useProjectEditorStore());
+  const { project } = useProject(projectId);
+  const storedImage = useStoredImage(project?.image.storageId);
+  const imgSrc: string | null = storedImage.loading
+    ? null
+    : storedImage.dataUrl ?? null;
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const elementContainerRef = useRef<HTMLDivElement | null>(null);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -83,6 +90,7 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
       return next;
     });
   }, []);
+
   const setPanY = useCallback((modifier: (previousValue: number) => number) => {
     setPanYRaw((previousValue) => Math.round(modifier(previousValue)));
   }, []);
@@ -91,6 +99,8 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   const [userScale, setUserScale] = useState(1.0);
 
   useEffect(() => {
+    if (!imgSrc) return;
+
     if (project?.image.embedSvgNatively === true) {
       const dataUrlMatch = /data:([^;]+);base64,(.+)/.exec(imgSrc);
       if (dataUrlMatch) {
@@ -140,7 +150,7 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
       .finally(() => {
         setLoading(false);
       });
-  }, [imgSrc]);
+  }, [imgSrc, project?.image.embedSvgNatively]);
 
   const fittingScale = useMemo<FittingScale>(() => {
     return computeFittingScale(
@@ -176,8 +186,6 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   const imageScaledWidth = Math.floor(fittingScale.scaledWidth * userScale);
   const imageScaledHeight = Math.floor(fittingScale.scaledHeight * userScale);
 
-  const { state, activeKeyframeId } = useEditorPageContext();
-  const { project } = useProject(projectId);
   const { keyframe: activeKeyframe, update: updateActiveKeyframe } =
     useProjectKeyframe(projectId, activeKeyframeId);
 
@@ -221,7 +229,7 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   useGesture(
     {
       onDrag: ({ delta, event }) => {
-        if (state === "editKeyframe" && activeKeyframe) {
+        if (mode === "editKeyframe" && activeKeyframe) {
           if (event.target === editFrameRef.current) {
             const deltaX = delta[0] / imageScaledWidth;
             const deltaY = delta[1] / imageScaledHeight;
@@ -330,7 +338,14 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
   );
 
   const userScalePercentage: string = `${Math.round(userScale * 100)}%`;
-  const isPlayable = project && project.keyframes.length > 0;
+
+  if (!project) {
+    return <>Project not found</>;
+  }
+
+  if (!storedImage.loading && !storedImage.dataUrl) {
+    return <>Image data could not be found</>;
+  }
 
   return (
     <div
@@ -399,22 +414,6 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
             +
           </button>
         </div>
-
-        <button
-          disabled={!isPlayable}
-          onClick={() => {
-            navigate(getProjectPresentLink(projectId));
-          }}
-          className={classNames(
-            "bg-white border border-gray-400 rounded-md min-w-[3rem] px-2 py-1 transition",
-            {
-              "cursor-not-allowed opacity-40": !isPlayable,
-              "hover:bg-gray-200": isPlayable,
-            },
-          )}
-        >
-          🎬
-        </button>
       </div>
 
       <div
@@ -455,7 +454,7 @@ export default function EditorCanvas({ imgSrc, projectId }: CanvasProps) {
           </>
         )}
 
-        {state === "editKeyframe" && activeKeyframe && (
+        {mode === "editKeyframe" && activeKeyframe && (
           <>
             <div
               ref={editFrameRef}

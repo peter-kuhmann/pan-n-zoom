@@ -14,6 +14,8 @@ import ImportPage from "@/routes/app/import/ImportPage.tsx";
 import ExportPage from "@/routes/app/export/ExportPage.tsx";
 import { useEffect } from "react";
 import { EditPageLayout } from "@/routes/app/project/EditPageLayout.tsx";
+import EditProjectKeyframesTab from "@/components/project/tabs/EditProjectKeyframesTab.tsx";
+import EditProjectSettingsTabs from "@/components/project/tabs/EditProjectSettingsTab.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: "/app/project/:projectId",
     element: <EditPageLayout />,
+    children: [
+      { path: "", element: <EditProjectKeyframesTab /> },
+      { path: "settings", element: <EditProjectSettingsTabs /> },
+    ],
   },
   {
     path: "/app",
@@ -50,9 +56,11 @@ const router = createBrowserRouter([
 
 function Redirect({ to }: { to: string }) {
   const navigate = useNavigate();
+
   useEffect(() => {
     navigate(to);
-  }, [to]);
+  }, [to, navigate]);
+
   return <>Redirecting ...</>;
 }
 
