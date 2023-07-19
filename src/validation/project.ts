@@ -16,8 +16,8 @@ export const ProjectSchema = z.object({
     .string()
     .regex(/#[0-9ABCDEFabcdef]{3}([0-9ABCDEFabcdef]{3})?/),
   embedSvgNatively: z.boolean(),
-  animationDuration: z.number().optional().default(500),
-  animationType: z.enum(["linear", "ease"]).optional().default("ease"),
+  animationDuration: z.number(),
+  animationType: z.enum(["linear", "ease"]),
   image: z.object({
     fileName: z.string(),
     mimeType: z.string(),

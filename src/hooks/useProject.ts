@@ -13,6 +13,7 @@ export type ProjectUpdater = (
       | "embedSvgNatively"
       | "animationDuration"
       | "animationType"
+      | "image"
     >
   >,
 ) => void;
