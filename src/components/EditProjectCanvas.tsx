@@ -361,6 +361,9 @@ export default function EditProjectCanvas({
           "cursor-grabbing": panning,
         },
       )}
+      style={{
+        backgroundColor: project.backgroundColor,
+      }}
     >
       {loading && (
         <span className={"absolute top-0 left-0 z-50 fullCentered"}>

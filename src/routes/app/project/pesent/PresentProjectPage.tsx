@@ -10,6 +10,7 @@ import {
   getProjectListLink,
   getProjectPresentLinkWithKeyframe,
 } from "@/navigation/links.ts";
+import IonIcon from "@/components/IonIcon.tsx";
 
 export default function PresentProjectPage() {
   const navigate = useNavigate();
@@ -433,6 +434,9 @@ export default function PresentProjectPage() {
           setCursorShown(true);
         }
       }}
+      style={{
+        backgroundColor: project.backgroundColor,
+      }}
     >
       {decoding && (
         <div className={"absolute z-20 left-0 top-0"}>Rendering image ...</div>
@@ -441,8 +445,9 @@ export default function PresentProjectPage() {
       <div
         className={classNames(
           "absolute bottom-4 left-1/2 -translate-x-1/2 z-10",
-          "flex flex-row items-center",
-          "rounded-md bg-white overflow-hidden border border-gray-400",
+          "flex flex-row items-center rounded-md overflow-hidden ",
+          "bg-white border border-gray-400 shadow-md",
+          "dark:bg-gray-800",
           "opacity-50 hover:opacity-100 transition",
         )}
         onMouseUp={(e) => {
@@ -456,12 +461,12 @@ export default function PresentProjectPage() {
             "min-w-[3rem] py-0.5 focus:outline-none",
             "border-r border-gray-400",
             {
-              "hover:bg-gray-100": previousKeyframeId,
+              "hover:bg-gray-100 dark:hover:bg-gray-600": previousKeyframeId,
             },
           )}
           onClick={showPreviousKeyframe}
         >
-          ←
+          <IonIcon name={"chevron-back-outline"} />
         </button>
 
         <button
@@ -470,12 +475,12 @@ export default function PresentProjectPage() {
             "min-w-[3rem] py-0.5 focus:outline-none",
             "border-r border-gray-400",
             {
-              "hover:bg-gray-100": nextKeyframeId,
+              "hover:bg-gray-100 dark:hover:bg-gray-600": nextKeyframeId,
             },
           )}
           onClick={showNextKeyframe}
         >
-          →
+          <IonIcon name={"chevron-forward-outline"} />
         </button>
 
         <div className={"px-4 min-w-[5rem] py-0.5 text-center"}>
@@ -485,16 +490,16 @@ export default function PresentProjectPage() {
         <button
           className={classNames(
             "min-w-[3rem] py-0.5 focus:outline-none",
-            "border-l border-gray-400 hover:bg-gray-100",
+            "border-l border-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600",
           )}
           onClick={exitPresentationMode}
         >
-          ✏️
+          <IonIcon name={"stop"} />
         </button>
         <button
           className={classNames(
             "min-w-[3rem] py-0.5 focus:outline-none",
-            "border-l border-gray-400 hover:bg-gray-100",
+            "border-l border-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600",
           )}
           onClick={() => {
             if (fullscreenOn) {
@@ -504,7 +509,11 @@ export default function PresentProjectPage() {
             }
           }}
         >
-          {fullscreenOn ? "🚪" : "🚀"}
+          {fullscreenOn ? (
+            <IonIcon name={"contract-outline"} />
+          ) : (
+            <IonIcon name={"expand-outline"} />
+          )}
         </button>
       </div>
 

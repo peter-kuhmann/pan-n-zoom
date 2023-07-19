@@ -12,6 +12,9 @@ export const ProjectKeyframeSchema = z.object({
 export const ProjectSchema = z.object({
   id: z.string().nonempty(),
   name: z.string().nonempty(),
+  backgroundColor: z
+    .string()
+    .regex(/#[0-9ABCDEFabcdef]{3}([0-9ABCDEFabcdef]{3})?/),
   image: z.object({
     embedSvgNatively: z.boolean(),
     fileName: z.string().nonempty(),

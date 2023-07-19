@@ -15,7 +15,7 @@ import {
 } from "@/context/ProjectEditorStore.tsx";
 import EditProjectCanvas from "@/components/EditProjectCanvas.tsx";
 
-export function EditPageLayout() {
+export function EditProjectPageLayout() {
   const projectEditorStore = useCreateProjectEditorStore();
   const navigate = useNavigate();
   const { pathname } = useLocation();

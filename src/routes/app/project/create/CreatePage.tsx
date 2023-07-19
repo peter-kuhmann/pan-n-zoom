@@ -41,6 +41,7 @@ export default function CreatePage() {
         const newProject: Project = {
           id: createId(),
           name: projectName,
+          backgroundColor: "#ffffff",
           image: {
             embedSvgNatively: enableNativeSvgEmbed,
             fileName: selectedFile.name,

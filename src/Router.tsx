@@ -13,7 +13,7 @@ import HelpPage from "@/routes/app/help/HelpPage.tsx";
 import ImportPage from "@/routes/app/import/ImportPage.tsx";
 import ExportPage from "@/routes/app/export/ExportPage.tsx";
 import { useEffect } from "react";
-import { EditPageLayout } from "@/routes/app/project/EditPageLayout.tsx";
+import { EditProjectPageLayout } from "@/routes/app/project/EditProjectPageLayout.tsx";
 import EditProjectKeyframesTab from "@/components/project/tabs/EditProjectKeyframesTab.tsx";
 import EditProjectSettingsTabs from "@/components/project/tabs/EditProjectSettingsTab.tsx";
 
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/app/project/:projectId",
-    element: <EditPageLayout />,
+    element: <EditProjectPageLayout />,
     children: [
       { path: "", element: <EditProjectKeyframesTab /> },
       { path: "settings", element: <EditProjectSettingsTabs /> },
