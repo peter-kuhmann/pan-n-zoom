@@ -44,7 +44,7 @@ export function EditProjectPageLayout() {
       >
         <div
           className={classNames(
-            "flex flex-row gap-4 justify-between",
+            "flex flex-row gap-8 justify-between items-center",
             "px-6 py-4",
           )}
         >
@@ -60,50 +60,56 @@ export function EditProjectPageLayout() {
             Leave editor
           </button>
 
-          <button
-            disabled={presentDisabled}
-            className={
-              "btn btn-sm btn-neutral flex items-center gap-2 font-normal"
-            }
-            onClick={() => {
-              navigate(getProjectPresentLink(projectId));
-            }}
-          >
-            <IonIcon name={"film-outline"} />
-            Present
-          </button>
+          <div className={"flex-grow w-1 flex justify-center items-center"}>
+            {project.name}
+          </div>
 
-          <div className={"btn-group-horizontal"}>
+          <div className={"flex flex-row items-center gap-8"}>
             <button
-              className={classNames(
-                "btn btn-sm inline-flex items-center gap-2 font-normal",
-                {
-                  "btn-neutral": pathname === getProjectEditorLink(projectId),
-                },
-              )}
+              disabled={presentDisabled}
+              className={
+                "btn btn-sm btn-neutral flex items-center gap-2 font-normal"
+              }
               onClick={() => {
-                navigate(getProjectEditorLink(projectId));
+                navigate(getProjectPresentLink(projectId));
               }}
             >
-              <IonIcon name={"layers-outline"} />
-              Keyframes
+              <IonIcon name={"film-outline"} />
+              Present
             </button>
 
-            <button
-              className={classNames(
-                "btn btn-sm inline-flex items-center gap-2 font-normal",
-                {
-                  "btn-neutral":
-                    pathname === getProjectEditorSettingsLink(projectId),
-                },
-              )}
-              onClick={() => {
-                navigate(getProjectEditorSettingsLink(projectId));
-              }}
-            >
-              <IonIcon name={"cog-outline"} />
-              Settings
-            </button>
+            <div className={"btn-group-horizontal flex flex-row items-center"}>
+              <button
+                className={classNames(
+                  "btn btn-sm inline-flex items-center gap-2 font-normal",
+                  {
+                    "btn-neutral": pathname === getProjectEditorLink(projectId),
+                  },
+                )}
+                onClick={() => {
+                  navigate(getProjectEditorLink(projectId));
+                }}
+              >
+                <IonIcon name={"layers-outline"} />
+                Keyframes
+              </button>
+
+              <button
+                className={classNames(
+                  "btn btn-sm inline-flex items-center gap-2 font-normal",
+                  {
+                    "btn-neutral":
+                      pathname === getProjectEditorSettingsLink(projectId),
+                  },
+                )}
+                onClick={() => {
+                  navigate(getProjectEditorSettingsLink(projectId));
+                }}
+              >
+                <IonIcon name={"cog-outline"} />
+                Settings
+              </button>
+            </div>
           </div>
         </div>
 
