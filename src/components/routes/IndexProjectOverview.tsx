@@ -72,7 +72,7 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
         <div>
           <div className={"text-2xl"}>{project.name}</div>
           <div className={"text-xs"}>
-            {formatDateWithTime(project.updatedAt)}
+            {formatDateWithTime(project.openedAt ?? project.createdAt)}
           </div>
         </div>
 

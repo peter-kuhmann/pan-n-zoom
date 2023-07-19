@@ -11,7 +11,7 @@ export function formatDateWithTime(input: Date | string) {
 
   if (hoursDifference < 24) {
     return formatDistance(date, now, {
-      includeSeconds: false,
+      includeSeconds: true,
       locale: enUS,
       addSuffix: true,
     });

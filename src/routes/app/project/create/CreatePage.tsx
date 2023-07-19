@@ -36,8 +36,6 @@ export default function CreatePage() {
 
     storeImage(selectedFileDataUrl)
       .then((storedImage) => {
-        const nowIso = new Date().toISOString();
-
         const newProject: Project = {
           id: createId(),
           name: projectName,
@@ -49,8 +47,7 @@ export default function CreatePage() {
             storageId: storedImage.id,
           },
           keyframes: [],
-          createdAt: nowIso,
-          updatedAt: nowIso,
+          createdAt: new Date().toISOString(),
         };
 
         addProject(newProject);

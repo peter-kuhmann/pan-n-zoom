@@ -13,7 +13,7 @@ import {
   ProjectEditorStoreProvider,
   useCreateProjectEditorStore,
 } from "@/context/ProjectEditorStore.tsx";
-import EditProjectCanvas from "@/components/EditProjectCanvas.tsx";
+import EditProjectCanvas from "@/components/project/EditProjectCanvas.tsx";
 
 export function EditProjectPageLayout() {
   const projectEditorStore = useCreateProjectEditorStore();
@@ -21,7 +21,7 @@ export function EditProjectPageLayout() {
   const { pathname } = useLocation();
 
   const projectId = useParams().projectId;
-  const { project } = useProject(projectId);
+  const { project, update } = useProject(projectId);
   const presentDisabled = !!project && project.keyframes.length === 0;
 
   useEffect(() => {
@@ -29,6 +29,12 @@ export function EditProjectPageLayout() {
       navigate(getProjectListLink());
     }
   }, [projectId, project, navigate]);
+
+  useEffect(() => {
+    update({
+      openedAt: new Date().toISOString(),
+    });
+  }, [update]);
 
   if (!projectId || !project) {
     return <>Error: Project not found. Redirecting to overview ...</>;

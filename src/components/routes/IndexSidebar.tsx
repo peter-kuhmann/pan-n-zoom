@@ -5,7 +5,7 @@ import * as classNames from "classnames";
 import { useMemo } from "react";
 import { getProjectBasePath, getProjectListLink } from "@/navigation/links.ts";
 
-export default function Sidebar() {
+export default function IndexSidebar() {
   const navigate = useNavigate();
 
   return (

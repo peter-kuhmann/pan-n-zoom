@@ -1,9 +1,11 @@
-import { type Project, type ProjectKeyframe } from "@/types/project.ts";
+import { type Project } from "@/types/project.ts";
 import useSuite from "@/hooks/useSuite.ts";
 import { useCallback, useMemo } from "react";
 
 export type ProjectUpdater = (
-  update: Partial<{ keyframes: ProjectKeyframe[] }>,
+  update: Partial<
+    Pick<Project, "keyframes" | "name" | "openedAt" | "backgroundColor">
+  >,
 ) => void;
 
 export default function useProject(projectId?: string): {

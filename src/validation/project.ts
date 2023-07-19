@@ -23,5 +23,5 @@ export const ProjectSchema = z.object({
   }),
   keyframes: z.array(ProjectKeyframeSchema),
   createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  openedAt: z.string().datetime().optional().nullable(),
 });

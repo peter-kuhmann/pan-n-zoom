@@ -15,7 +15,7 @@ import IonIcon from "@/components/IonIcon.tsx";
 export default function PresentProjectPage() {
   const navigate = useNavigate();
   const pathParams = useParams();
-  const { project } = useProject(pathParams.projectId);
+  const { project, update } = useProject(pathParams.projectId);
   const storedImage = useStoredImage(project?.image.storageId);
   const [decoding, setDecoding] = useState(false);
   const [transitionsActive, setTransitionsActive] = useState(false);
@@ -39,6 +39,12 @@ export default function PresentProjectPage() {
   const presentationContainerRef = useRef<HTMLDivElement | null>(null);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    update({
+      openedAt: new Date().toISOString(),
+    });
+  }, [update]);
 
   const {
     ref: presentationContainerWatchSizeRef,
