@@ -145,6 +145,7 @@ function Keyframe({
       onClick={onClick}
       className={classNames(
         "cursor-pointer flex flex-row justify-between items-center px-4 py-1 bg-gray-100 rounded-lg border-2 transition",
+        "dark:bg-gray-600",
         { "border-red-400": editActive, "border-transparent": !editActive },
       )}
     >

@@ -377,6 +377,7 @@ export default function EditProjectCanvas({
           className={classNames(
             "flex flex-row items-center rounded-md overflow-hidden",
             "bg-white border border-gray-200 shadow-md",
+            "dark:bg-gray-800 dark:border-gray-400",
           )}
         >
           <button
@@ -386,7 +387,9 @@ export default function EditProjectCanvas({
               setPinchCompensation((pc) => pc / 1.2);
               zoomTo(userScale / 1.2, 0.5, 0.5);
             }}
-            className={"min-w-[3rem] px-2 py-1 hover:bg-gray-100 transition"}
+            className={
+              "min-w-[3rem] px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            }
           >
             <IonIcon name={"remove-outline"} />
           </button>
@@ -402,7 +405,7 @@ export default function EditProjectCanvas({
               setPanY(() => (containerHeight - fittingScale.scaledHeight) / 2);
             }}
             className={
-              "border-l border-r border-gray-200 min-w-[6rem] px-4 py-1 text-center hover:bg-gray-100 transition"
+              "border-l border-r border-gray-200 min-w-[6rem] px-4 py-1 text-center hover:bg-gray-100 transition dark:border-gray-400 dark:hover:bg-gray-700"
             }
           >
             {userScalePercentage}
@@ -414,7 +417,9 @@ export default function EditProjectCanvas({
               setPinchCompensation((pc) => pc * 1.2);
               zoomTo(userScale * 1.2, 0.5, 0.5);
             }}
-            className={"min-w-[3rem] px-2 py-1 hover:bg-gray-100 transition"}
+            className={
+              "min-w-[3rem] px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            }
           >
             <IonIcon name={"add-outline"} />
           </button>
