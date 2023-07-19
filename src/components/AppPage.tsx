@@ -26,7 +26,7 @@ export default function AppPage({
       {backTo && (
         <div className={"mb-4"}>
           <button
-            className={"btn btn-sm btn-ghost flex items-center gap-4"}
+            className={"btn btn-sm btn-ghost flex items-center gap-2"}
             onClick={() => {
               navigate(backTo.to);
             }}

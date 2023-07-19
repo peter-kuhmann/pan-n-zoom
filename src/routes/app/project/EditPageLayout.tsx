@@ -13,7 +13,7 @@ import {
   ProjectEditorStoreProvider,
   useCreateProjectEditorStore,
 } from "@/context/ProjectEditorStore.tsx";
-import ProjectEditorCanvas from "@/components/ProjectEditorCanvas.tsx";
+import EditProjectCanvas from "@/components/EditProjectCanvas.tsx";
 
 export function EditPageLayout() {
   const projectEditorStore = useCreateProjectEditorStore();
@@ -50,7 +50,7 @@ export function EditPageLayout() {
         >
           <button
             className={
-              "btn btn-sm btn-ghost flex items-center gap-4 font-normal"
+              "btn btn-sm btn-ghost flex items-center gap-2 font-normal"
             }
             onClick={() => {
               navigate(getProjectListLink());
@@ -115,7 +115,7 @@ export function EditPageLayout() {
               "dark:bg-gray-800 dark:border-gray-400",
             )}
           >
-            <ProjectEditorCanvas projectId={projectId} />
+            <EditProjectCanvas projectId={projectId} />
           </div>
 
           <div

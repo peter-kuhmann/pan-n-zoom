@@ -8,6 +8,7 @@ import { decode } from "js-base64";
 import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import { useProjectEditorStore } from "@/context/ProjectEditorStore.tsx";
 import { useStore } from "zustand";
+import IonIcon from "@/components/IonIcon.tsx";
 
 interface FittingScale {
   scaleFactor: number;
@@ -46,13 +47,13 @@ function computeFittingScale(
   };
 }
 
-export interface ProjectEditorCanvasProps {
+export interface EditProjectCanvasProps {
   projectId: string;
 }
 
-export default function ProjectEditorCanvas({
+export default function EditProjectCanvas({
   projectId,
-}: ProjectEditorCanvasProps) {
+}: EditProjectCanvasProps) {
   const { mode, activeKeyframeId } = useStore(useProjectEditorStore());
   const { project } = useProject(projectId);
   const storedImage = useStoredImage(project?.image.storageId);
@@ -369,13 +370,13 @@ export default function ProjectEditorCanvas({
 
       <div
         className={classNames(
-          "absolute bottom-8 right-16 z-40 flex flex-row items-center gap-8",
+          "absolute bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-row items-center gap-8",
         )}
       >
         <div
           className={classNames(
-            "bg-white border border-gray-400 rounded-md overflow-hidden",
-            "flex flex-row items-center",
+            "flex flex-row items-center rounded-md overflow-hidden",
+            "bg-white border border-gray-200 shadow-md",
           )}
         >
           <button
@@ -385,9 +386,9 @@ export default function ProjectEditorCanvas({
               setPinchCompensation((pc) => pc / 1.2);
               zoomTo(userScale / 1.2, 0.5, 0.5);
             }}
-            className={"min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition"}
+            className={"min-w-[3rem] px-2 py-1 hover:bg-gray-100 transition"}
           >
-            -
+            <IonIcon name={"remove-outline"} />
           </button>
           <button
             onClick={(e) => {
@@ -395,9 +396,13 @@ export default function ProjectEditorCanvas({
               e.stopPropagation();
               setPinchCompensation((pc) => pc * (1 / userScale));
               zoomTo(1.0, 0.5, 0.5);
+
+              // Re-center
+              setPanX(() => (containerWidth - fittingScale.scaledWidth) / 2);
+              setPanY(() => (containerHeight - fittingScale.scaledHeight) / 2);
             }}
             className={
-              "border-l border-r border-gray-400 min-w-[6rem] px-4 py-1 text-center hover:bg-gray-200 transition"
+              "border-l border-r border-gray-200 min-w-[6rem] px-4 py-1 text-center hover:bg-gray-100 transition"
             }
           >
             {userScalePercentage}
@@ -409,9 +414,9 @@ export default function ProjectEditorCanvas({
               setPinchCompensation((pc) => pc * 1.2);
               zoomTo(userScale * 1.2, 0.5, 0.5);
             }}
-            className={"min-w-[3rem] px-2 py-1 hover:bg-gray-200 transition"}
+            className={"min-w-[3rem] px-2 py-1 hover:bg-gray-100 transition"}
           >
-            +
+            <IonIcon name={"add-outline"} />
           </button>
         </div>
       </div>
