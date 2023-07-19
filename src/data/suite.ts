@@ -50,15 +50,23 @@ export function getSuite(): Suite {
 }
 
 export function updateSuite(update: Partial<Suite>): Suite {
-  const updatedSuite: Suite = { ...getSuite(), ...update };
+  const rawNewSuiteState: Suite = { ...getSuite(), ...update };
 
-  saveSuite(updatedSuite);
+  // Let's check udpated suite
+  const parseResult = SuiteSchema.safeParse(rawNewSuiteState);
+  if (!parseResult.success) {
+    throw new Error("Updating suite failed: " + parseResult.error.message);
+  }
+
+  const newSuiteState = parseResult.data;
+
+  saveSuite(newSuiteState);
 
   suiteUpdateListeners.forEach((listener) => {
-    listener(updatedSuite);
+    listener(newSuiteState);
   });
 
-  return updatedSuite;
+  return newSuiteState;
 }
 
 export type SuiteUpdateListener = (updatedSuite: Suite) => void;

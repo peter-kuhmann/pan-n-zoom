@@ -102,7 +102,7 @@ export default function EditProjectCanvas({
   useEffect(() => {
     if (!imgSrc) return;
 
-    if (project?.image.embedSvgNatively === true) {
+    if (project?.embedSvgNatively === true) {
       const dataUrlMatch = /data:([^;]+);base64,(.+)/.exec(imgSrc);
       if (dataUrlMatch) {
         const mimeType = dataUrlMatch[1];
@@ -151,7 +151,7 @@ export default function EditProjectCanvas({
       .finally(() => {
         setLoading(false);
       });
-  }, [imgSrc, project?.image.embedSvgNatively]);
+  }, [imgSrc, project?.embedSvgNatively]);
 
   const fittingScale = useMemo<FittingScale>(() => {
     return computeFittingScale(

@@ -4,7 +4,16 @@ import { useCallback, useMemo } from "react";
 
 export type ProjectUpdater = (
   update: Partial<
-    Pick<Project, "keyframes" | "name" | "openedAt" | "backgroundColor">
+    Pick<
+      Project,
+      | "keyframes"
+      | "name"
+      | "openedAt"
+      | "backgroundColor"
+      | "embedSvgNatively"
+      | "animationDuration"
+      | "animationType"
+    >
   >,
 ) => void;
 

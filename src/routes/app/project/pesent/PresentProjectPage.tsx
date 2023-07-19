@@ -126,7 +126,7 @@ export default function PresentProjectPage() {
       !storedImage.loading &&
       storedImage.dataUrl
     ) {
-      if (project?.image.embedSvgNatively === true) {
+      if (project?.embedSvgNatively === true) {
         const dataUrlMatch = /data:([^;]+);base64,(.+)/.exec(
           storedImage.dataUrl,
         );
@@ -536,9 +536,13 @@ export default function PresentProjectPage() {
           top: `${keyframePositioning.top}px`,
           width: `${keyframePositioning.width}px`,
           height: `${keyframePositioning.height}px`,
-          transition: transitionsActive
-            ? "width 0.8s ease, height 0.8s ease, left 0.8s ease, top 0.8s ease"
-            : undefined,
+          ...(transitionsActive
+            ? {
+                transitionProperty: "width, height, left, top",
+                transitionTimingFunction: project.animationType,
+                transitionDuration: `${project.animationDuration}ms`,
+              }
+            : {}),
         }}
       />
     </div>

@@ -40,8 +40,8 @@ export default function CreatePage() {
           id: createId(),
           name: projectName,
           backgroundColor: "#ffffff",
+          embedSvgNatively: enableNativeSvgEmbed,
           image: {
-            embedSvgNatively: enableNativeSvgEmbed,
             fileName: selectedFile.name,
             mimeType: selectedFile.type,
             storageId: storedImage.id,

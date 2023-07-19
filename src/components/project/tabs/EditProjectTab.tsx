@@ -10,7 +10,7 @@ export default function EditProjectTab({
   children,
 }: EditProjectTabProps) {
   return (
-    <div className={"p-4 min-w-[18rem]"}>
+    <div className={"p-4 w-[18rem]"}>
       <h1 className={"text-xl font-semibold mb-8"}>{title}</h1>
       <div>{children}</div>
     </div>

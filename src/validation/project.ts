@@ -11,14 +11,16 @@ export const ProjectKeyframeSchema = z.object({
 
 export const ProjectSchema = z.object({
   id: z.string().nonempty(),
-  name: z.string().nonempty(),
+  name: z.string(),
   backgroundColor: z
     .string()
     .regex(/#[0-9ABCDEFabcdef]{3}([0-9ABCDEFabcdef]{3})?/),
+  embedSvgNatively: z.boolean(),
+  animationDuration: z.number().optional().default(500),
+  animationType: z.enum(["linear", "ease"]).optional().default("ease"),
   image: z.object({
-    embedSvgNatively: z.boolean(),
-    fileName: z.string().nonempty(),
-    mimeType: z.string().nonempty(),
+    fileName: z.string(),
+    mimeType: z.string(),
     storageId: z.string().nonempty(),
   }),
   keyframes: z.array(ProjectKeyframeSchema),

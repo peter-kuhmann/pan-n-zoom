@@ -49,5 +49,5 @@ export default function useSuite(): UseSuite {
       addProject,
       deleteProject,
     };
-  }, [suite]);
+  }, [addProject, deleteProject, suite]);
 }
