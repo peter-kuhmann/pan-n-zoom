@@ -17,7 +17,7 @@ function ProjectsExistState() {
       <button
         className={"btn btn-sm mb-4 w-full"}
         onClick={() => {
-          navigate("/projects/create");
+          navigate("/project/create");
         }}
       >
         Create one 🎉
@@ -40,7 +40,7 @@ function EmptyState() {
       <button
         className={"btn"}
         onClick={() => {
-          navigate("/projects/create");
+          navigate("/project/create");
         }}
       >
         Create one 🎉

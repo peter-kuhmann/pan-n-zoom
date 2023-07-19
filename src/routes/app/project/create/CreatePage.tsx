@@ -77,7 +77,7 @@ export default function CreatePage() {
   return (
     <AppPage
       title={"Create project"}
-      backTo={{ label: "Back to projects", to: getProjectListLink() }}
+      backTo={{ label: "Back to project", to: getProjectListLink() }}
     >
       <div className={"grid grid-cols-3 gap-24 items-start"}>
         <div className={"rounded-lg border border-gray-300 overflow-hidden"}>

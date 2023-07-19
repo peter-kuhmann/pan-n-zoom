@@ -20,8 +20,8 @@ export default {
         "neutral-content": "#ffffff",
 
         "base-100": "#ffffff",
-        "base-200": "#d5d5d5",
-        "base-300": "#c7c7c7",
+        "base-200": "#e0e0e0",
+        "base-300": "#d0d0d0",
         "base-content": "#232323",
 
         "secondary": "#f6d860",

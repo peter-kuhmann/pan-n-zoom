@@ -5,7 +5,7 @@ import EditorCanvas from "@/components/EditorCanvas.tsx";
 import EditorSidebar from "@/components/project/EditorSidebar.tsx";
 import useProject from "@/hooks/useProject.ts";
 
-export default function EditorPage() {
+export default function EditPage() {
   const [state, setState] = useState<EditorPageContextState>("view");
   const [activeKeyframeId, setActiveKeyframeId] = useState<string | null>(null);
 
