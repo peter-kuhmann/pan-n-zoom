@@ -8,7 +8,7 @@ import {
   getProjectPresentLink,
 } from "@/navigation/links.ts";
 import useProject from "@/hooks/useProject.ts";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   ProjectEditorStoreProvider,
   useCreateProjectEditorStore,
@@ -30,10 +30,14 @@ export function EditProjectPageLayout() {
     }
   }, [projectId, project, navigate]);
 
+  const openedAtSetRef = useRef<boolean>(false);
   useEffect(() => {
-    update({
-      openedAt: new Date().toISOString(),
-    });
+    if (!openedAtSetRef.current) {
+      update({
+        openedAt: new Date().toISOString(),
+      });
+      openedAtSetRef.current = true;
+    }
   }, [update]);
 
   if (!projectId || !project) {

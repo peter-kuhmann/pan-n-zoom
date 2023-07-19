@@ -40,10 +40,14 @@ export default function PresentProjectPage() {
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
+  const openedAtSetRef = useRef<boolean>(false);
   useEffect(() => {
-    update({
-      openedAt: new Date().toISOString(),
-    });
+    if (!openedAtSetRef.current) {
+      update({
+        openedAt: new Date().toISOString(),
+      });
+      openedAtSetRef.current = true;
+    }
   }, [update]);
 
   const {
