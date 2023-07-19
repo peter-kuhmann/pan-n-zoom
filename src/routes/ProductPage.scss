@@ -1,0 +1,68 @@
+@keyframes demoImagePan {
+  0% {
+    opacity: 0;
+    left: 50%; top: 50%; transform: scale(1.0) translate(-50%, -50%);
+  }
+
+  /* Fade image in */
+  14% {
+    opacity: 1;
+    left: 50%; top: 50%; transform: scale(1.0) translate(-50%, -50%);
+  }
+
+  /* Move to 1st location */
+  28% {
+    opacity: 1;
+    left: 155%; top: 175%; transform: scale(2.4) translate(-50%, -50%);
+  }
+
+  /* -- hold -- */
+  37% {
+    opacity: 1;
+    left: 155%; top: 175%; transform: scale(2.4) translate(-50%, -50%);
+  }
+
+  /* Move to 2nd location */
+  51% {
+    opacity: 1;
+    left: 50%; top: 95%; transform: scale(2) translate(-50%, -50%);
+  }
+
+  /* -- hold -- */
+  60% {
+    opacity: 1;
+    left: 50%; top: 95%; transform: scale(2) translate(-50%, -50%);
+  }
+
+  /* Move to 3rd location */
+  74% {
+    opacity: 1;
+    left: 122%; top: 38%; transform: scale(1.8) translate(-50%, -50%);
+  }
+
+  /* -- hold -- */
+  82% {
+    opacity: 1;
+    left: 122%; top: 38%; transform: scale(1.8) translate(-50%, -50%);
+  }
+
+  97% {
+    opacity: 0;
+    left: 122%; top: 38%; transform: scale(1.8) translate(-50%, -50%);
+  }
+
+  /* Back to start */
+  100% {
+    opacity: 0;
+    left: 50%; top: 50%; transform: scale(1.0) translate(-50%, -50%);
+  }
+}
+
+.demoImage {
+  animation-name: demoImagePan;
+  animation-duration: 9s;
+  animation-iteration-count: infinite;
+  @apply absolute w-[95%];
+
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+}
