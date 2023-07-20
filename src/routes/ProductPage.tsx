@@ -38,17 +38,25 @@ function Hero() {
 
           <div className={"flex flex-row items-center gap-2 mb-8 flex-wrap"}>
             <div
-              className={"bg-emerald-300 font-semibold px-3 py-0.5 rounded-lg"}
+              className={
+                "bg-emerald-300 dark:bg-emerald-600 font-semibold px-3 py-0.5 rounded-lg"
+              }
             >
               Free <IonIcon name={"wallet-outline"} />
             </div>
 
-            <div className={"bg-blue-300 font-semibold px-3 py-0.5 rounded-lg"}>
+            <div
+              className={
+                "bg-blue-300 dark:bg-blue-600 font-semibold px-3 py-0.5 rounded-lg"
+              }
+            >
               Works offline <IonIcon name={"cloud-offline-outline"} />
             </div>
 
             <div
-              className={"bg-violet-300 font-semibold px-3 py-0.5 rounded-lg"}
+              className={
+                "bg-violet-300 dark:bg-violet-600 font-semibold px-3 py-0.5 rounded-lg"
+              }
             >
               No account needed <IonIcon name={"shield-half-outline"} />
             </div>

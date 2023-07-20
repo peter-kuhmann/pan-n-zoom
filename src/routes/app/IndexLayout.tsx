@@ -15,6 +15,7 @@ export default function IndexLayout() {
             "w-full h-full rounded-xl shadow-lg border overflow-hidden",
             "bg-white border-gray-200",
             "dark:bg-gray-800 dark:border-gray-400",
+            "overflow-y-auto",
           )}
         >
           <Outlet />

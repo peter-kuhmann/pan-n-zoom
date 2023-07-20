@@ -17,7 +17,7 @@ export default function IndexProjectOverview() {
         {projects.length === 1 ? "project" : "projects"}.
       </div>
 
-      <div className={"flex flex-row gap-x-8 gap-y-16 flex-wrap -mx-4"}>
+      <div className={"flex flex-row gap-x-8 gap-y-6 flex-wrap -mx-4"}>
         {projects.map((project) => (
           <ProjectEntry projectId={project.id} key={project.id} />
         ))}
