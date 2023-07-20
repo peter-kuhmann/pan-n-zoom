@@ -6,19 +6,30 @@ import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import { formatDateWithTime } from "@/utils/dates.ts";
 import IonIcon from "@/components/IonIcon.tsx";
 import useSuite from "@/hooks/useSuite.ts";
+import { useMemo } from "react";
+import { type Project } from "@/types/project.ts";
 
 export default function IndexProjectOverview() {
   const projects = useProjects();
 
+  const sortedProjects = useMemo<Project[]>(() => {
+    return projects.sort((a, b) => {
+      return (
+        new Date(b.openedAt ?? b.createdAt).getTime() -
+        new Date(a.openedAt ?? a.createdAt).getTime()
+      );
+    });
+  }, [projects]);
+
   return (
     <div>
       <div className={"mb-8"}>
-        You currently have {projects.length}{" "}
-        {projects.length === 1 ? "project" : "projects"}.
+        You currently have {sortedProjects.length}{" "}
+        {sortedProjects.length === 1 ? "project" : "projects"}.
       </div>
 
       <div className={"flex flex-row gap-x-8 gap-y-6 flex-wrap -mx-4"}>
-        {projects.map((project) => (
+        {sortedProjects.map((project) => (
           <ProjectEntry projectId={project.id} key={project.id} />
         ))}
       </div>
