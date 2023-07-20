@@ -270,7 +270,9 @@ function Keyframe({
       <div className={"flex items-center gap-1"}>
         <button
           disabled={isFirst}
-          className={"btn btn-square btn-sm btn-ghost"}
+          className={classNames("btn btn-square btn-sm btn-ghost", {
+            invisible: isFirst,
+          })}
           onClick={(e) => {
             e.stopPropagation();
             onUp();
@@ -281,7 +283,9 @@ function Keyframe({
 
         <button
           disabled={isLast}
-          className={"btn btn-square btn-sm btn-ghost"}
+          className={classNames("btn btn-square btn-sm btn-ghost", {
+            invisible: isLast,
+          })}
           onClick={(e) => {
             e.stopPropagation();
             onDown();
