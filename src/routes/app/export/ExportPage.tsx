@@ -31,6 +31,7 @@ export default function ExportPage() {
 
     // To have type TS safety
     const rawExportData: z.input<typeof DataExportSchema> = {
+      type: "suite-export",
       suite,
       imageStorage: {
         images: storedImages,
@@ -55,7 +56,7 @@ export default function ExportPage() {
     );
     downloadElement.setAttribute(
       "download",
-      `Pan-n-Zoom-Suite-Export-${new Date().toISOString()}.json`,
+      `Pan-n-Zoom-Suite-Export-${new Date().toISOString()}.pannzom.json`,
     );
 
     downloadElement.style.display = "none";
