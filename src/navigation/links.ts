@@ -1,3 +1,7 @@
+export function getProductPageLink() {
+  return "/";
+}
+
 export function getProjectListLink() {
   return "/app";
 }

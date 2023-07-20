@@ -39,7 +39,7 @@ export default function CreatePage() {
         const newProject: Project = {
           id: createId(),
           name: projectName,
-          backgroundColor: "#ffffff",
+          backgroundColor: "#f3f4f6",
           embedSvgNatively: enableNativeSvgEmbed,
           animationDuration: 1000,
           animationType: "ease",

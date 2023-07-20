@@ -3,7 +3,11 @@ import CuteCat from "@/components/cat/CuteCat.tsx";
 import IonIcon from "@/components/IonIcon.tsx";
 import * as classNames from "classnames";
 import { useMemo } from "react";
-import { getProjectBasePath, getProjectListLink } from "@/navigation/links.ts";
+import {
+  getProductPageLink,
+  getProjectBasePath,
+  getProjectListLink,
+} from "@/navigation/links.ts";
 
 export default function IndexSidebar() {
   const navigate = useNavigate();
@@ -15,7 +19,7 @@ export default function IndexSidebar() {
       <button
         className={"flex items-center gap-6 p-6 pl-8"}
         onClick={() => {
-          navigate("/");
+          navigate(getProductPageLink());
         }}
       >
         <CuteCat className={"w-[4rem] h-[4rem]"} />

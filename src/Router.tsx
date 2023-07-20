@@ -16,11 +16,17 @@ import { useEffect } from "react";
 import { EditProjectPageLayout } from "@/routes/app/project/EditProjectPageLayout.tsx";
 import EditProjectKeyframesTab from "@/components/project/tabs/EditProjectKeyframesTab.tsx";
 import EditProjectSettingsTabs from "@/components/project/tabs/EditProjectSettingsTab.tsx";
+import ProductLayout from "@/routes/ProductLayout.tsx";
+import PrivacyPolicyPage from "@/routes/privacy-policy/PrivacyPolicyPage.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ProductPage />,
+    element: <ProductLayout />,
+    children: [
+      { path: "", element: <ProductPage /> },
+      { path: "privacy-policy", element: <PrivacyPolicyPage /> },
+    ],
   },
   {
     path: "/app/project/:projectId/present/:keyframeId?",
