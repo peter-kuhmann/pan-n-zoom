@@ -54,7 +54,8 @@ export interface EditProjectCanvasProps {
 export default function EditProjectCanvas({
   projectId,
 }: EditProjectCanvasProps) {
-  const { mode, activeKeyframeId } = useStore(useProjectEditorStore());
+  const projectStore = useProjectEditorStore();
+  const { mode, activeKeyframeId } = useStore(projectStore);
   const { project } = useProject(projectId);
   const storedImage = useStoredImage(project?.image.storageId);
   const imgSrc: string | null = storedImage.loading
@@ -229,7 +230,70 @@ export default function EditProjectCanvas({
 
   useGesture(
     {
+      onPointerDown: ({ event }) => {
+        const imagePosition = getElementContainerPosition();
+        const imageDeltaX = event.x - imagePosition.x;
+        const imageDeltaY = event.y - imagePosition.y;
+
+        const x = imageScaledWidth === 0 ? 0 : imageDeltaX / imageScaledWidth;
+        const y = imageScaledHeight === 0 ? 0 : imageDeltaY / imageScaledHeight;
+
+        setNewKeyframeRectangle({
+          startX: x,
+          startY: y,
+          x,
+          y,
+          width: 0,
+          height: 0,
+        });
+      },
+      onPointerMove: ({ event }) => {
+        if (creatingNewKeyframe && newKeyframeRectangle !== null) {
+          const imagePosition = getElementContainerPosition();
+          const imageDeltaX = event.x - imagePosition.x;
+          const imageDeltaY = event.y - imagePosition.y;
+
+          const currentX =
+            imageScaledWidth === 0 ? 0 : imageDeltaX / imageScaledWidth;
+          const currentY =
+            imageScaledHeight === 0 ? 0 : imageDeltaY / imageScaledHeight;
+
+          const width = Math.abs(newKeyframeRectangle.startX - currentX);
+          const height = Math.abs(newKeyframeRectangle.startY - currentY);
+          const newX =
+            currentX >= newKeyframeRectangle.startX
+              ? newKeyframeRectangle.startX
+              : newKeyframeRectangle.startX - width;
+          const newY =
+            currentY >= newKeyframeRectangle.startY
+              ? newKeyframeRectangle.startY
+              : newKeyframeRectangle.startY - height;
+
+          setNewKeyframeRectangle({
+            startX: newKeyframeRectangle.startX,
+            startY: newKeyframeRectangle.startY,
+            x: newX,
+            y: newY,
+            width,
+            height,
+          });
+        }
+      },
+      onPointerUp: () => {
+        if (creatingNewKeyframe && newKeyframeRectangle) {
+          projectStore.setState({ mode: "view", activeKeyframeId: null });
+          updateActiveKeyframe({
+            x: newKeyframeRectangle.x,
+            y: newKeyframeRectangle.y,
+            width: newKeyframeRectangle.width,
+            height: newKeyframeRectangle.height,
+          });
+          setNewKeyframeRectangle(null);
+        }
+      },
       onDrag: ({ delta, event }) => {
+        if (creatingNewKeyframe) return;
+
         if (mode === "editKeyframe" && activeKeyframe) {
           if (event.target === editFrameRef.current) {
             const deltaX = delta[0] / imageScaledWidth;
@@ -292,9 +356,11 @@ export default function EditProjectCanvas({
         setPanY((old) => old + delta[1]);
       },
       onDragStart: () => {
+        if (creatingNewKeyframe) return;
         setPanning(true);
       },
       onDragEnd: () => {
+        if (creatingNewKeyframe) return;
         setPanning(false);
       },
       onPinch: ({ delta, origin }) => {
@@ -340,6 +406,19 @@ export default function EditProjectCanvas({
 
   const userScalePercentage: string = `${Math.round(userScale * 100)}%`;
 
+  const [newKeyframeRectangle, setNewKeyframeRectangle] = useState<{
+    startX: number;
+    startY: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (mode === "createKeyframe") setNewKeyframeRectangle(null);
+  }, [mode]);
+
   if (!project) {
     return <>Project not found</>;
   }
@@ -347,6 +426,9 @@ export default function EditProjectCanvas({
   if (!storedImage.loading && !storedImage.dataUrl) {
     return <>Image data could not be found</>;
   }
+
+  const creatingNewKeyframe =
+    mode === "createKeyframe" && activeKeyframeId !== null;
 
   return (
     <div
@@ -359,6 +441,7 @@ export default function EditProjectCanvas({
         {
           "cursor-grab": !panning,
           "cursor-grabbing": panning,
+          "cursor-crosshair": creatingNewKeyframe,
         },
       )}
       style={{
@@ -446,6 +529,10 @@ export default function EditProjectCanvas({
             {project.keyframes.map((keyframe, index) => {
               const isActiveKeyframe = keyframe.id === activeKeyframeId;
 
+              // Do not show currently created keyframe
+              if (creatingNewKeyframe && activeKeyframeId === keyframe.id)
+                return <></>;
+
               return (
                 <div
                   key={`keyframe-indicator-${keyframe.id}`}
@@ -466,6 +553,24 @@ export default function EditProjectCanvas({
             })}
           </>
         )}
+
+        {mode === "createKeyframe" &&
+          activeKeyframe &&
+          newKeyframeRectangle !== null && (
+            <>
+              <div
+                className={
+                  "absolute z-20 touch-none border-4 border-green-400 transition"
+                }
+                style={{
+                  left: `${newKeyframeRectangle.x * 100}%`,
+                  top: `${newKeyframeRectangle.y * 100}%`,
+                  width: `${newKeyframeRectangle.width * 100}%`,
+                  height: `${newKeyframeRectangle.height * 100}%`,
+                }}
+              ></div>
+            </>
+          )}
 
         {mode === "editKeyframe" && activeKeyframe && (
           <>

@@ -1,7 +1,7 @@
 import { createContext, useContext, useRef } from "react";
 import { createStore, type StoreApi } from "zustand";
 
-export type ProjectEditorStoreMode = "view" | "editKeyframe";
+export type ProjectEditorStoreMode = "view" | "createKeyframe" | "editKeyframe";
 
 export interface ProjectEditorStore {
   mode: ProjectEditorStoreMode;
