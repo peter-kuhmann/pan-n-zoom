@@ -439,8 +439,8 @@ export default function EditProjectCanvas({
       className={classNames(
         "w-full h-full relative overflow-hidden touch-none",
         {
-          "cursor-grab": !panning,
-          "cursor-grabbing": panning,
+          "cursor-grab": !panning && !creatingNewKeyframe,
+          "cursor-grabbing": panning && !creatingNewKeyframe,
           "cursor-crosshair": creatingNewKeyframe,
         },
       )}
