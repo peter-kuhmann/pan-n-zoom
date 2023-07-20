@@ -6,6 +6,7 @@ import {
 } from "@/data/suite.ts";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { type Project } from "@/types/project.ts";
+import { deleteStoredImage } from "@/data/imageStorage.ts";
 
 export interface UseSuite {
   suite: Suite;
@@ -33,11 +34,21 @@ export default function useSuite(): UseSuite {
 
   const deleteProject = useCallback<(projectId: string) => void>(
     (projectId) => {
-      updateSuite({
-        projects: suite.projects.filter(
-          (suiteProject) => suiteProject.id !== projectId,
-        ),
-      });
+      const projectToDelete = suite.projects.find(
+        (suiteProject) => suiteProject.id === projectId,
+      );
+
+      if (projectToDelete) {
+        if (projectToDelete) {
+          void deleteStoredImage(projectToDelete.image.storageId);
+        }
+
+        updateSuite({
+          projects: suite.projects.filter(
+            (suiteProject) => suiteProject.id !== projectId,
+          ),
+        });
+      }
     },
     [suite],
   );
