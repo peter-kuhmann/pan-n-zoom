@@ -55,7 +55,8 @@ export default function EditProjectCanvas({
   projectId,
 }: EditProjectCanvasProps) {
   const projectStore = useProjectEditorStore();
-  const { mode, activeKeyframeId } = useStore(projectStore);
+  const { mode, activeKeyframeId, highlightedKeyframeId } =
+    useStore(projectStore);
   const { project } = useProject(projectId);
   const storedImage = useStoredImage(project?.image.storageId);
   const imgSrc: string | null = storedImage.loading
@@ -187,6 +188,11 @@ export default function EditProjectCanvas({
 
   const imageScaledWidth = Math.floor(fittingScale.scaledWidth * userScale);
   const imageScaledHeight = Math.floor(fittingScale.scaledHeight * userScale);
+
+  const { keyframe: highlightedKeyframe } = useProjectKeyframe(
+    projectId,
+    highlightedKeyframeId,
+  );
 
   const { keyframe: activeKeyframe, update: updateActiveKeyframe } =
     useProjectKeyframe(projectId, activeKeyframeId);
@@ -571,6 +577,22 @@ export default function EditProjectCanvas({
               ></div>
             </>
           )}
+
+        {mode === "view" && highlightedKeyframe && (
+          <>
+            <div
+              className={
+                "absolute z-20 touch-none border-4 border-blue-400 bg-blue-400/30 transition"
+              }
+              style={{
+                left: `${highlightedKeyframe.x * 100}%`,
+                top: `${highlightedKeyframe.y * 100}%`,
+                width: `${highlightedKeyframe.width * 100}%`,
+                height: `${highlightedKeyframe.height * 100}%`,
+              }}
+            ></div>
+          </>
+        )}
 
         {mode === "editKeyframe" && activeKeyframe && (
           <>

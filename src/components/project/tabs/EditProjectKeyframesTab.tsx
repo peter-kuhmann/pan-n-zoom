@@ -16,7 +16,8 @@ export default function EditProjectKeyframesTab() {
   const { project, update } = useProject(projectId);
 
   const projectEditorStore = useProjectEditorStore();
-  const { mode, activeKeyframeId } = useStore(projectEditorStore);
+  const { mode, activeKeyframeId, highlightedKeyframeId } =
+    useStore(projectEditorStore);
 
   const addKeyframe = useCallback(
     (index: number) => {
@@ -85,6 +86,20 @@ export default function EditProjectKeyframesTab() {
                 }}
               />
               <Keyframe
+                highlighted={
+                  mode === "view" && highlightedKeyframeId === keyframe.id
+                }
+                onHighlightChange={(highlighted) => {
+                  if (highlighted) {
+                    projectEditorStore.setState({
+                      highlightedKeyframeId: keyframe.id,
+                    });
+                  } else {
+                    projectEditorStore.setState({
+                      highlightedKeyframeId: null,
+                    });
+                  }
+                }}
                 wiggle={wiggle}
                 keyframe={keyframe}
                 index={index}
@@ -139,6 +154,8 @@ function Keyframe({
   editActive,
   onClick,
   wiggle,
+  highlighted,
+  onHighlightChange,
 }: {
   keyframe: ProjectKeyframe;
   index: number;
@@ -146,19 +163,28 @@ function Keyframe({
   createActive: boolean;
   editActive: boolean;
   onClick?: () => void;
+  highlighted: boolean;
+  onHighlightChange?: (highlighted: boolean) => void;
   wiggle: boolean;
 }) {
   return (
     <div
       onClick={onClick}
+      onMouseEnter={() => {
+        onHighlightChange?.(true);
+      }}
+      onMouseLeave={() => {
+        onHighlightChange?.(false);
+      }}
       className={classNames(
         "keyframe",
         "cursor-pointer flex flex-row justify-between items-center px-4 py-1 bg-gray-100 rounded-lg border-2 transition",
         "dark:bg-gray-600",
         {
+          "border-blue-400": highlighted && !editActive && !createActive,
           "border-red-400": editActive,
           "border-green-400": createActive,
-          "border-transparent": !editActive && !createActive,
+          "border-transparent": !editActive && !createActive && !highlighted,
           wiggle,
         },
       )}

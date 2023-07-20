@@ -6,6 +6,7 @@ export type ProjectEditorStoreMode = "view" | "createKeyframe" | "editKeyframe";
 export interface ProjectEditorStore {
   mode: ProjectEditorStoreMode;
   activeKeyframeId: string | null;
+  highlightedKeyframeId: string | null;
 }
 
 export function useCreateProjectEditorStore() {
@@ -13,6 +14,7 @@ export function useCreateProjectEditorStore() {
     createStore<ProjectEditorStore>(() => ({
       mode: "view",
       activeKeyframeId: null,
+      highlightedKeyframeId: null,
     })),
   ).current;
 }
