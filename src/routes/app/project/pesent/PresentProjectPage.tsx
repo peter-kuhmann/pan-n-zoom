@@ -101,7 +101,7 @@ export default function PresentProjectPage() {
       console.error(
         "Redirecting user to project overview. Reason: Project not found, image data not found or no keyframes.",
       );
-      navigate(getProjectListLink());
+      navigate(getProjectListLink(), { replace: true });
     }
   }, [navigate, project, storedImage]);
 
@@ -115,6 +115,7 @@ export default function PresentProjectPage() {
     ) {
       navigate(
         getProjectPresentLinkWithKeyframe(project.id, currentKeyframeId),
+        { replace: true },
       );
     }
   }, [project, currentKeyframeId, currentPathParamKeyframeId, navigate]);
@@ -266,7 +267,9 @@ export default function PresentProjectPage() {
   const showKeyframe = useCallback(
     (keyframeId: string) => {
       if (project) {
-        navigate(getProjectPresentLinkWithKeyframe(project.id, keyframeId));
+        navigate(getProjectPresentLinkWithKeyframe(project.id, keyframeId), {
+          replace: true,
+        });
       }
     },
     [navigate, project],
