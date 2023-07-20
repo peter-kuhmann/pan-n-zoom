@@ -23,7 +23,9 @@ export default function CreatePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [projectName, setProjectName] = useState<string>(defaultProjectName);
-  const [enableNativeSvgEmbed, setEnableNativeSvgEmbed] = useState(false);
+  const [enableNativeSvgEmbed, setEnableNativeSvgEmbed] = useState(
+    suite.newProjectDefaultSettings.embedSvgNatively,
+  );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileDataUrl, setSelectedFileDataUrl] = useState<string | null>(
     null,
@@ -39,10 +41,10 @@ export default function CreatePage() {
         const newProject: Project = {
           id: createId(),
           name: projectName,
-          backgroundColor: "#f3f4f6",
+          backgroundColor: suite.newProjectDefaultSettings.backgroundColor,
           embedSvgNatively: enableNativeSvgEmbed,
-          animationDuration: 1000,
-          animationType: "ease",
+          animationDuration: suite.newProjectDefaultSettings.animationDuration,
+          animationType: suite.newProjectDefaultSettings.animationType,
           image: {
             fileName: selectedFile.name,
             mimeType: selectedFile.type,
@@ -60,6 +62,7 @@ export default function CreatePage() {
         setIsLoading(false);
       });
   }, [
+    suite,
     projectName,
     selectedFile,
     selectedFileDataUrl,

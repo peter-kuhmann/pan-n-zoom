@@ -39,6 +39,12 @@ function saveSuite(suite: Suite) {
 function createSuite(): Suite {
   const newSuite: Suite = {
     projects: [],
+    newProjectDefaultSettings: {
+      backgroundColor: "#ffffff",
+      embedSvgNatively: false,
+      animationDuration: 1000,
+      animationType: "ease",
+    },
   };
   saveSuite(newSuite);
 

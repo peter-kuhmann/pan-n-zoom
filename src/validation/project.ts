@@ -1,4 +1,10 @@
 import { z } from "zod";
+import {
+  ProjectAnimationDurationSchema,
+  ProjectAnimationTypeSchema,
+  ProjectBackgroundColorSchema,
+  ProjectEmbedSvgNativelySchema,
+} from "@/validation/shared.ts";
 
 export const ProjectKeyframeSchema = z.object({
   id: z.string(),
@@ -12,12 +18,10 @@ export const ProjectKeyframeSchema = z.object({
 export const ProjectSchema = z.object({
   id: z.string().nonempty(),
   name: z.string(),
-  backgroundColor: z
-    .string()
-    .regex(/#[0-9ABCDEFabcdef]{3}([0-9ABCDEFabcdef]{3})?/),
-  embedSvgNatively: z.boolean(),
-  animationDuration: z.number(),
-  animationType: z.enum(["linear", "ease"]),
+  backgroundColor: ProjectBackgroundColorSchema,
+  embedSvgNatively: ProjectEmbedSvgNativelySchema,
+  animationDuration: ProjectAnimationDurationSchema,
+  animationType: ProjectAnimationTypeSchema,
   image: z.object({
     fileName: z.string(),
     mimeType: z.string(),

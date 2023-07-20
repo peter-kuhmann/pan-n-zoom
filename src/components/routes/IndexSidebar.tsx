@@ -56,6 +56,11 @@ export default function IndexSidebar() {
           icon={<IonIcon name={"cloud-download-outline"} />}
         />
         <Entry
+          label={"Shortcuts"}
+          navigateTo={"/app/shortcuts"}
+          icon={<IonIcon name={"flash-outline"} />}
+        />
+        <Entry
           label={"Help"}
           navigateTo={"/app/help"}
           icon={<IonIcon name={"help-buoy-outline"} />}

@@ -18,6 +18,7 @@ import EditProjectKeyframesTab from "@/components/project/tabs/EditProjectKeyfra
 import EditProjectSettingsTabs from "@/components/project/tabs/EditProjectSettingsTab.tsx";
 import ProductLayout from "@/routes/ProductLayout.tsx";
 import PrivacyPolicyPage from "@/routes/privacy-policy/PrivacyPolicyPage.tsx";
+import ShortcutsPage from "@/routes/app/shortcuts/ShortcutsPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
       { path: "settings", element: <SettingsPage /> },
       { path: "export", element: <ExportPage /> },
       { path: "import", element: <ImportPage /> },
+      { path: "shortcuts", element: <ShortcutsPage /> },
       { path: "help", element: <HelpPage /> },
     ],
   },
