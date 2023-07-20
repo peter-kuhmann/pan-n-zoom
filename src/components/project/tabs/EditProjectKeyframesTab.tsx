@@ -10,6 +10,7 @@ import { useStore } from "zustand";
 import { createId } from "@paralleldrive/cuid2";
 import getSomeCoolEmojis from "get-some-cool-emojis";
 import "./EditProjectKeyframesTab.scss";
+import IonIcon from "@/components/IonIcon.tsx";
 
 export default function EditProjectKeyframesTab() {
   const projectId = useParams().projectId;
@@ -53,6 +54,21 @@ export default function EditProjectKeyframesTab() {
 
       const newKeyframes = [...project.keyframes];
       newKeyframes.splice(index, 1);
+
+      update({
+        keyframes: newKeyframes,
+      });
+    },
+    [project, update],
+  );
+
+  const moveKeyframe = useCallback(
+    (index: number, moveBy: number) => {
+      if (!project) return;
+
+      const newKeyframes = [...project.keyframes];
+      const [deletedKeyframe] = newKeyframes.splice(index, 1);
+      newKeyframes.splice(index + moveBy, 0, deletedKeyframe);
 
       update({
         keyframes: newKeyframes,
@@ -120,6 +136,14 @@ export default function EditProjectKeyframesTab() {
                 }}
               />
               <Keyframe
+                isFirst={index === 0}
+                isLast={index === project.keyframes.length - 1}
+                onUp={() => {
+                  moveKeyframe(index, -1);
+                }}
+                onDown={() => {
+                  moveKeyframe(index, 1);
+                }}
                 highlighted={
                   mode === "view" && highlightedKeyframeId === keyframe.id
                 }
@@ -194,19 +218,27 @@ function Keyframe({
   createActive,
   editActive,
   onClick,
+  onUp,
+  onDown,
   wiggle,
   highlighted,
   onHighlightChange,
+  isFirst,
+  isLast,
 }: {
   keyframe: ProjectKeyframe;
   index: number;
   onDelete: () => void;
   createActive: boolean;
   editActive: boolean;
-  onClick?: () => void;
+  onClick: () => void;
+  onUp: () => void;
+  onDown: () => void;
   highlighted: boolean;
   onHighlightChange?: (highlighted: boolean) => void;
   wiggle: boolean;
+  isFirst: boolean;
+  isLast: boolean;
 }) {
   return (
     <div
@@ -235,12 +267,39 @@ function Keyframe({
         <span className={"text-2xl font-bold"}>{index + 1}</span>
       </div>
 
-      <button
-        className={"hover:bg-red-100 rounded px-2 py-0.5"}
-        onClick={onDelete}
-      >
-        🗑️
-      </button>
+      <div className={"flex items-center gap-1"}>
+        <button
+          disabled={isFirst}
+          className={"btn btn-square btn-sm btn-ghost"}
+          onClick={(e) => {
+            e.stopPropagation();
+            onUp();
+          }}
+        >
+          <IonIcon name={"caret-up-outline"} />
+        </button>
+
+        <button
+          disabled={isLast}
+          className={"btn btn-square btn-sm btn-ghost"}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDown();
+          }}
+        >
+          <IonIcon name={"caret-down-outline"} />
+        </button>
+
+        <button
+          className={"btn btn-square btn-sm btn-ghost"}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+        >
+          <IonIcon name={"trash-outline"} />
+        </button>
+      </div>
     </div>
   );
 }
