@@ -1,5 +1,5 @@
 import useProject from "@/hooks/useProject.ts";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { type ProjectKeyframe } from "@/types/project.ts";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import * as classNames from "classnames";
@@ -63,6 +63,39 @@ export default function EditProjectKeyframesTab() {
 
   const [autoAnimateRef] = useAutoAnimate();
 
+  const activeKeyframeIndex = useMemo<number | null>(() => {
+    if (!project) return null;
+    return project.keyframes.findIndex((pk) => pk.id === activeKeyframeId);
+  }, [project, activeKeyframeId]);
+
+  useEffect(() => {
+    if (
+      activeKeyframeIndex !== null &&
+      (mode === "createKeyframe" || mode === "editKeyframe")
+    ) {
+      const listener = (e: KeyboardEvent) => {
+        if (e.code === "Enter" || e.code === "Escape") {
+          if (mode === "createKeyframe") {
+            deleteKeyframe(activeKeyframeIndex);
+          }
+
+          projectEditorStore.setState({
+            mode: "view",
+            activeKeyframeId: null,
+          });
+        }
+      };
+
+      document.addEventListener("keydown", listener);
+
+      return () => {
+        document.removeEventListener("keydown", listener);
+      };
+    }
+  }, [activeKeyframeIndex, deleteKeyframe, projectEditorStore, mode]);
+
+  const disableAddKeyframeButtons = mode === "createKeyframe";
+
   if (!project) return <>Project not found.</>;
 
   return (
@@ -81,6 +114,7 @@ export default function EditProjectKeyframesTab() {
               className={"flex flex-col gap-4"}
             >
               <AddKeyframeButton
+                disabled={disableAddKeyframeButtons}
                 onClick={() => {
                   addKeyframe(index);
                 }}
@@ -127,6 +161,7 @@ export default function EditProjectKeyframesTab() {
         })}
 
         <AddKeyframeButton
+          disabled={disableAddKeyframeButtons}
           onClick={() => {
             addKeyframe(project.keyframes.length);
           }}
@@ -136,10 +171,16 @@ export default function EditProjectKeyframesTab() {
   );
 }
 
-function AddKeyframeButton({ onClick }: { onClick: () => void }) {
+function AddKeyframeButton({
+  onClick,
+  disabled,
+}: {
+  disabled?: boolean;
+  onClick: () => void;
+}) {
   return (
     <div className={"flex justify-center"}>
-      <button className={"btn btn-xs"} onClick={onClick}>
+      <button className={"btn btn-xs"} onClick={onClick} disabled={disabled}>
         +
       </button>
     </div>

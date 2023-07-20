@@ -1,34 +1,37 @@
 @keyframes keyframeWiggle {
   0% {
     transform: rotate(0deg);
+    transform-origin: 30% center;
   }
 
   15% {
-    transform: rotate(-2deg);
+    transform: rotate(-1deg);
   }
 
   30% {
-    transform: rotate(1deg);
+    transform: rotate(0.6deg);
   }
 
   45% {
-    transform: rotate(-1.5deg);
+    transform: rotate(-0.7deg);
+    transform-origin: 70% center;
   }
 
   60% {
-    transform: rotate(2.5deg);
+    transform: rotate(1.5deg);
   }
 
   75% {
-    transform: rotate(-1.75deg);
+    transform: rotate(-1.25deg);
   }
 
   90% {
-    transform: rotate(2.5deg);
+    transform: rotate(1.3deg);
   }
 
   100% {
     transform: rotate(0deg);
+    transform-origin: 30% center;
   }
 }
 
