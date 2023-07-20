@@ -577,7 +577,7 @@ export default function EditProjectCanvas({
             <div
               ref={editFrameRef}
               className={
-                "absolute z-20 touch-none border-4 border-red-400 hover:bg-red-400/10 transition"
+                "absolute z-20 touch-none border-4 border-red-400 hover:bg-red-400/30 transition"
               }
               style={{
                 left: `${activeKeyframe.x * 100}%`,
