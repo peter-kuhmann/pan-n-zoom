@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import {
   getProductPageLink,
   getProjectBasePath,
-  getProjectListLink,
+  getProjectOverviewLink,
 } from "@/navigation/links.ts";
 
 export default function IndexSidebar() {
@@ -35,7 +35,7 @@ export default function IndexSidebar() {
           icon={<IonIcon name={"rocket-outline"} />}
           activeStrategy={(currentPathname) => {
             return (
-              currentPathname === getProjectListLink() ||
+              currentPathname === getProjectOverviewLink() ||
               currentPathname.startsWith(getProjectBasePath())
             );
           }}

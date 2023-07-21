@@ -7,7 +7,7 @@ import * as classNames from "classnames";
 import { decode } from "js-base64";
 import {
   getProjectEditorLink,
-  getProjectListLink,
+  getProjectOverviewLink,
   getProjectPresentLinkWithKeyframe,
 } from "@/navigation/links.ts";
 import IonIcon from "@/components/IonIcon.tsx";
@@ -101,7 +101,7 @@ export default function PresentProjectPage() {
       console.error(
         "Redirecting user to project overview. Reason: Project not found, image data not found or no keyframes.",
       );
-      navigate(getProjectListLink(), { replace: true });
+      navigate(getProjectOverviewLink(), { replace: true });
     }
   }, [navigate, project, storedImage]);
 

@@ -1,6 +1,9 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import * as classNames from "classnames";
-import { getProductPageLink, getProjectListLink } from "@/navigation/links.ts";
+import {
+  getProductPageLink,
+  getProjectOverviewLink,
+} from "@/navigation/links.ts";
 import CuteCat from "@/components/cat/CuteCat.tsx";
 import IonIcon from "@/components/IonIcon.tsx";
 
@@ -49,7 +52,7 @@ function Navigation() {
           <button
             className={"btn btn-sm btn-neutral flex-nowrap whitespace-nowrap"}
             onClick={() => {
-              navigate(getProjectListLink());
+              navigate(getProjectOverviewLink());
             }}
           >
             Open app <IonIcon name={"chevron-forward-outline"} />

@@ -128,18 +128,15 @@ function SelectAnimationType() {
       </label>
       <select
         className="select select-bordered w-full max-w-xs"
+        value={project.animationType}
         onChange={(e) => {
           update({
             animationType: e.currentTarget.value === "ease" ? "ease" : "linear",
           });
         }}
       >
-        <option value={"ease"} selected={project.animationType === "ease"}>
-          Ease
-        </option>
-        <option value={"linear"} selected={project.animationType === "linear"}>
-          Linear
-        </option>
+        <option value={"ease"}>Ease</option>
+        <option value={"linear"}>Linear</option>
       </select>
     </div>
   );

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export interface AppPageProps {
   backTo?: {
     label: string;
-    to: string;
+    to: string | (() => void);
   };
   title: string;
   children?: React.ReactNode;
@@ -26,9 +26,17 @@ export default function AppPage({
       {backTo && (
         <div className={"mb-4"}>
           <button
-            className={"btn btn-sm btn-ghost flex items-center gap-2"}
+            className={
+              "btn btn-sm btn-ghost flex items-center gap-2 font-normal"
+            }
             onClick={() => {
-              navigate(backTo.to);
+              if (backTo) {
+                if (typeof backTo.to === "function") {
+                  backTo.to();
+                } else {
+                  navigate(backTo.to);
+                }
+              }
             }}
           >
             <IonIcon name={"arrow-back-outline"} />
@@ -39,7 +47,7 @@ export default function AppPage({
 
       <div
         className={
-          "w-full flex flex-row gap-4 justify-between items-center mb-16"
+          "w-full flex flex-row gap-4 justify-between items-center mb-12"
         }
       >
         <h1 className={"text-4xl font-semibold"}>{title}</h1>

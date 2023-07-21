@@ -85,6 +85,7 @@ export default function SettingsPage() {
           </label>
           <select
             className="select select-bordered w-full max-w-xs"
+            value={suite.newProjectDefaultSettings.animationType}
             onChange={(e) => {
               update({
                 newProjectDefaultSettings: {
@@ -95,22 +96,8 @@ export default function SettingsPage() {
               });
             }}
           >
-            <option
-              value={"ease"}
-              selected={
-                suite.newProjectDefaultSettings.animationType === "ease"
-              }
-            >
-              Ease
-            </option>
-            <option
-              value={"linear"}
-              selected={
-                suite.newProjectDefaultSettings.animationType === "linear"
-              }
-            >
-              Linear
-            </option>
+            <option value={"ease"}>Ease</option>
+            <option value={"linear"}>Linear</option>
           </select>
         </div>
       </div>

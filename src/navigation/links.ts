@@ -2,7 +2,7 @@ export function getProductPageLink() {
   return "/";
 }
 
-export function getProjectListLink() {
+export function getProjectOverviewLink() {
   return "/app";
 }
 

@@ -4,7 +4,7 @@ import IonIcon from "@/components/IonIcon.tsx";
 import {
   getProjectEditorLink,
   getProjectEditorSettingsLink,
-  getProjectListLink,
+  getProjectOverviewLink,
   getProjectPresentLink,
 } from "@/navigation/links.ts";
 import useProject from "@/hooks/useProject.ts";
@@ -26,7 +26,7 @@ export function EditProjectPageLayout() {
 
   useEffect(() => {
     if (!projectId || !project) {
-      navigate(getProjectListLink());
+      navigate(getProjectOverviewLink());
     }
   }, [projectId, project, navigate]);
 
@@ -63,7 +63,7 @@ export function EditProjectPageLayout() {
               "btn btn-sm btn-ghost flex items-center gap-2 font-normal"
             }
             onClick={() => {
-              navigate(getProjectListLink());
+              navigate(getProjectOverviewLink());
             }}
           >
             <IonIcon name={"arrow-back-outline"} />

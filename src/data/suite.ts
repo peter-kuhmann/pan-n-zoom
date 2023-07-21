@@ -54,6 +54,8 @@ function createSuite(): Suite {
 }
 
 async function addStandardProjectToSuite() {
+  const suite = getSuite();
+
   await import("./standardProjectDataUrl.ts")
     .then(async (result) => {
       return await storeImage(result.standardProjectDataUrl);
@@ -62,10 +64,10 @@ async function addStandardProjectToSuite() {
       const standardProject: Project = {
         id: createId(),
         name: "Your Pan'n'Zoom Starter Project 🐈",
-        backgroundColor: "#f3f4f6",
-        embedSvgNatively: false,
-        animationDuration: 1000,
-        animationType: "ease",
+        backgroundColor: suite.newProjectDefaultSettings.backgroundColor,
+        embedSvgNatively: suite.newProjectDefaultSettings.embedSvgNatively,
+        animationDuration: suite.newProjectDefaultSettings.animationDuration,
+        animationType: suite.newProjectDefaultSettings.animationType,
         image: {
           fileName: "PanNZoomStarterProject.webp",
           mimeType: "image/webp",

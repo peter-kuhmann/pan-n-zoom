@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import AppPage from "@/components/AppPage.tsx";
 import {
   getProjectEditorLink,
-  getProjectListLink,
+  getProjectOverviewLink,
 } from "@/navigation/links.ts";
 import IonIcon from "@/components/IonIcon.tsx";
 import { type Project } from "@/types/project.ts";
@@ -80,7 +80,7 @@ export default function CreatePage() {
   return (
     <AppPage
       title={"Create project"}
-      backTo={{ label: "Back to project", to: getProjectListLink() }}
+      backTo={{ label: "Back to project", to: getProjectOverviewLink() }}
     >
       <div className={"grid grid-cols-3 gap-24 items-start"}>
         <div className={"rounded-lg border border-gray-300 overflow-hidden"}>
