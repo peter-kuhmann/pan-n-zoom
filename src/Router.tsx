@@ -19,11 +19,17 @@ import EditProjectSettingsTabs from "@/components/project/tabs/EditProjectSettin
 import ProductLayout from "@/routes/ProductLayout.tsx";
 import PrivacyPolicyPage from "@/routes/privacy-policy/PrivacyPolicyPage.tsx";
 import ShortcutsPage from "@/routes/app/shortcuts/ShortcutsPage.tsx";
+import { getProjectOverviewLink } from "@/navigation/links.ts";
+import { isRunningStandalone } from "@/utils/standalone.ts";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ProductLayout />,
+    element: isRunningStandalone ? (
+      <Redirect to={getProjectOverviewLink()} />
+    ) : (
+      <ProductLayout />
+    ),
     children: [
       { path: "", element: <ProductPage /> },
       { path: "privacy-policy", element: <PrivacyPolicyPage /> },
