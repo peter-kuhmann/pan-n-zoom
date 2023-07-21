@@ -48,12 +48,12 @@ export default function IndexSidebar() {
         <Entry
           label={"Export"}
           navigateTo={"/app/export"}
-          icon={<IonIcon name={"save-outline"} />}
+          icon={<IonIcon name={"cloud-download-outline"} />}
         />
         <Entry
           label={"Import"}
           navigateTo={"/app/import"}
-          icon={<IonIcon name={"cloud-download-outline"} />}
+          icon={<IonIcon name={"cloud-upload-outline"} />}
         />
         <Entry
           label={"Shortcuts"}

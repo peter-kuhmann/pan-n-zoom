@@ -1,5 +1,6 @@
 import { isMacOs } from "@/utils/os.ts";
 import IonIcon from "@/components/IonIcon.tsx";
+import { Fragment } from "react";
 
 export type SKCKey =
   | string
@@ -20,10 +21,10 @@ export default function SKC({ keys }: SKCProps) {
     <div className={"inline-flex items-center gap-2"}>
       {keys.map((key, index) => {
         return (
-          <>
+          <Fragment key={`${index}-${key}`}>
             {index > 0 && <span className={"text-lg"}> + </span>}
             <kbd className={"kbd kbd"}>{ShortcutText(key)}</kbd>
-          </>
+          </Fragment>
         );
       })}
     </div>
