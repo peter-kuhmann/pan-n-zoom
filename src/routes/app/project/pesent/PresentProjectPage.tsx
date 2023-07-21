@@ -324,27 +324,27 @@ export default function PresentProjectPage() {
 
   // Handle keyboard presses
   useEffect(() => {
-    const leftArrowPreviousListener = (e: KeyboardEvent) => {
-      if (e.code === "ArrowLeft") {
+    const keyListener = (e: KeyboardEvent) => {
+      if (e.code === "ArrowLeft" || e.code === "ArrowUp") {
         if (e.shiftKey) {
           showFirstKeyframe();
         } else {
           showPreviousKeyframe();
         }
       }
-    };
 
-    const rightArrowNextListener = (e: KeyboardEvent) => {
-      if (e.code === "ArrowRight") {
+      if (
+        e.code === "ArrowRight" ||
+        e.code === "ArrowDown" ||
+        e.code === "Space"
+      ) {
         if (e.shiftKey) {
           showLastKeyframe();
         } else {
           showNextKeyframe();
         }
       }
-    };
 
-    const enterFullscreenListener = (e: KeyboardEvent) => {
       if (e.code === "KeyF") {
         if (checkIsFullscreenOn()) {
           exitFullscreenMode();
@@ -352,24 +352,16 @@ export default function PresentProjectPage() {
           enterFullscreenMode();
         }
       }
-    };
 
-    const exitPresentationModeListener = (e: KeyboardEvent) => {
       if (e.code === "Escape" && !checkIsFullscreenOn()) {
         exitPresentationMode();
       }
     };
 
-    document.addEventListener("keyup", leftArrowPreviousListener);
-    document.addEventListener("keyup", rightArrowNextListener);
-    document.addEventListener("keyup", enterFullscreenListener);
-    document.addEventListener("keyup", exitPresentationModeListener);
+    document.addEventListener("keydown", keyListener);
 
     return () => {
-      document.removeEventListener("keyup", leftArrowPreviousListener);
-      document.removeEventListener("keyup", rightArrowNextListener);
-      document.removeEventListener("keyup", enterFullscreenListener);
-      document.removeEventListener("keyup", exitPresentationModeListener);
+      document.removeEventListener("keydown", keyListener);
     };
   }, [
     exitFullscreenMode,
