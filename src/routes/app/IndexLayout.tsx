@@ -1,6 +1,6 @@
 import IndexSidebar from "../../components/routes/IndexSidebar.tsx";
 import { Outlet } from "react-router-dom";
-import * as classNames from "classnames";
+import classNames from "classnames";
 
 export default function IndexLayout() {
   return (

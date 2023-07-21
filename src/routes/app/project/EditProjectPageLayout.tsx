@@ -1,4 +1,4 @@
-import * as classNames from "classnames";
+import classNames from "classnames";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import IonIcon from "@/components/IonIcon.tsx";
 import {

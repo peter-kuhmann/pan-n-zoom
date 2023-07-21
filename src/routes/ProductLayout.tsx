@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import * as classNames from "classnames";
+import classNames from "classnames";
 import {
   getProductPageLink,
   getProjectOverviewLink,

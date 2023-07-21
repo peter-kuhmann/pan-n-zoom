@@ -3,7 +3,7 @@ import useProject from "@/hooks/useProject.ts";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import useWatchSize from "@/hooks/useWatchSize.ts";
-import * as classNames from "classnames";
+import classNames from "classnames";
 import { decode } from "js-base64";
 import {
   getProjectEditorLink,

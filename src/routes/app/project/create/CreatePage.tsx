@@ -1,4 +1,4 @@
-import * as classNames from "classnames";
+import classNames from "classnames";
 import { useCallback, useRef, useState } from "react";
 import { fileToBase64 } from "@/utils/files.ts";
 import useSuite from "@/hooks/useSuite.ts";

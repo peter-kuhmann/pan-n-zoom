@@ -2,7 +2,7 @@ import useProject from "@/hooks/useProject.ts";
 import { useCallback, useEffect, useMemo } from "react";
 import { type ProjectKeyframe } from "@/types/project.ts";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import * as classNames from "classnames";
+import classNames from "classnames";
 import { useParams } from "react-router-dom";
 import EditProjectTab from "@/components/project/tabs/EditProjectTab.tsx";
 import { useProjectEditorStore } from "@/context/ProjectEditorStore.tsx";

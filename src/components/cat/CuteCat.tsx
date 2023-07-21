@@ -1,6 +1,6 @@
 import CuteCatLightTheme from "@/assets/CuteCatLightTheme.svg";
 import CuteCatDarkTheme from "@/assets/CuteCatDarkTheme.svg";
-import * as classNames from "classnames";
+import classNames from "classnames";
 
 export interface CuteCatProps {
   className?: string;

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from "react";
 
 type WatchSizeRef = (element: Element | null | undefined) => void;
 
@@ -20,7 +20,7 @@ export default function useWatchSize(): {
         setHeight(box.height);
       });
 
-      resizeObserver.observe(element, { box: 'content-box' });
+      resizeObserver.observe(element, { box: "content-box" });
       resizeObserverRef.current = resizeObserver;
     } else {
       if (resizeObserverRef.current != null) {

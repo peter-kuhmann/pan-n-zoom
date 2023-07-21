@@ -7,7 +7,7 @@ import PeterKuhmannLogoLightTheme from "@/assets/PeterKuhmann_logo_light_theme.w
 import PeterKuhmannLogoDarkTheme from "@/assets/PeterKuhmann_logo_dark_theme.webp";
 
 import "./ProductPage.scss";
-import * as classNames from "classnames";
+import classNames from "classnames";
 
 export default function ProductPage() {
   return (

@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import CuteCat from "@/components/cat/CuteCat.tsx";
 import IonIcon from "@/components/IonIcon.tsx";
-import * as classNames from "classnames";
+import classNames from "classnames";
 import { useMemo } from "react";
 import {
   getProductPageLink,
