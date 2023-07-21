@@ -1,5 +1,7 @@
+import { isRunningStandalone } from "@/utils/standalone.ts";
+
 export function getProductPageLink() {
-  return "/";
+  return isRunningStandalone ? getProjectOverviewLink() : "/";
 }
 
 export function getProjectOverviewLink() {
