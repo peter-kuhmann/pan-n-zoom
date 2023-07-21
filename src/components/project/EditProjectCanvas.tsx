@@ -537,7 +537,7 @@ export default function EditProjectCanvas({
 
               // Do not show currently created keyframe
               if (creatingNewKeyframe && activeKeyframeId === keyframe.id)
-                return <></>;
+                return undefined;
 
               return (
                 <div

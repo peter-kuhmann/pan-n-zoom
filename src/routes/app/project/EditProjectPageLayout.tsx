@@ -8,12 +8,13 @@ import {
   getProjectPresentLink,
 } from "@/navigation/links.ts";
 import useProject from "@/hooks/useProject.ts";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import {
   ProjectEditorStoreProvider,
   useCreateProjectEditorStore,
 } from "@/context/ProjectEditorStore.tsx";
 import EditProjectCanvas from "@/components/project/EditProjectCanvas.tsx";
+import { isMacOs } from "@/utils/os.ts";
 
 export function EditProjectPageLayout() {
   const projectEditorStore = useCreateProjectEditorStore();
@@ -23,6 +24,28 @@ export function EditProjectPageLayout() {
   const projectId = useParams().projectId;
   const { project, update } = useProject(projectId);
   const presentDisabled = !!project && project.keyframes.length === 0;
+
+  const starPresentation = useCallback(() => {
+    if (!projectId) return;
+    navigate(getProjectPresentLink(projectId));
+  }, [navigate, projectId]);
+
+  // Register shortcut "Start presentation"
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
+      if (e.code === "KeyP" && (isMacOs ? e.metaKey : e.ctrlKey)) {
+        e.stopPropagation();
+        e.preventDefault();
+        starPresentation();
+      }
+    };
+
+    document.addEventListener("keydown", listener);
+
+    return () => {
+      document.removeEventListener("keydown", listener);
+    };
+  }, [starPresentation]);
 
   useEffect(() => {
     if (!projectId || !project) {
@@ -80,9 +103,7 @@ export function EditProjectPageLayout() {
               className={
                 "btn btn-sm btn-neutral flex items-center gap-2 font-normal"
               }
-              onClick={() => {
-                navigate(getProjectPresentLink(projectId));
-              }}
+              onClick={starPresentation}
             >
               <IonIcon name={"film-outline"} />
               Present

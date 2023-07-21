@@ -11,6 +11,7 @@ import { createId } from "@paralleldrive/cuid2";
 import getSomeCoolEmojis from "get-some-cool-emojis";
 import "./EditProjectKeyframesTab.scss";
 import IonIcon from "@/components/IonIcon.tsx";
+import { isMacOs } from "@/utils/os.ts";
 
 export default function EditProjectKeyframesTab() {
   const projectId = useParams().projectId;
@@ -111,6 +112,25 @@ export default function EditProjectKeyframesTab() {
   }, [activeKeyframeIndex, deleteKeyframe, projectEditorStore, mode]);
 
   const disableAddKeyframeButtons = mode === "createKeyframe";
+
+  // Register shortcut "Add keyframe"
+  useEffect(() => {
+    if (!project) return;
+
+    const listener = (e: KeyboardEvent) => {
+      if (e.code === "KeyA" && (isMacOs ? e.metaKey : e.ctrlKey)) {
+        e.stopPropagation();
+        e.preventDefault();
+        addKeyframe(project.keyframes.length);
+      }
+    };
+
+    document.addEventListener("keydown", listener);
+
+    return () => {
+      document.removeEventListener("keydown", listener);
+    };
+  }, [addKeyframe, project]);
 
   if (!project) return <>Project not found.</>;
 
