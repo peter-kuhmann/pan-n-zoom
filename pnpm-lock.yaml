@@ -14,6 +14,9 @@ dependencies:
   '@paralleldrive/cuid2':
     specifier: ^2.2.1
     version: 2.2.1
+  '@reacticons/ionicons':
+    specifier: ^7.1.0
+    version: 7.1.0
   '@use-gesture/react':
     specifier: ^10.2.27
     version: 10.2.27(react@18.2.0)
@@ -1678,6 +1681,10 @@ packages:
       picocolors: 1.0.0
       tslib: 2.6.0
     dev: true
+
+  /@reacticons/ionicons@7.1.0:
+    resolution: {integrity: sha512-hun4aeMnEyQ2qwmCB8TwNoseHLS1uj3EYuxJhEWkKaxBnyFtQ8HPqqS+HmNYiVBZu6/IeIFESScccdFcb34iqQ==}
+    dev: false
 
   /@remix-run/router@1.7.1:
     resolution: {integrity: sha512-bgVQM4ZJ2u2CM8k1ey70o1ePFXsEzYVZoWghh6WjM8p59jQ7HxzbHW4SbnWFG7V9ig9chLawQxDTZ3xzOF8MkQ==}

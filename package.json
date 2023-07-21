@@ -13,6 +13,7 @@
     "@fontsource-variable/shantell-sans": "^5.0.6",
     "@formkit/auto-animate": "^0.7.0",
     "@paralleldrive/cuid2": "^2.2.1",
+    "@reacticons/ionicons": "^7.1.0",
     "@use-gesture/react": "^10.2.27",
     "classnames": "^2.3.2",
     "date-fns": "^2.30.0",
