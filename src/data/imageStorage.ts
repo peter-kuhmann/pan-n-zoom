@@ -50,3 +50,11 @@ export async function getStoredImage(id: string): Promise<string | null> {
   if (!storedImage) return null;
   return storedImage.dataUrl;
 }
+
+export async function dangerousResetImageStorage() {
+  const db = await getDb();
+  const allImageKeys = await db.getAllKeys("images");
+  for (const imageKey of allImageKeys) {
+    await db.delete("images", imageKey);
+  }
+}

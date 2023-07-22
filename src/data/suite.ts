@@ -163,3 +163,7 @@ export function registerSuiteUpdateListener(listener: SuiteUpdateListener): {
     },
   };
 }
+
+export function dangerousResetSuiteData() {
+  localStorage.removeItem(SuiteLocalStorageKey);
+}

@@ -21,6 +21,7 @@ import PrivacyPolicyPage from "@/routes/privacy-policy/PrivacyPolicyPage.tsx";
 import ShortcutsPage from "@/routes/app/shortcuts/ShortcutsPage.tsx";
 import { getProjectOverviewLink } from "@/navigation/links.ts";
 import { isRunningStandalone } from "@/utils/standalone.ts";
+import { ResetPage } from "@/routes/app/reset/ResetPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -64,6 +65,7 @@ const router = createBrowserRouter([
       { path: "import", element: <ImportPage /> },
       { path: "shortcuts", element: <ShortcutsPage /> },
       { path: "help", element: <HelpPage /> },
+      { path: "reset", element: <ResetPage /> },
     ],
   },
 ]);

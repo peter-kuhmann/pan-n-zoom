@@ -31,7 +31,7 @@ export default function IndexSidebar() {
       >
         <Entry
           label={"Projects"}
-          navigateTo={"/app"}
+          navigateTo={getProjectOverviewLink()}
           icon={<IonIcon name={"rocket-outline"} />}
           activeStrategy={(currentPathname) => {
             return (
@@ -64,6 +64,11 @@ export default function IndexSidebar() {
           label={"Help"}
           navigateTo={"/app/help"}
           icon={<IonIcon name={"help-buoy-outline"} />}
+        />
+        <Entry
+          label={"Reset"}
+          navigateTo={"/app/reset"}
+          icon={<IonIcon name={"trash-outline"} />}
         />
       </div>
     </div>
