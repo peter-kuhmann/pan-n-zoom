@@ -138,6 +138,7 @@ function Features() {
           <Feature>No Account Needed</Feature>
           <Feature>Works Offline</Feature>
           <Feature>Desktop App</Feature>
+          <Feature>Excalidraw BFF</Feature>
         </ul>
         <ul className={"text-2xl"}>
           <Feature>Help Videos</Feature>

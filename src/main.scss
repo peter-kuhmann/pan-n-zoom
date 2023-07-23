@@ -8,11 +8,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "ExcalidrawFonts";
+
 html, body, #root {
     @apply m-0 p-0 w-full h-full overflow-y-auto;
     @apply bg-white text-gray-800;
     @apply dark:bg-gray-900 dark:text-gray-200;
     font-family: "Shantell Sans Variable", sans-serif;
+}
+
+// Force Excalidraw fonts to be loaded
+body::before {
+    position: absolute; top: 0; left: 0; opacity: 0; pointer-events: none; font-family: "Virgil"; content: ".";
+}
+body::after {
+    position: absolute; top: 0; left: 0; opacity: 0; pointer-events: none; font-family: "Cascadia"; content: ".";
 }
 
 .btn {
