@@ -84,7 +84,7 @@ export default function SelectDataExportForImport({
           onChange={onFileSelected}
           type="file"
           className="file-input file-input-neutral file-input-bordered w-full max-w-md"
-          // accept={DataExportFileSuffix}
+          accept={DataExportFileSuffix}
         />
       </div>
       {loading && <span className="loading loading-spinner" />}
