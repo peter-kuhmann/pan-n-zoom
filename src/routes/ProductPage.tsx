@@ -14,6 +14,7 @@ export default function ProductPage() {
     <>
       <Hero />
       <Demo />
+      <Features />
       <PeterKuhmann />
     </>
   );
@@ -115,9 +116,41 @@ function Demo() {
   );
 }
 
+function Features() {
+  return (
+    <div className={"flex flex-col items-start gap-12 mt-40"}>
+      <h1 className={"font-semibold text-5xl"}>Features</h1>
+
+      <div className={"grid grid-cols-2 gap-16 w-full justify-between"}>
+        <ul className={"text-2xl"}>
+          <Feature>Free and Open Source</Feature>
+          <Feature>No Account Needed</Feature>
+          <Feature>Works Offline</Feature>
+          <Feature>Desktop App</Feature>
+        </ul>
+        <ul className={"text-2xl"}>
+          <Feature>Help Videos</Feature>
+          <Feature>Export and Import</Feature>
+          <Feature>Convenience Functions</Feature>
+          <Feature>Light + Dark mode</Feature>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function Feature({ children }: { children?: React.ReactNode }) {
+  return (
+    <li className={"my-4 flex flex-row gap-2 items-start justify-start"}>
+      <IonIcon name={"checkmark-circle-outline"} className={"text-green-500"} />
+      <span>{children}</span>
+    </li>
+  );
+}
+
 function PeterKuhmann() {
   return (
-    <div className={"flex flex-col items-center gap-12 mt-40"}>
+    <div className={"flex flex-col items-start gap-12 mt-32"}>
       <h1 className={"font-semibold text-5xl"}>Crafted by</h1>
 
       <a href={"https://peter-kuhmann.de"} target={"_blank"} rel="noreferrer">
