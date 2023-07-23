@@ -30,9 +30,13 @@ export default function IndexProjectOverview() {
 
   return (
     <div>
-      <div className={"mb-8"}>
-        You currently have {sortedProjects.length}{" "}
-        {sortedProjects.length === 1 ? "project" : "projects"}.
+      <div className={"mb-8 leading-relaxed"}>
+        <b>
+          You currently have {sortedProjects.length}{" "}
+          {sortedProjects.length === 1 ? "project" : "projects"}.
+        </b>
+        <span className={"w-8 inline-block"} />
+        You can also drop export files here.
       </div>
 
       <div className={"flex flex-row gap-x-8 gap-y-6 flex-wrap -mx-4"}>

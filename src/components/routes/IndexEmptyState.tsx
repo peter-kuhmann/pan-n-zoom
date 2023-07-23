@@ -14,10 +14,11 @@ export default function IndexEmptyState({ onImport }: IndexEmptyStateProps) {
     <div className={"flex flex-col items-center"}>
       <CuteCat className={"w-full max-w-[10rem] mb-8"} />
 
-      <div className={"text-2xl mb-16 text-center leading-loose"}>
-        You don't have any projects yet.
+      <div className={"text-2xl mb-16 text-center leading-relaxed"}>
         <br />
-        <b>Let's create your first one!</b>
+        <b>Let's create your first project!</b>
+        <br />
+        (or drop an export file here)
       </div>
 
       <button
