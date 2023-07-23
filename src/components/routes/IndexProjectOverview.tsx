@@ -122,15 +122,17 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
         <div
           className={"flex flex-row items-center justify-between pr-1 gap-1"}
         >
-          <button
-            className={"btn btn-ghost btn-xs btn-square"}
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(getProjectPresentLink(projectId));
-            }}
-          >
-            <IonIcon name={"play"} />
-          </button>
+          {project.keyframes.length > 0 && (
+            <button
+              className={"btn btn-ghost btn-xs btn-square"}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(getProjectPresentLink(projectId));
+              }}
+            >
+              <IonIcon name={"play"} />
+            </button>
+          )}
 
           <div
             className="dropdown dropdown-bottom"
