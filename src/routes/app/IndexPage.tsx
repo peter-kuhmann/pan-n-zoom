@@ -64,7 +64,7 @@ export default function IndexPage() {
         const newProject: Project = {
           version: 1,
           id: createId(),
-          name: `New Project #${suite.projects.length + 2}`,
+          name: `New Project #${suite.projects.length + 1}`,
           backgroundColor: suite.newProjectDefaultSettings.backgroundColor,
           embedSvgNatively: suite.newProjectDefaultSettings.embedSvgNatively,
           animationDuration: suite.newProjectDefaultSettings.animationDuration,

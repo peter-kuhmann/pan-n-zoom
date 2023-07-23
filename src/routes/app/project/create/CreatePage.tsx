@@ -18,7 +18,7 @@ export default function CreatePage() {
   const { suite, addProject } = useSuite();
 
   const navigate = useNavigate();
-  const defaultProjectName = `New Project #${suite.projects.length + 2}`;
+  const defaultProjectName = `New Project #${suite.projects.length + 1}`;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
