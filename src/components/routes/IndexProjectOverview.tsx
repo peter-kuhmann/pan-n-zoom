@@ -110,9 +110,7 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
       </div>
 
       <div
-        className={
-          "flex flex-row items-stretch justify-between gap-4 mt-3 pl-2"
-        }
+        className={"flex flex-row items-start justify-between gap-4 mt-3 pl-2"}
       >
         <div>
           <div className={"text-xl"}>{project.name}</div>
@@ -121,9 +119,11 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
           </div>
         </div>
 
-        <div className={"flex flex-col items-center justify-between pr-1"}>
+        <div
+          className={"flex flex-row items-center justify-between pr-1 gap-1"}
+        >
           <button
-            className={"btn btn-ghost btn-sm btn-square"}
+            className={"btn btn-ghost btn-xs btn-square"}
             onClick={(e) => {
               e.stopPropagation();
               navigate(getProjectPresentLink(projectId));
@@ -138,7 +138,7 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
               e.stopPropagation();
             }}
           >
-            <label tabIndex={0} className="btn btn-ghost btn-sm btn-square">
+            <label tabIndex={0} className="btn btn-ghost btn-xs btn-square">
               <IonIcon name={"ellipsis-vertical"} />
             </label>
             <ul
