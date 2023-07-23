@@ -9,7 +9,7 @@ import {
 } from "@/navigation/links.ts";
 import IndexEmptyState from "@/components/routes/IndexEmptyState.tsx";
 import IndexProjectOverview from "@/components/routes/IndexProjectOverview.tsx";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DataExportFileSuffix } from "@/utils/export.ts";
 import { importDataExport, readDataExportFile } from "@/utils/import.ts";
 import { useImportPageStore } from "@/routes/app/import/ImportPage.tsx";
@@ -21,6 +21,8 @@ import { fileToDataUrl } from "@/utils/files.ts";
 import useSuite from "@/hooks/useSuite.ts";
 
 export default function IndexPage() {
+  const [importLoading, setImportLoading] = useState(false);
+
   const setDataExportToPickUp = useImportPageStore(
     (store) => store.setDataExportToPickUp,
   );
@@ -37,22 +39,24 @@ export default function IndexPage() {
 
   const importFromFile = useCallback(
     async (file: File) => {
-      if (file.name.endsWith(DataExportFileSuffix)) {
-        void readDataExportFile(file).then((readResult) => {
-          if (readResult.success) {
-            const dataExport = readResult.dataExport;
+      setImportLoading(true);
 
-            if (dataExport.type === "suite-export") {
-              setDataExportToPickUp(dataExport);
-              navigate(getImportLink());
-            } else if (dataExport.type === "plain-project-export") {
-              void importDataExport(dataExport, {
-                projectsImportStrategy: "add",
-                newProjectDefaultSettingsStrategy: "ignore",
-              });
-            }
+      if (file.name.endsWith(DataExportFileSuffix)) {
+        const readResult = await readDataExportFile(file);
+
+        if (readResult.success) {
+          const dataExport = readResult.dataExport;
+
+          if (dataExport.type === "suite-export") {
+            setDataExportToPickUp(dataExport);
+            navigate(getImportLink());
+          } else if (dataExport.type === "plain-project-export") {
+            await importDataExport(dataExport, {
+              projectsImportStrategy: "add",
+              newProjectDefaultSettingsStrategy: "ignore",
+            });
           }
-        });
+        }
       } else if (file.type.startsWith("image/")) {
         const dataUrl = await fileToDataUrl(file);
         const storedImage = await storeImage(dataUrl);
@@ -77,9 +81,32 @@ export default function IndexPage() {
         addProject(newProject);
         navigate(getProjectEditorLink(newProject.id));
       }
+
+      setImportLoading(false);
     },
     [suite, navigate, addProject, setDataExportToPickUp],
   );
+
+  // Register paste event listener
+  useEffect(() => {
+    const listener = (e: ClipboardEvent) => {
+      e.preventDefault();
+
+      if (!e.clipboardData || e.clipboardData.files.length === 0) return;
+
+      Array.from(e.clipboardData.files).forEach((file) => {
+        if (file.type.startsWith("image/")) {
+          void importFromFile(file);
+        }
+      });
+    };
+
+    document.addEventListener("paste", listener);
+
+    return () => {
+      document.removeEventListener("paste", listener);
+    };
+  });
 
   return (
     <div
@@ -107,6 +134,20 @@ export default function IndexPage() {
         setShowDrop(false);
       }}
     >
+      {/* Import loading overlay */}
+      {importLoading && (
+        <div
+          className={classNames(
+            "absolute left-0 top-0 w-full h-full z-10 pointer-events-none",
+            "flex flex-row gap-4 items-center justify-center",
+            "text-4xl bg-white/90 dark:bg-gray-800/90",
+          )}
+        >
+          <span>Loading</span>
+          <span className="loading loading-spinner" />
+        </div>
+      )}
+
       {/* Drop overlay */}
       <div
         className={classNames(

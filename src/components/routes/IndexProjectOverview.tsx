@@ -15,6 +15,7 @@ import {
   validateAndParseRawDataExport,
 } from "@/utils/export.ts";
 import { type PlainProjectsDataExport } from "@/types/export.ts";
+import SKC from "@/components/SKC.tsx";
 
 export default function IndexProjectOverview() {
   const projects = useProjects();
@@ -36,7 +37,8 @@ export default function IndexProjectOverview() {
           {sortedProjects.length === 1 ? "project" : "projects"}.
         </b>
         <span className={"w-8 inline-block"} />
-        You can drop image files or Pan'n'Zoom exports here.
+        You can drop image files or Pan'n'Zoom exports here. Use{" "}
+        <SKC small keys={["#PCTRL", "V"]} /> to paste an image.
       </div>
 
       <div className={"flex flex-row gap-x-8 gap-y-6 flex-wrap -mx-4"}>
