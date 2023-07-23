@@ -12,6 +12,7 @@ import HelpDesktopApp from "@/assets/help-videos/Help-DesktopApp.mp4";
 import HelpExportSingleProject from "@/assets/help-videos/Help-ExportSingleProject.mp4";
 import HelpImportSingleProject from "@/assets/help-videos/Help-ImportSingleProject.mp4";
 import HelpFastProjectCreation from "@/assets/help-videos/Help-FastProjectCreation.mp4";
+import HelpNativeSvgEmbeds from "@/assets/help-videos/Help-NativeSvgEmbed.mp4";
 
 import { useState } from "react";
 import IonIcon from "@/components/IonIcon.tsx";
@@ -41,6 +42,10 @@ export default function HelpPage() {
       />
       <HelpVideo heading={"Edit keyframes"} src={HelpEditKeyframe} />
       <HelpVideo heading={"Replace image"} src={HelpReplaceImage} />
+      <HelpVideo
+        heading={"Native SVG Embed / Excalidraw SVGs"}
+        src={HelpNativeSvgEmbeds}
+      />
       <HelpVideo
         heading={"Default project settings"}
         src={HelpDefaultProjectSettings}
