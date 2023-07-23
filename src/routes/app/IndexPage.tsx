@@ -7,7 +7,7 @@ import IndexEmptyState from "@/components/routes/IndexEmptyState.tsx";
 import IndexProjectOverview from "@/components/routes/IndexProjectOverview.tsx";
 import { useCallback, useRef } from "react";
 import { DataExportFileSuffix } from "@/utils/export.ts";
-import { readDataExportFile } from "@/utils/import.ts";
+import { importDataExport, readDataExportFile } from "@/utils/import.ts";
 import { useImportPageStore } from "@/routes/app/import/ImportPage.tsx";
 
 export default function IndexPage() {
@@ -35,8 +35,17 @@ export default function IndexPage() {
       if (file) {
         void readDataExportFile(file).then((readResult) => {
           if (readResult.success) {
-            setDataExportToPickUp(readResult.dataExport);
-            navigate(getImportLink());
+            const dataExport = readResult.dataExport;
+
+            if (dataExport.type === "suite-export") {
+              setDataExportToPickUp(dataExport);
+              navigate(getImportLink());
+            } else if (dataExport.type === "plain-project-export") {
+              void importDataExport(dataExport, {
+                projectsImportStrategy: "add",
+                newProjectDefaultSettingsStrategy: "ignore",
+              });
+            }
           }
         });
       }

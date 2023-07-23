@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { type DataExport } from "@/types/export.ts";
 import SelectDataExportForImport from "@/components/routes/import/SelectDataExportForImport.tsx";
-import HandleImportOfSuiteExport from "@/components/routes/import/HandleImportOfSuiteExport.tsx";
+import HandleImportOfDataExport from "@/components/routes/import/HandleImportOfDataExport.tsx";
 import { create } from "zustand";
 
 export const useImportPageStore = create<{
@@ -29,14 +29,12 @@ export default function ImportPage() {
 
   return dataExport === null ? (
     <SelectDataExportForImport onDataExportRead={setDataExport} />
-  ) : dataExport.type === "suite-export" ? (
-    <HandleImportOfSuiteExport
+  ) : (
+    <HandleImportOfDataExport
       dataExport={dataExport}
       onBack={() => {
         setDataExport(null);
       }}
     />
-  ) : (
-    <>Error: Plain project import not supported yet.</>
   );
 }

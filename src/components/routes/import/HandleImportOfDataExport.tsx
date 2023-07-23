@@ -1,4 +1,4 @@
-import { type SuiteDataExport } from "@/types/export.ts";
+import { type DataExport } from "@/types/export.ts";
 import { useCallback, useEffect, useState } from "react";
 import AppPage from "@/components/AppPage.tsx";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +10,11 @@ import {
 } from "@/utils/import.ts";
 
 interface HandleImportOfSuiteExportProps {
-  dataExport: SuiteDataExport;
+  dataExport: DataExport;
   onBack: () => void;
 }
 
-export default function HandleImportOfSuiteExport({
+export default function HandleImportOfDataExport({
   onBack,
   dataExport,
 }: HandleImportOfSuiteExportProps) {
@@ -69,7 +69,11 @@ export default function HandleImportOfSuiteExport({
 
   return (
     <AppPage
-      title={"Suite Import"}
+      title={
+        dataExport.type === "suite-export"
+          ? "Suite import"
+          : "Project(s) import"
+      }
       backTo={{ label: "Pick an other file to import", to: onBack }}
     >
       {success && (
@@ -81,10 +85,17 @@ export default function HandleImportOfSuiteExport({
 
       {!!error && <p className={"mb-8 max-w-[40rem] text-red-500"}>{error}</p>}
 
-      <p className={"mb-8 max-w-[40rem]"}>
-        You are about to import a <b>complete suite.</b> Please set the import
-        settings below.
-      </p>
+      {dataExport.type === "suite-export" ? (
+        <p className={"mb-8 max-w-[40rem]"}>
+          You are about to import a <b>complete suite.</b> Please set the import
+          settings below.
+        </p>
+      ) : (
+        <p className={"mb-8 max-w-[40rem]"}>
+          You are about to import a <b>one or more projects.</b> Please set the
+          import settings below.
+        </p>
+      )}
 
       <p className={"mb-8 max-w-[40rem]"}>
         The data export has <b>{projectsAmountText}</b>.
@@ -118,29 +129,31 @@ export default function HandleImportOfSuiteExport({
         </select>
       </div>
 
-      <div className="form-control w-full mb-8">
-        <label className="label">
-          <span className="label-text text-lg">
-            Suite settings import strategy
-          </span>
-        </label>
-        <select
-          disabled={disableImport}
-          className="select select-bordered w-full "
-          value={newProjectDefaultSettingsStrategy}
-          onChange={(e) => {
-            setNewProjectDefaultSettingsStrategy(
-              e.currentTarget
-                .value as ImportDataExportNewProjectDefaultSettingsStrategy,
-            );
-          }}
-        >
-          <option value={"replace"}>
-            Replace (replace settings by data export settings)
-          </option>
-          <option value={"ignore"}>Ignore (keep existing settings)</option>
-        </select>
-      </div>
+      {dataExport.type === "suite-export" && (
+        <div className="form-control w-full mb-8">
+          <label className="label">
+            <span className="label-text text-lg">
+              Suite settings import strategy
+            </span>
+          </label>
+          <select
+            disabled={disableImport}
+            className="select select-bordered w-full "
+            value={newProjectDefaultSettingsStrategy}
+            onChange={(e) => {
+              setNewProjectDefaultSettingsStrategy(
+                e.currentTarget
+                  .value as ImportDataExportNewProjectDefaultSettingsStrategy,
+              );
+            }}
+          >
+            <option value={"replace"}>
+              Replace (replace settings by data export settings)
+            </option>
+            <option value={"ignore"}>Ignore (keep existing settings)</option>
+          </select>
+        </div>
+      )}
 
       <button
         className={"btn btn-neutral"}
