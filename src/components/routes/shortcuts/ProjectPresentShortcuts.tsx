@@ -10,7 +10,10 @@ export default function ProjectPresentShortcuts() {
         },
         { keys: ["F"], explanation: "Toggle fullscreen mode on + off" },
         { keys: ["#AL"], explanation: "Previous keyframe" },
+        { keys: ["#AT"], explanation: "Previous keyframe" },
         { keys: ["#AR"], explanation: "Next keyframe" },
+        { keys: ["#AD"], explanation: "Next keyframe" },
+        { keys: ["Space"], explanation: "Next keyframe" },
         { keys: ["#SHIFT", "#AL"], explanation: "First keyframe" },
         { keys: ["#SHIFT", "#AR"], explanation: "Last keyframe" },
       ]}
