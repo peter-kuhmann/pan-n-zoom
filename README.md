@@ -1,10 +1,14 @@
-<center>
+<p align="center">
     <a href="https://pan-n-zoom.peter-kuhmann.de">
         <img src="docAssets/Logo.jpeg" height="200" />
     </a>
-    <p><b>The smartest tool to animate panning and zooming within your images.</b></p>
-    <p><a href="https://pan-n-zoom.peter-kuhmann.de">➡️ https://pan-n-zoom.peter-kuhmann.de</a></p>
-</center>
+    <br>
+    <br>
+    <b>The smartest tool to animate panning and zooming within your images.</b>
+    <br>
+    <br>
+    <a href="https://pan-n-zoom.peter-kuhmann.de">➡️ https://pan-n-zoom.peter-kuhmann.de</a>
+</p>
 
 ___
 
@@ -24,20 +28,20 @@ The app is purely client-based.
 - ✅ Light + Dark Mode
 
 # 👨‍🎨 Author
-<center>
-    <p>
-        <b>Peter Kuhmann</b>
-    </p>
-    <p>
-        <a href="https://peter-kuhmann.de" target="_blank" rel="noreferrer">🌍 Website</a>
-        <br/>
-        <a href="mailto:peter-kuhmann.de" target="_blank" rel="noreferrer">💌 Send me a mail</a>
-        <br/>
-        <a href="https://www.youtube.com/@PeterKuhmann/" target="_blank" rel="noreferrer">🎬 YouTube</a>
-        <br/>
-        <a href="https://www.linkedin.com/in/peter-kuhmann/" target="_blank" rel="noreferrer">👨‍💼 LinkedIn</a>
-    </p>
+<p align="center">
+    <b>Peter Kuhmann</b>
+    <br>
+    <br>
+    <a href="https://peter-kuhmann.de" target="_blank" rel="noreferrer">🌍 Website</a>
+    <br>
+    <a href="mailto:peter-kuhmann.de" target="_blank" rel="noreferrer">💌 Send me a mail</a>
+    <br>
+    <a href="https://www.youtube.com/@PeterKuhmann/" target="_blank" rel="noreferrer">🎬 YouTube</a>
+    <br>
+    <a href="https://www.linkedin.com/in/peter-kuhmann/" target="_blank" rel="noreferrer">👨‍💼 LinkedIn</a>
+    <br>
+    <br>
     <a href="https://peter-kuhmann.de" target="_blank" rel="noreferrer">
         <img src="docAssets/PeterKuhmannLogo.jpeg" width="750" height="150">
     </a>
-</center>
+<p/>
