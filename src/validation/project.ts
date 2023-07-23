@@ -16,6 +16,7 @@ export const ProjectKeyframeSchema = z.object({
 });
 
 export const ProjectSchema = z.object({
+  version: z.literal(1),
   id: z.string().nonempty(),
   name: z.string(),
   backgroundColor: ProjectBackgroundColorSchema,

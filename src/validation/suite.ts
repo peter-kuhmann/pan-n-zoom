@@ -7,12 +7,15 @@ import {
   ProjectEmbedSvgNativelySchema,
 } from "@/validation/shared.ts";
 
+export const SuiteNewProjectDefaultSettingsSchema = z.object({
+  version: z.literal(1),
+  backgroundColor: ProjectBackgroundColorSchema,
+  embedSvgNatively: ProjectEmbedSvgNativelySchema,
+  animationDuration: ProjectAnimationDurationSchema,
+  animationType: ProjectAnimationTypeSchema,
+});
+
 export const SuiteSchema = z.object({
   projects: z.array(ProjectSchema),
-  newProjectDefaultSettings: z.object({
-    backgroundColor: ProjectBackgroundColorSchema,
-    embedSvgNatively: ProjectEmbedSvgNativelySchema,
-    animationDuration: ProjectAnimationDurationSchema,
-    animationType: ProjectAnimationTypeSchema,
-  }),
+  newProjectDefaultSettings: SuiteNewProjectDefaultSettingsSchema,
 });

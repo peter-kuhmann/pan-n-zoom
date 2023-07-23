@@ -39,6 +39,7 @@ export default function CreatePage() {
     storeImage(selectedFileDataUrl)
       .then((storedImage) => {
         const newProject: Project = {
+          version: 1,
           id: createId(),
           name: projectName,
           backgroundColor: suite.newProjectDefaultSettings.backgroundColor,

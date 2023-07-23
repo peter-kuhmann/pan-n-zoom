@@ -40,6 +40,7 @@ function createSuite(): Suite {
   const newSuite: Suite = {
     projects: [],
     newProjectDefaultSettings: {
+      version: 1,
       backgroundColor: "#ffffff",
       embedSvgNatively: false,
       animationDuration: 1000,
@@ -62,6 +63,7 @@ async function addStandardProjectToSuite() {
     })
     .then((storedImage) => {
       const standardProject: Project = {
+        version: 1,
         id: createId(),
         name: "Your Pan'n'Zoom Starter Project 🐈",
         backgroundColor: suite.newProjectDefaultSettings.backgroundColor,

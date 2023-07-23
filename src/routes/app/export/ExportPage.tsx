@@ -4,7 +4,8 @@ import { useCallback, useState } from "react";
 import { getSuite } from "@/data/suite.ts";
 import { getStoredImage } from "@/data/imageStorage.ts";
 import { DataExportSchema } from "@/validation/export.ts";
-import { type z } from "zod";
+import { type SuiteDataExport } from "@/types/export.ts";
+import { DataExportFileSuffix } from "@/utils/export.ts";
 
 export default function ExportPage() {
   const [loading, setLoading] = useState(false);
@@ -14,29 +15,49 @@ export default function ExportPage() {
     setLoading(true);
 
     const suite = getSuite();
-    const imageIds = suite.projects.map((project) => project.image.storageId);
 
-    const storedImages: Array<{ id: string; dataUrl: string }> = [];
-    for (const imageId of imageIds) {
-      const dataUrl = await getStoredImage(imageId);
+    // To have type TS safety
+    const rawExportData: SuiteDataExport = {
+      type: "suite-export",
+      projects: [],
+      newProjectDefaultSettings: suite.newProjectDefaultSettings,
+    };
 
-      if (!dataUrl) {
-        setError(`Could not find image data for image ID ${imageId}`);
+    for (const suiteProject of suite.projects) {
+      const imageDataUrl = await getStoredImage(suiteProject.image.storageId);
+
+      if (!imageDataUrl) {
         setLoading(false);
+        setError(
+          `Could not find image for project "${suiteProject.name}" (id = ${suiteProject.id})`,
+        );
         return;
       }
 
-      storedImages.push({ id: imageId, dataUrl });
+      // We want to get rid off all IDs
+      rawExportData.projects.push({
+        project: {
+          version: suiteProject.version,
+          name: suiteProject.name,
+          backgroundColor: suiteProject.backgroundColor,
+          embedSvgNatively: suiteProject.embedSvgNatively,
+          animationType: suiteProject.animationType,
+          animationDuration: suiteProject.animationDuration,
+          image: {
+            fileName: suiteProject.image.fileName,
+            mimeType: suiteProject.image.mimeType,
+          },
+          keyframes: suiteProject.keyframes.map((projectKeyframe) => ({
+            emoji: projectKeyframe.emoji,
+            x: projectKeyframe.x,
+            y: projectKeyframe.y,
+            width: projectKeyframe.width,
+            height: projectKeyframe.height,
+          })),
+        },
+        imageDataUrl,
+      });
     }
-
-    // To have type TS safety
-    const rawExportData: z.input<typeof DataExportSchema> = {
-      type: "suite-export",
-      suite,
-      imageStorage: {
-        images: storedImages,
-      },
-    };
 
     const dataExportResult = DataExportSchema.safeParse(rawExportData);
 
@@ -52,11 +73,11 @@ export default function ExportPage() {
     downloadElement.setAttribute(
       "href",
       "data:text/plain;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(dataExportResult.data)),
+        encodeURIComponent(JSON.stringify(dataExportResult.data, null, 4)),
     );
     downloadElement.setAttribute(
       "download",
-      `Pan-n-Zoom-Suite-Export-${new Date().toISOString()}.pannzom.json`,
+      `Pan-n-Zoom-Suite-Export-${new Date().toISOString()}${DataExportFileSuffix}`,
     );
 
     downloadElement.style.display = "none";

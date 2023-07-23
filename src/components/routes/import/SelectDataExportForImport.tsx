@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import { fileToUTF8String } from "@/utils/files.ts";
 import { DataExportSchema } from "@/validation/export.ts";
 import AppPage from "@/components/AppPage.tsx";
+import { DataExportFileSuffix } from "@/utils/export.ts";
 
 export interface SelectDataExportForImportProps {
   onDataExportRead: (dataExport: DataExport) => void;
@@ -16,9 +17,20 @@ export default function SelectDataExportForImport({
 
   const onFileSelected = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      setError(null);
+
       if (e.target.files && e.target.files.length > 0) {
-        setLoading(true);
         const file = e.target.files[0];
+
+        if (!file.name.endsWith(DataExportFileSuffix)) {
+          setError(
+            `The file you selected has an incorrect file suffix (must be ".pannzoom").`,
+          );
+          e.currentTarget.value = "";
+          return;
+        }
+
+        setLoading(true);
 
         void fileToUTF8String(file)
           .then((rawDataExportContent) => {
@@ -64,7 +76,7 @@ export default function SelectDataExportForImport({
       <div className="form-control w-full">
         <label className="label">
           <span className="label-text text-lg">
-            Data export file (*.pannzoom.json)
+            Data export file (*.pannzoom)
           </span>
         </label>
         <input
@@ -72,7 +84,7 @@ export default function SelectDataExportForImport({
           onChange={onFileSelected}
           type="file"
           className="file-input file-input-neutral file-input-bordered w-full max-w-md"
-          accept=".json"
+          // accept={DataExportFileSuffix}
         />
       </div>
       {loading && <span className="loading loading-spinner" />}

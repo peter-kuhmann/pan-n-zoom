@@ -1,4 +1,4 @@
-import { type DataExport } from "@/types/export.ts";
+import { type SuiteDataExport } from "@/types/export.ts";
 import { useCallback, useEffect, useState } from "react";
 import AppPage from "@/components/AppPage.tsx";
 import { useNavigate } from "react-router-dom";
@@ -7,10 +7,10 @@ import useSuite from "@/hooks/useSuite.ts";
 import { deleteStoredImage, storeImage } from "@/data/imageStorage.ts";
 import { type Suite } from "@/types/suite.ts";
 import { createId } from "@paralleldrive/cuid2";
-import { type Project } from "@/types/project.ts";
+import { type Project, type ProjectKeyframe } from "@/types/project.ts";
 
 interface HandleImportOfSuiteExportProps {
-  dataExport: DataExport;
+  dataExport: SuiteDataExport;
   onBack: () => void;
 }
 
@@ -29,7 +29,7 @@ export default function HandleImportOfSuiteExport({
   const [suiteSettingsImportStrategy, setSuiteSettingsImportStrategy] =
     useState<SuiteSettingsImportStrategy>("replace");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const performImport = useCallback(async () => {
@@ -56,30 +56,25 @@ export default function HandleImportOfSuiteExport({
 
     if (projectsImportStrategy !== "ignore") {
       // Now we import the projects + images one by one (and assign new IDs for the projects and images)
-      for (const projectToImport of dataExport.suite.projects) {
-        const correspondingImageToImport = dataExport.imageStorage.images.find(
-          (image) => image.id === projectToImport.image.storageId,
-        );
-
-        if (!correspondingImageToImport) {
-          setError(
-            `Could not find corresponding image in data export for data export project with ID ${projectToImport.id} and name "${projectToImport.name}".`,
-          );
-          setLoading(false);
-          return;
-        }
-
-        const newStoredImage = await storeImage(
-          correspondingImageToImport.dataUrl,
-        );
+      for (const projectExport of dataExport.projects) {
+        const newStoredImage = await storeImage(projectExport.imageDataUrl);
 
         const project: Project = {
-          ...projectToImport,
+          ...projectExport.project,
           id: createId(),
           image: {
-            ...projectToImport.image,
+            ...projectExport.project.image,
             storageId: newStoredImage.id,
           },
+          keyframes: projectExport.project.keyframes.map((keyframeToImport) => {
+            const newKeyframe: ProjectKeyframe = {
+              ...keyframeToImport,
+              id: createId(),
+            };
+
+            return newKeyframe;
+          }),
+          createdAt: new Date().toISOString(),
         };
 
         newSuite.projects.push(project);
@@ -88,8 +83,7 @@ export default function HandleImportOfSuiteExport({
 
     // Handle suite settings
     if (suiteSettingsImportStrategy === "replace") {
-      newSuite.newProjectDefaultSettings =
-        dataExport.suite.newProjectDefaultSettings;
+      newSuite.newProjectDefaultSettings = dataExport.newProjectDefaultSettings;
     }
 
     update(newSuite);
@@ -105,14 +99,9 @@ export default function HandleImportOfSuiteExport({
   ]);
 
   const projectsAmountText =
-    dataExport.suite.projects.length === 1
+    dataExport.projects.length === 1
       ? "1 project"
-      : `${dataExport.suite.projects.length} projects`;
-
-  const imagesAmountText =
-    dataExport.imageStorage.images.length === 1
-      ? "1 image"
-      : `${dataExport.imageStorage.images.length} images`;
+      : `${dataExport.projects.length} projects`;
 
   useEffect(() => {
     if (success) {
@@ -140,7 +129,7 @@ export default function HandleImportOfSuiteExport({
         </p>
       )}
 
-      {!!error && <p className={"mb-8 max-w-[40rem] text-red-500"}>{error}</p>}
+      {/* {!!error && <p className={"mb-8 max-w-[40rem] text-red-500"}>{error}</p>} */}
 
       <p className={"mb-8 max-w-[40rem]"}>
         You are about to import a <b>complete suite.</b> Please set the import
@@ -148,8 +137,7 @@ export default function HandleImportOfSuiteExport({
       </p>
 
       <p className={"mb-8 max-w-[40rem]"}>
-        The data export has <b>{projectsAmountText}</b> and{" "}
-        <b>{imagesAmountText}</b>.
+        The data export has <b>{projectsAmountText}</b>.
       </p>
 
       <hr className={"mb-8"} />

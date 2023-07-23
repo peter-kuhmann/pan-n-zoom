@@ -8,12 +8,14 @@ export default function ImportPage() {
 
   return dataExport === null ? (
     <SelectDataExportForImport onDataExportRead={setDataExport} />
-  ) : (
+  ) : dataExport.type === "suite-export" ? (
     <HandleImportOfSuiteExport
       dataExport={dataExport}
       onBack={() => {
         setDataExport(null);
       }}
     />
+  ) : (
+    <>Error: Plain project import not supported yet.</>
   );
 }
