@@ -32,7 +32,7 @@ export default function HelpPage() {
       <HelpVideo heading={"Edit keyframes"} src={Help04} />
       <HelpVideo heading={"Replace image"} src={Help05} />
       <HelpVideo heading={"Default project settings"} src={Help06} />
-      <HelpVideo heading={"Export/Import"} src={Help07} />
+      <HelpVideo heading={"Export/Import complete suite"} src={Help07} />
       <HelpVideo heading={"Offline mode"} src={Help08} />
       <HelpVideo heading={"Desktop app"} src={Help09} />
     </AppPage>
