@@ -198,7 +198,7 @@ function PeterKuhmann() {
           rel={"noreferrer"}
           className={"hover:underline"}
         >
-          <IonIcon name={"logo-github"} /> GitHub Profile
+          <IonIcon name={"logo-github"} /> GitHub
         </a>
 
         <a

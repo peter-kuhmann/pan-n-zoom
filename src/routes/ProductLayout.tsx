@@ -48,7 +48,7 @@ function Navigation() {
           <h1 className={"text-xl font-semibold"}>Pan'n'Zoom</h1>
         </button>
 
-        <div>
+        <div className={"flex flex-row items-center gap-8"}>
           <button
             className={"btn btn-sm btn-neutral flex-nowrap whitespace-nowrap"}
             onClick={() => {
@@ -57,6 +57,15 @@ function Navigation() {
           >
             Open app <IonIcon name={"chevron-forward-outline"} />
           </button>
+
+          <a
+            href={"https://github.com/peter-kuhmann/pan-n-zoom"}
+            target={"_blank"}
+            rel={"noreferrer"}
+            className={"text-2xl"}
+          >
+            <IonIcon name={"logo-github"} />
+          </a>
         </div>
       </div>
     </div>
