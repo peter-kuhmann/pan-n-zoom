@@ -9,6 +9,9 @@ import HelpDefaultProjectSettings from "@/assets/help-videos/Help-DefaultProject
 import HelpExportImportSuite from "@/assets/help-videos/Help-ExportImportSuite.mp4";
 import HelpOfflineMode from "@/assets/help-videos/Help-OfflineMode.mp4";
 import HelpDesktopApp from "@/assets/help-videos/Help-DesktopApp.mp4";
+import HelpExportSingleProject from "@/assets/help-videos/Help-ExportSingleProject.mp4";
+import HelpImportSingleProject from "@/assets/help-videos/Help-ImportSingleProject.mp4";
+import HelpFastProjectCreation from "@/assets/help-videos/Help-FastProjectCreation.mp4";
 
 import { useState } from "react";
 import IonIcon from "@/components/IonIcon.tsx";
@@ -27,6 +30,10 @@ export default function HelpPage() {
       <hr className={"mb-8"} />
 
       <HelpVideo heading={"Project creation"} src={HelpProjectCreation} />
+      <HelpVideo
+        heading={"Ultra fast project creation"}
+        src={HelpFastProjectCreation}
+      />
       <HelpVideo heading={"Presentation controls"} src={HelpPresentation} />
       <HelpVideo
         heading={"Navigate editor canvas"}
@@ -41,6 +48,14 @@ export default function HelpPage() {
       <HelpVideo
         heading={"Export/Import complete suite"}
         src={HelpExportImportSuite}
+      />
+      <HelpVideo
+        heading={"Export single project"}
+        src={HelpExportSingleProject}
+      />
+      <HelpVideo
+        heading={"Import single project"}
+        src={HelpImportSingleProject}
       />
       <HelpVideo heading={"Offline mode"} src={HelpOfflineMode} />
       <HelpVideo heading={"Desktop app"} src={HelpDesktopApp} />
