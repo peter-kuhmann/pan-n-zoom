@@ -1,14 +1,14 @@
 import AppPage from "@/components/AppPage.tsx";
 
-import Help01 from "@/assets/help-videos/Help-01-ProjectCreation.mp4";
-import Help02 from "@/assets/help-videos/Help-02-Presentation.mp4";
-import Help03 from "@/assets/help-videos/Help-03-EditorNavigation.mp4";
-import Help04 from "@/assets/help-videos/Help-04-EditKeyframe.mp4";
-import Help05 from "@/assets/help-videos/Help-05-ReplaceImage.mp4";
-import Help06 from "@/assets/help-videos/Help-06-DefaultProjectSettings.mp4";
-import Help07 from "@/assets/help-videos/Help-07-ExportImport.mp4";
-import Help08 from "@/assets/help-videos/Help-08-OfflineMode.mp4";
-import Help09 from "@/assets/help-videos/Help-09-DesktopApp.mp4";
+import HelpProjectCreation from "@/assets/help-videos/Help-ProjectCreation.mp4";
+import HelpPresentation from "@/assets/help-videos/Help-Presentation.mp4";
+import HelpEditorNavigation from "@/assets/help-videos/Help-EditorNavigation.mp4";
+import HelpEditKeyframe from "@/assets/help-videos/Help-EditKeyframe.mp4";
+import HelpReplaceImage from "@/assets/help-videos/Help-ReplaceImage.mp4";
+import HelpDefaultProjectSettings from "@/assets/help-videos/Help-DefaultProjectSettings.mp4";
+import HelpExportImportSuite from "@/assets/help-videos/Help-ExportImportSuite.mp4";
+import HelpOfflineMode from "@/assets/help-videos/Help-OfflineMode.mp4";
+import HelpDesktopApp from "@/assets/help-videos/Help-DesktopApp.mp4";
 
 import { useState } from "react";
 import IonIcon from "@/components/IonIcon.tsx";
@@ -26,15 +26,24 @@ export default function HelpPage() {
 
       <hr className={"mb-8"} />
 
-      <HelpVideo heading={"Project creation"} src={Help01} />
-      <HelpVideo heading={"Presentation controls"} src={Help02} />
-      <HelpVideo heading={"Navigate editor canvas"} src={Help03} />
-      <HelpVideo heading={"Edit keyframes"} src={Help04} />
-      <HelpVideo heading={"Replace image"} src={Help05} />
-      <HelpVideo heading={"Default project settings"} src={Help06} />
-      <HelpVideo heading={"Export/Import complete suite"} src={Help07} />
-      <HelpVideo heading={"Offline mode"} src={Help08} />
-      <HelpVideo heading={"Desktop app"} src={Help09} />
+      <HelpVideo heading={"Project creation"} src={HelpProjectCreation} />
+      <HelpVideo heading={"Presentation controls"} src={HelpPresentation} />
+      <HelpVideo
+        heading={"Navigate editor canvas"}
+        src={HelpEditorNavigation}
+      />
+      <HelpVideo heading={"Edit keyframes"} src={HelpEditKeyframe} />
+      <HelpVideo heading={"Replace image"} src={HelpReplaceImage} />
+      <HelpVideo
+        heading={"Default project settings"}
+        src={HelpDefaultProjectSettings}
+      />
+      <HelpVideo
+        heading={"Export/Import complete suite"}
+        src={HelpExportImportSuite}
+      />
+      <HelpVideo heading={"Offline mode"} src={HelpOfflineMode} />
+      <HelpVideo heading={"Desktop app"} src={HelpDesktopApp} />
     </AppPage>
   );
 }
