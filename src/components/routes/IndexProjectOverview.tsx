@@ -1,5 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { getProjectEditorLink } from "@/navigation/links.ts";
+import {
+  getProjectEditorLink,
+  getProjectPresentLink,
+} from "@/navigation/links.ts";
 import useProjects from "@/hooks/useProjects.ts";
 import useProject from "@/hooks/useProject.ts";
 import { useStoredImage } from "@/hooks/useStoredImage.ts";
@@ -107,16 +110,28 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
       </div>
 
       <div
-        className={"flex flex-row items-start justify-between gap-4 mt-2 pl-1"}
+        className={
+          "flex flex-row items-stretch justify-between gap-4 mt-3 pl-2"
+        }
       >
         <div>
-          <div className={"text-2xl"}>{project.name}</div>
+          <div className={"text-xl"}>{project.name}</div>
           <div className={"text-xs"}>
             {formatDateWithTime(project.openedAt ?? project.createdAt)}
           </div>
         </div>
 
-        <div>
+        <div className={"flex flex-col items-center justify-between pr-1"}>
+          <button
+            className={"btn btn-ghost btn-sm btn-square"}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(getProjectPresentLink(projectId));
+            }}
+          >
+            <IonIcon name={"play"} />
+          </button>
+
           <div
             className="dropdown dropdown-bottom"
             onClick={(e) => {
