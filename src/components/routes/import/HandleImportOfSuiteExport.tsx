@@ -7,7 +7,7 @@ import {
   importDataExport,
   type ImportDataExportNewProjectDefaultSettingsStrategy,
   type ImportDataExportProjectsImportStrategy,
-} from "@/types/import.ts";
+} from "@/utils/import.ts";
 
 interface HandleImportOfSuiteExportProps {
   dataExport: SuiteDataExport;

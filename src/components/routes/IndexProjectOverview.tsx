@@ -6,8 +6,15 @@ import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import { formatDateWithTime } from "@/utils/dates.ts";
 import IonIcon from "@/components/IonIcon.tsx";
 import useSuite from "@/hooks/useSuite.ts";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { type Project } from "@/types/project.ts";
+import {
+  downloadDataExport,
+  formatNowForDataExportFilename,
+  prepareProjectForDataExport,
+  validateAndParseRawDataExport,
+} from "@/utils/export.ts";
+import { type PlainProjectsDataExport } from "@/types/export.ts";
 
 export default function IndexProjectOverview() {
   const projects = useProjects();
@@ -46,6 +53,22 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
   const { deleteProject } = useSuite();
   const { project } = useProject(projectId);
   const storedImage = useStoredImage(project?.image.storageId);
+
+  const exportProject = useCallback(async () => {
+    if (!project) return;
+
+    const dataExportProject = await prepareProjectForDataExport(project);
+
+    const rawDataExport: PlainProjectsDataExport = {
+      type: "plain-project-export",
+      projects: [dataExportProject],
+    };
+
+    downloadDataExport(
+      validateAndParseRawDataExport(rawDataExport),
+      `${project.name} – ${formatNowForDataExportFilename()}`,
+    );
+  }, [project]);
 
   if (!project) {
     return <>Error: Project with ID {projectId} could not be found.</>;
@@ -104,16 +127,36 @@ function ProjectEntry({ projectId }: ProjectEntryProps) {
               <li>
                 <button
                   onClick={() => {
-                    document.documentElement.blur();
+                    (document.activeElement as HTMLElement | undefined)?.blur();
                     deleteProject(projectId);
                   }}
                   className={
-                    "btn btn-ghost btn-sm h-auto break-keep whitespace-nowrap"
+                    "btn btn-ghost btn-sm h-auto break-keep whitespace-nowrap justify-start"
                   }
                 >
-                  <span className={"flex flex-row gap-4 items-center"}>
+                  <span
+                    className={"flex flex-row gap-4 items-center justify-start"}
+                  >
                     <IonIcon name={"trash-outline"} />
                     Delete project
+                  </span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    (document.activeElement as HTMLElement | undefined)?.blur();
+                    void exportProject();
+                  }}
+                  className={
+                    "btn btn-ghost btn-sm h-auto break-keep whitespace-nowrap justify-start"
+                  }
+                >
+                  <span
+                    className={"flex flex-row gap-4 items-center justify-start"}
+                  >
+                    <IonIcon name={"cloud-download-outline"} />
+                    Export
                   </span>
                 </button>
               </li>

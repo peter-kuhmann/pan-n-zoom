@@ -7,7 +7,7 @@ import IndexEmptyState from "@/components/routes/IndexEmptyState.tsx";
 import IndexProjectOverview from "@/components/routes/IndexProjectOverview.tsx";
 import { useCallback, useRef } from "react";
 import { DataExportFileSuffix } from "@/utils/export.ts";
-import { readDataExportFile } from "@/types/import.ts";
+import { readDataExportFile } from "@/utils/import.ts";
 import { useImportPageStore } from "@/routes/app/import/ImportPage.tsx";
 
 export default function IndexPage() {

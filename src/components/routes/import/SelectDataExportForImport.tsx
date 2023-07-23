@@ -2,7 +2,7 @@ import { type DataExport } from "@/types/export.ts";
 import { useCallback, useState } from "react";
 import AppPage from "@/components/AppPage.tsx";
 import { DataExportFileSuffix } from "@/utils/export.ts";
-import { readDataExportFile } from "@/types/import.ts";
+import { readDataExportFile } from "@/utils/import.ts";
 
 export interface SelectDataExportForImportProps {
   onDataExportRead: (dataExport: DataExport) => void;
