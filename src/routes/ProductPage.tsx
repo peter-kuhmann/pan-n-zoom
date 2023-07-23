@@ -173,6 +173,53 @@ function PeterKuhmann() {
     <div className={"flex flex-col items-start gap-12 mt-32"}>
       <h1 className={"font-semibold text-5xl"}>Crafted by</h1>
 
+      <div className={"flex flex-row flex-wrap gap-6"}>
+        <a
+          href={"https://peter-kuhmann.de"}
+          target={"_blank"}
+          rel={"noreferrer"}
+          className={"hover:underline"}
+        >
+          <IonIcon name={"globe-outline"} /> Website
+        </a>
+
+        <a
+          href={"mailto:info@peter-kuhmann.de"}
+          target={"_blank"}
+          rel={"noreferrer"}
+          className={"hover:underline"}
+        >
+          <IonIcon name={"mail-outline"} /> Send me a mail
+        </a>
+
+        <a
+          href={"https://github.com/peter-kuhmann"}
+          target={"_blank"}
+          rel={"noreferrer"}
+          className={"hover:underline"}
+        >
+          <IonIcon name={"logo-github"} /> GitHub Profile
+        </a>
+
+        <a
+          href={"https://www.youtube.com/@PeterKuhmann/"}
+          target={"_blank"}
+          rel={"noreferrer"}
+          className={"hover:underline"}
+        >
+          <IonIcon name={"logo-youtube"} /> YouTube
+        </a>
+
+        <a
+          href={"https://www.linkedin.com/in/peter-kuhmann/"}
+          target={"_blank"}
+          rel={"noreferrer"}
+          className={"hover:underline"}
+        >
+          <IonIcon name={"logo-linkedin"} /> LinkedIn
+        </a>
+      </div>
+
       <a href={"https://peter-kuhmann.de"} target={"_blank"} rel="noreferrer">
         <img
           src={PeterKuhmannLogoLightTheme}
