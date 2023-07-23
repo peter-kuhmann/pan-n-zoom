@@ -42,6 +42,6 @@ The app is purely client-based.
     <br>
     <br>
     <a href="https://peter-kuhmann.de" target="_blank" rel="noreferrer">
-        <img src="docAssets/PeterKuhmannLogo.jpeg" width="750" height="150">
+        <img src="docAssets/PeterKuhmannLogoSmall.jpeg">
     </a>
 <p/>
