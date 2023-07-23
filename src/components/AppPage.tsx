@@ -21,7 +21,7 @@ export default function AppPage({
 
   return (
     <div
-      className={"h-full flex flex-col items-start justify-start px-16 py-12"}
+      className={"h-full flex flex-col items-start justify-start px-12 py-8"}
     >
       {backTo && (
         <div className={"mb-4"}>

@@ -2,7 +2,7 @@ import EditProjectTab from "@/components/project/tabs/EditProjectTab.tsx";
 import useProject from "@/hooks/useProject.ts";
 import { useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
-import { fileToBase64 } from "@/utils/files.ts";
+import { fileToDataUrl } from "@/utils/files.ts";
 import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import { storeImage } from "@/data/imageStorage.ts";
 
@@ -174,7 +174,7 @@ function ReplaceImage() {
         const newFile = e.currentTarget.files[0];
         setLoading(true);
 
-        void fileToBase64(newFile)
+        void fileToDataUrl(newFile)
           .then(async (newImageDataUrl) => {
             if (!storedImage.dataUrl) return;
 

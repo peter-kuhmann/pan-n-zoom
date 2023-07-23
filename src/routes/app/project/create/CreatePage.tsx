@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { useCallback, useRef, useState } from "react";
-import { fileToBase64 } from "@/utils/files.ts";
+import { fileToDataUrl } from "@/utils/files.ts";
 import useSuite from "@/hooks/useSuite.ts";
 import { storeImage } from "@/data/imageStorage.ts";
 import { createId } from "@paralleldrive/cuid2";
@@ -127,7 +127,7 @@ export default function CreatePage() {
               if (e.currentTarget.files && e.currentTarget.files.length > 0) {
                 const file = e.currentTarget.files[0];
                 setSelectedFile(file);
-                void fileToBase64(file).then(setSelectedFileDataUrl);
+                void fileToDataUrl(file).then(setSelectedFileDataUrl);
               } else {
                 setSelectedFile(null);
               }

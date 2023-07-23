@@ -2,7 +2,11 @@ import { useNavigate } from "react-router-dom";
 import AppPage from "@/components/AppPage.tsx";
 import IonIcon from "@/components/IonIcon.tsx";
 import useProjects from "@/hooks/useProjects.ts";
-import { getCreateProjectLink, getImportLink } from "@/navigation/links.ts";
+import {
+  getCreateProjectLink,
+  getImportLink,
+  getProjectEditorLink,
+} from "@/navigation/links.ts";
 import IndexEmptyState from "@/components/routes/IndexEmptyState.tsx";
 import IndexProjectOverview from "@/components/routes/IndexProjectOverview.tsx";
 import { useCallback, useRef, useState } from "react";
@@ -10,6 +14,11 @@ import { DataExportFileSuffix } from "@/utils/export.ts";
 import { importDataExport, readDataExportFile } from "@/utils/import.ts";
 import { useImportPageStore } from "@/routes/app/import/ImportPage.tsx";
 import classNames from "classnames";
+import { storeImage } from "@/data/imageStorage.ts";
+import { type Project } from "@/types/project.ts";
+import { createId } from "@paralleldrive/cuid2";
+import { fileToDataUrl } from "@/utils/files.ts";
+import useSuite from "@/hooks/useSuite.ts";
 
 export default function IndexPage() {
   const setDataExportToPickUp = useImportPageStore(
@@ -17,6 +26,7 @@ export default function IndexPage() {
   );
   const [showDrop, setShowDrop] = useState(false);
 
+  const { suite, addProject } = useSuite();
   const projects = useProjects();
   const navigate = useNavigate();
   const importProjectFileInputRef = useRef<HTMLInputElement | null>(null);
@@ -26,40 +36,49 @@ export default function IndexPage() {
   }, []);
 
   const importFromFile = useCallback(
-    (file: File) => {
-      void readDataExportFile(file).then((readResult) => {
-        if (readResult.success) {
-          const dataExport = readResult.dataExport;
+    async (file: File) => {
+      if (file.name.endsWith(DataExportFileSuffix)) {
+        void readDataExportFile(file).then((readResult) => {
+          if (readResult.success) {
+            const dataExport = readResult.dataExport;
 
-          if (dataExport.type === "suite-export") {
-            setDataExportToPickUp(dataExport);
-            navigate(getImportLink());
-          } else if (dataExport.type === "plain-project-export") {
-            void importDataExport(dataExport, {
-              projectsImportStrategy: "add",
-              newProjectDefaultSettingsStrategy: "ignore",
-            });
+            if (dataExport.type === "suite-export") {
+              setDataExportToPickUp(dataExport);
+              navigate(getImportLink());
+            } else if (dataExport.type === "plain-project-export") {
+              void importDataExport(dataExport, {
+                projectsImportStrategy: "add",
+                newProjectDefaultSettingsStrategy: "ignore",
+              });
+            }
           }
-        }
-      });
-    },
-    [navigate, setDataExportToPickUp],
-  );
+        });
+      } else if (file.type.startsWith("image/")) {
+        const dataUrl = await fileToDataUrl(file);
+        const storedImage = await storeImage(dataUrl);
 
-  const onImportFileSelected = useCallback<
-    React.ReactEventHandler<HTMLInputElement>
-  >(
-    (e) => {
-      const file =
-        e.currentTarget.files && e.currentTarget.files.length > 0
-          ? e.currentTarget.files[0]
-          : null;
+        const newProject: Project = {
+          version: 1,
+          id: createId(),
+          name: `New Project #${suite.projects.length + 2}`,
+          backgroundColor: suite.newProjectDefaultSettings.backgroundColor,
+          embedSvgNatively: suite.newProjectDefaultSettings.embedSvgNatively,
+          animationDuration: suite.newProjectDefaultSettings.animationDuration,
+          animationType: suite.newProjectDefaultSettings.animationType,
+          image: {
+            fileName: file.name,
+            mimeType: file.type,
+            storageId: storedImage.id,
+          },
+          keyframes: [],
+          createdAt: new Date().toISOString(),
+        };
 
-      if (file) {
-        importFromFile(file);
+        addProject(newProject);
+        navigate(getProjectEditorLink(newProject.id));
       }
     },
-    [importFromFile],
+    [suite, navigate, addProject, setDataExportToPickUp],
   );
 
   return (
@@ -82,7 +101,7 @@ export default function IndexPage() {
         e.stopPropagation();
 
         if (e.dataTransfer && e.dataTransfer.files.length > 0) {
-          importFromFile(e.dataTransfer.files[0]);
+          void importFromFile(e.dataTransfer.files[0]);
         }
 
         setShowDrop(false);
@@ -96,11 +115,11 @@ export default function IndexPage() {
           "text-4xl pointer-events-none ",
           {
             "opacity-0": !showDrop,
-            "opacity-1 bg-gray-400/20 backdrop-blur-sm": showDrop,
+            "opacity-1 bg-white/90 dark:bg-gray-800/90": showDrop,
           },
         )}
       >
-        <span>Drop file to import</span>
+        <span>Drop an image file or Pan'n'Zoom export here</span>
         <IonIcon name={"cloud-upload-outline"} />
       </div>
 
@@ -132,7 +151,16 @@ export default function IndexPage() {
           className={"hidden"}
           ref={importProjectFileInputRef}
           accept={DataExportFileSuffix}
-          onChange={onImportFileSelected}
+          onChange={(e) => {
+            const file =
+              e.currentTarget.files && e.currentTarget.files.length > 0
+                ? e.currentTarget.files[0]
+                : null;
+
+            if (file) {
+              void importFromFile(file);
+            }
+          }}
         />
 
         {projects.length > 0 ? (

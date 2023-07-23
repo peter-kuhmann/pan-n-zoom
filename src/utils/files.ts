@@ -1,4 +1,4 @@
-export async function fileToBase64(file: File): Promise<string> {
+export async function fileToDataUrl(file: File): Promise<string> {
   return await new Promise((resolve, reject) => {
     const reader = new FileReader();
 

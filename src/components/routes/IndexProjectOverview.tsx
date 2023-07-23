@@ -36,7 +36,7 @@ export default function IndexProjectOverview() {
           {sortedProjects.length === 1 ? "project" : "projects"}.
         </b>
         <span className={"w-8 inline-block"} />
-        You can also drop export files here.
+        You can drop image files or Pan'n'Zoom exports here.
       </div>
 
       <div className={"flex flex-row gap-x-8 gap-y-6 flex-wrap -mx-4"}>
