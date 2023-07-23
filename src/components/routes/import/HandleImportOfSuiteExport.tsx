@@ -3,100 +3,50 @@ import { useCallback, useEffect, useState } from "react";
 import AppPage from "@/components/AppPage.tsx";
 import { useNavigate } from "react-router-dom";
 import { getProjectOverviewLink } from "@/navigation/links.ts";
-import useSuite from "@/hooks/useSuite.ts";
-import { deleteStoredImage, storeImage } from "@/data/imageStorage.ts";
-import { type Suite } from "@/types/suite.ts";
-import { createId } from "@paralleldrive/cuid2";
-import { type Project, type ProjectKeyframe } from "@/types/project.ts";
+import {
+  importDataExport,
+  type ImportDataExportNewProjectDefaultSettingsStrategy,
+  type ImportDataExportProjectsImportStrategy,
+} from "@/types/import.ts";
 
 interface HandleImportOfSuiteExportProps {
   dataExport: SuiteDataExport;
   onBack: () => void;
 }
 
-type ProjectsImportStrategy = "add" | "replace" | "ignore";
-type SuiteSettingsImportStrategy = "replace" | "ignore";
-
 export default function HandleImportOfSuiteExport({
   onBack,
   dataExport,
 }: HandleImportOfSuiteExportProps) {
-  const { suite, update } = useSuite();
   const navigate = useNavigate();
 
   const [projectsImportStrategy, setProjectsImportStrategy] =
-    useState<ProjectsImportStrategy>("add");
-  const [suiteSettingsImportStrategy, setSuiteSettingsImportStrategy] =
-    useState<SuiteSettingsImportStrategy>("replace");
+    useState<ImportDataExportProjectsImportStrategy>("add");
+  const [
+    newProjectDefaultSettingsStrategy,
+    setNewProjectDefaultSettingsStrategy,
+  ] = useState<ImportDataExportNewProjectDefaultSettingsStrategy>("replace");
+
   const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const performImport = useCallback(async () => {
     setLoading(true);
 
-    const newSuite: Suite = { ...suite };
+    try {
+      await importDataExport(dataExport, {
+        projectsImportStrategy,
+        newProjectDefaultSettingsStrategy,
+      });
 
-    // Handle projects and images
-    if (projectsImportStrategy === "replace") {
-      // delete existing projects from suite
-      const oldImagesToDelete = suite.projects.map(
-        (project) => project.image.storageId,
-      );
-
-      newSuite.projects = [];
-
-      // We also need to delete the stored images
-      await Promise.all(
-        oldImagesToDelete.map(async (storageId) => {
-          await deleteStoredImage(storageId);
-        }),
-      );
+      setSuccess(true);
+      setLoading(false);
+    } catch (e) {
+      setError(`Unknown error: ${e}`);
+      setLoading(false);
     }
-
-    if (projectsImportStrategy !== "ignore") {
-      // Now we import the projects + images one by one (and assign new IDs for the projects and images)
-      for (const projectExport of dataExport.projects) {
-        const newStoredImage = await storeImage(projectExport.imageDataUrl);
-
-        const project: Project = {
-          ...projectExport.project,
-          id: createId(),
-          image: {
-            ...projectExport.project.image,
-            storageId: newStoredImage.id,
-          },
-          keyframes: projectExport.project.keyframes.map((keyframeToImport) => {
-            const newKeyframe: ProjectKeyframe = {
-              ...keyframeToImport,
-              id: createId(),
-            };
-
-            return newKeyframe;
-          }),
-          createdAt: new Date().toISOString(),
-        };
-
-        newSuite.projects.push(project);
-      }
-    }
-
-    // Handle suite settings
-    if (suiteSettingsImportStrategy === "replace") {
-      newSuite.newProjectDefaultSettings = dataExport.newProjectDefaultSettings;
-    }
-
-    update(newSuite);
-
-    setSuccess(true);
-    setLoading(false);
-  }, [
-    suite,
-    update,
-    dataExport,
-    projectsImportStrategy,
-    suiteSettingsImportStrategy,
-  ]);
+  }, [dataExport, projectsImportStrategy, newProjectDefaultSettingsStrategy]);
 
   const projectsAmountText =
     dataExport.projects.length === 1
@@ -129,7 +79,7 @@ export default function HandleImportOfSuiteExport({
         </p>
       )}
 
-      {/* {!!error && <p className={"mb-8 max-w-[40rem] text-red-500"}>{error}</p>} */}
+      {!!error && <p className={"mb-8 max-w-[40rem] text-red-500"}>{error}</p>}
 
       <p className={"mb-8 max-w-[40rem]"}>
         You are about to import a <b>complete suite.</b> Please set the import
@@ -152,12 +102,12 @@ export default function HandleImportOfSuiteExport({
           value={projectsImportStrategy}
           onChange={(e) => {
             setProjectsImportStrategy(
-              e.currentTarget.value as ProjectsImportStrategy,
+              e.currentTarget.value as ImportDataExportProjectsImportStrategy,
             );
           }}
         >
-          <option value={"merge"}>
-            Merge (keep existing projects + add data export projects)
+          <option value={"add"}>
+            Add (keep existing projects + add data export projects)
           </option>
           <option value={"replace"}>
             Replace (delete existing projects + add data export projects)
@@ -177,10 +127,11 @@ export default function HandleImportOfSuiteExport({
         <select
           disabled={disableImport}
           className="select select-bordered w-full "
-          value={suiteSettingsImportStrategy}
+          value={newProjectDefaultSettingsStrategy}
           onChange={(e) => {
-            setSuiteSettingsImportStrategy(
-              e.currentTarget.value as SuiteSettingsImportStrategy,
+            setNewProjectDefaultSettingsStrategy(
+              e.currentTarget
+                .value as ImportDataExportNewProjectDefaultSettingsStrategy,
             );
           }}
         >

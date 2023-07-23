@@ -34,3 +34,7 @@ export function getProjectPresentLinkWithKeyframe(
 ) {
   return `${getProjectPresentLink(projectId)}/${keyframeId}`;
 }
+
+export function getImportLink() {
+  return "/app/import";
+}

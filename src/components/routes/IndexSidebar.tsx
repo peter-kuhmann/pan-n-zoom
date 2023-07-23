@@ -4,6 +4,7 @@ import IonIcon from "@/components/IonIcon.tsx";
 import classNames from "classnames";
 import { useMemo } from "react";
 import {
+  getImportLink,
   getProductPageLink,
   getProjectBasePath,
   getProjectOverviewLink,
@@ -52,7 +53,7 @@ export default function IndexSidebar() {
         />
         <Entry
           label={"Import"}
-          navigateTo={"/app/import"}
+          navigateTo={getImportLink()}
           icon={<IonIcon name={"cloud-upload-outline"} />}
         />
         <Entry

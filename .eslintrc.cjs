@@ -33,6 +33,7 @@ module.exports = {
     ],
     "rules": {
         "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/restrict-template-expressions": "off",
         "react/react-in-jsx-scope": "off",
         "prettier/prettier": ["error"],
         "react-hooks/rules-of-hooks": "error",

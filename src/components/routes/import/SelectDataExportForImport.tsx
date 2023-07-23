@@ -1,9 +1,8 @@
 import { type DataExport } from "@/types/export.ts";
 import { useCallback, useState } from "react";
-import { fileToUTF8String } from "@/utils/files.ts";
-import { DataExportSchema } from "@/validation/export.ts";
 import AppPage from "@/components/AppPage.tsx";
 import { DataExportFileSuffix } from "@/utils/export.ts";
+import { readDataExportFile } from "@/types/import.ts";
 
 export interface SelectDataExportForImportProps {
   onDataExportRead: (dataExport: DataExport) => void;
@@ -19,42 +18,19 @@ export default function SelectDataExportForImport({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setError(null);
 
-      if (e.target.files && e.target.files.length > 0) {
-        const file = e.target.files[0];
-
-        if (!file.name.endsWith(DataExportFileSuffix)) {
-          setError(
-            `The file you selected has an incorrect file suffix (must be ".pannzoom").`,
-          );
-          e.currentTarget.value = "";
-          return;
-        }
-
+      if (e.currentTarget.files && e.currentTarget.files.length > 0) {
         setLoading(true);
 
-        void fileToUTF8String(file)
-          .then((rawDataExportContent) => {
-            try {
-              const rawDataExportJson = JSON.parse(rawDataExportContent);
-              const dataExportValidationResult =
-                DataExportSchema.safeParse(rawDataExportJson);
-              if (!dataExportValidationResult.success) {
-                setError(
-                  `Data export JSON was malformed: ${dataExportValidationResult.error.message}`,
-                );
-              } else {
-                onDataExportRead(dataExportValidationResult.data);
-              }
-            } catch (e) {
-              console.error(e);
-              setError("Data export was probably invalid JSON.");
+        readDataExportFile(e.currentTarget.files[0])
+          .then((result) => {
+            if (result.success) {
+              onDataExportRead(result.dataExport);
+            } else {
+              setError(result.error);
             }
           })
-          .catch((err) => {
-            console.error(err);
-            setError(
-              "An error occurred while reading the data export as an UTF-8 string.",
-            );
+          .catch((e) => {
+            setError(`Unknown error: ${e}`);
           })
           .finally(() => {
             setLoading(false);

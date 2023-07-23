@@ -8,13 +8,13 @@ export interface AppPageProps {
   };
   title: string;
   children?: React.ReactNode;
-  action?: React.ReactNode;
+  actions?: React.ReactNode;
 }
 
 export default function AppPage({
   title,
   children,
-  action,
+  actions,
   backTo,
 }: AppPageProps) {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ export default function AppPage({
         }
       >
         <h1 className={"text-4xl font-semibold"}>{title}</h1>
-        {action && <>{action}</>}
+        {actions && <>{actions}</>}
       </div>
 
       <div className={"w-full flex-grow"}>{children}</div>

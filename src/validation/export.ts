@@ -15,6 +15,9 @@ export const DataExportProjectKeyframeSchema = z.object({
   height: z.number(),
 });
 
+export const DataExportNewProjectDefaultSettingsSchema =
+  SuiteNewProjectDefaultSettingsSchema;
+
 export const DataExportProjectSchema = z.object({
   project: z.object({
     version: z.literal(1),
@@ -40,7 +43,7 @@ export const PlainProjectsDataExportSchema = z.object({
 export const SuiteDataExportSchema = z.object({
   type: z.literal("suite-export"),
   projects: z.array(DataExportProjectSchema),
-  newProjectDefaultSettings: SuiteNewProjectDefaultSettingsSchema,
+  newProjectDefaultSettings: DataExportNewProjectDefaultSettingsSchema,
 });
 
 export const DataExportSchema = z.discriminatedUnion("type", [

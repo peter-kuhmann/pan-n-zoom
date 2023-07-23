@@ -3,7 +3,11 @@ import CuteCat from "@/components/cat/CuteCat.tsx";
 import { getCreateProjectLink } from "@/navigation/links.ts";
 import IonIcon from "@/components/IonIcon.tsx";
 
-export default function IndexEmptyState() {
+export interface IndexEmptyStateProps {
+  onImport: () => void;
+}
+
+export default function IndexEmptyState({ onImport }: IndexEmptyStateProps) {
   const navigate = useNavigate();
 
   return (
@@ -23,6 +27,16 @@ export default function IndexEmptyState() {
         }}
       >
         Create your first project <IonIcon name={"paw-outline"} />
+      </button>
+
+      <div className={"my-4"}>OR</div>
+
+      <button
+        className={"btn btn-neutral btn-outline btn-sm"}
+        onClick={onImport}
+      >
+        ... or import an export
+        <IonIcon name={"cloud-upload-outline"} />
       </button>
     </div>
   );
