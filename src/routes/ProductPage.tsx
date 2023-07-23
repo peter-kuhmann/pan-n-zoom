@@ -143,7 +143,7 @@ function Features() {
           <Feature>Help Videos</Feature>
           <Feature>Export and Import</Feature>
           <Feature>Convenience Functions</Feature>
-          <Feature>Light + Dark mode</Feature>
+          <Feature>Light + Dark Mode</Feature>
         </ul>
       </div>
 
