@@ -8,6 +8,7 @@ import PeterKuhmannLogoDarkTheme from "@/assets/PeterKuhmann_logo_dark_theme.web
 
 import "./ProductPage.scss";
 import classNames from "classnames";
+import { getProjectOverviewLink } from "@/navigation/links.ts";
 
 export default function ProductPage() {
   return (
@@ -48,18 +49,26 @@ function Hero() {
 
             <div
               className={
-                "bg-blue-300 dark:bg-blue-600 font-semibold px-3 py-0.5 rounded-lg"
+                "bg-violet-300 dark:bg-violet-600 font-semibold px-3 py-0.5 rounded-lg"
               }
             >
-              Works offline <IonIcon name={"cloud-offline-outline"} />
+              Anonymous <IonIcon name={"shield-half-outline"} />
             </div>
 
             <div
               className={
-                "bg-violet-300 dark:bg-violet-600 font-semibold px-3 py-0.5 rounded-lg"
+                "bg-amber-300 dark:bg-violet-600 font-semibold px-3 py-0.5 rounded-lg"
               }
             >
-              No account needed <IonIcon name={"shield-half-outline"} />
+              Open Source <IonIcon name={"planet-outline"} />
+            </div>
+
+            <div
+              className={
+                "bg-blue-300 dark:bg-blue-600 font-semibold px-3 py-0.5 rounded-lg"
+              }
+            >
+              Offline Mode <IonIcon name={"cloud-offline-outline"} />
             </div>
           </div>
         </div>
@@ -72,7 +81,7 @@ function Hero() {
       <button
         className={"btn px-16 btn-neutral"}
         onClick={() => {
-          navigate("/app");
+          navigate(getProjectOverviewLink());
         }}
       >
         Open app <IonIcon name={"chevron-forward-outline"} />
@@ -83,7 +92,7 @@ function Hero() {
 
 function Demo() {
   return (
-    <div className={"drop-shadow-2xl mx-auto"}>
+    <div className={"drop-shadow-xl mx-auto"}>
       <div
         className={classNames(
           "flex flex-row items-center gap-4",
@@ -117,8 +126,10 @@ function Demo() {
 }
 
 function Features() {
+  const navigate = useNavigate();
+
   return (
-    <div className={"flex flex-col items-start gap-12 mt-40"}>
+    <div className={"flex flex-col items-start gap-12 mt-28"}>
       <h1 className={"font-semibold text-5xl"}>Features</h1>
 
       <div className={"grid grid-cols-2 gap-16 w-full justify-between"}>
@@ -135,6 +146,15 @@ function Features() {
           <Feature>Light + Dark mode</Feature>
         </ul>
       </div>
+
+      <button
+        className={"btn px-16 btn-neutral"}
+        onClick={() => {
+          navigate(getProjectOverviewLink());
+        }}
+      >
+        Try it out <IonIcon name={"chevron-forward-outline"} />
+      </button>
     </div>
   );
 }
