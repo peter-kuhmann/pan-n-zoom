@@ -90,14 +90,22 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
 
     autoplayTick(isFirst) {
       if (this.autoplayEnabled) {
+        this.log(
+          `Autoplay enabled > tick (isFirst = ${isFirst}, delay = ${this.autoplayDelay})`,
+        );
+
         if (this.autoplayTimeout) {
+          this.log(`Clearing old autoplay timeout.`);
           clearTimeout(this.autoplayTimeout);
           this.autoplayTimeout = null;
         }
 
         if (this.canNext) {
+          this.log(`canNext = true > scheduling nextKeyframe() and next tick.`);
+
           this.autoplayTimeout = setTimeout(
             () => {
+              this.log(`Autoplay executing nextKeyframe()...`);
               this.autoplayTimeout = null;
               this.nextKeyframe();
               this.autoplayTick();
