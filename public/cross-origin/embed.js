@@ -172,6 +172,11 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         `Updated flags canPrevious = ${this.canPrevious} and canNext (${this.canNext}).`,
       );
 
+      // Stop old timeout and start again after user interaction
+      if (this.autoplayTimeout) {
+        this.autoplayTick();
+      }
+
       this.updateControls();
       this.updateImage();
     }
