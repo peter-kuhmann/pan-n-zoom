@@ -13,12 +13,19 @@ type Theme = "system" | "light" | "dark";
 export default function EditProjectEmbedTab() {
   const { project } = useProject(useParams().projectId);
   const storedImage = useStoredImage(project?.image.storageId);
-  const [aspectRatio, setAspectRatio] = useState<AspectRatio>("16/10");
+
+  const [aspectRatio, setAspectRatio] = useState<AspectRatio>("16/9");
   const [theme, setTheme] = useState<Theme>("system");
+
   const [rounded, setRounded] = useState(true);
+  const [useInlinedExport, setUseInlinedExport] = useState(false);
+
   const [enableMaxHeight, setEnableMaxHeight] = useState(false);
   const [maxHeight, setMaxHeight] = useState<number>(600);
-  const [useInlinedExport, setUseInlinedExport] = useState(false);
+
+  const [enableLoop, setEnableLoop] = useState(false);
+  const [enableAutoplay, setEnableAutoplay] = useState(false);
+  const [autoplayDelay, setAutoplayDelay] = useState<number>(2000);
 
   const [copied, setCopied] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -64,6 +71,25 @@ export default function EditProjectEmbedTab() {
       });
     }
 
+    if (enableLoop) {
+      attributes.push({
+        name: "data-loop",
+        value: "true",
+      });
+    }
+
+    if (enableAutoplay) {
+      attributes.push({
+        name: "data-autoplay",
+        value: "true",
+      });
+
+      attributes.push({
+        name: "data-autoplay-delay",
+        value: `${autoplayDelay}`,
+      });
+    }
+
     if (useInlinedExport) {
       attributes.push({
         name: "data-export-inlined",
@@ -90,6 +116,9 @@ export default function EditProjectEmbedTab() {
     maxHeight,
     useInlinedExport,
     theme,
+    enableLoop,
+    enableAutoplay,
+    autoplayDelay,
   ]);
 
   const copyToClipboard = useCallback(() => {
@@ -112,6 +141,36 @@ export default function EditProjectEmbedTab() {
         <>You first need to create keyframes to copy to HTML embed code.</>
       ) : (
         <>
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text">
+                Embed the project using the following code
+              </span>
+            </label>
+            <textarea
+              ref={textareaRef}
+              value={htmlCode}
+              className="textarea textarea-bordered h-[6rem] font-mono text-xs"
+            />
+          </div>
+
+          <button
+            className={classNames("btn btn-sm mb-4", {
+              "btn-neutral": !copied,
+              "btn-success": copied,
+            })}
+            onClick={copyToClipboard}
+          >
+            Copy HTML code{" "}
+            {copied ? (
+              <IonIcon name={"checkmark-outline"} />
+            ) : (
+              <IonIcon name={"copy-outline"} />
+            )}
+          </button>
+
+          <hr className={"mb-4"} />
+
           <div className="form-control w-full mb-1">
             <label className="label">
               <span className="label-text text-sm">Aspect ratio</span>
@@ -150,6 +209,18 @@ export default function EditProjectEmbedTab() {
           <label className="label cursor-pointer justify-start">
             <input
               type="checkbox"
+              checked={rounded}
+              onChange={(e) => {
+                setRounded(e.currentTarget.checked);
+              }}
+              className="checkbox mr-2"
+            />
+            <span className="label-text">Rounded project viewer</span>
+          </label>
+
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="checkbox"
               checked={enableMaxHeight}
               onChange={(e) => {
                 setEnableMaxHeight(e.currentTarget.checked);
@@ -160,7 +231,7 @@ export default function EditProjectEmbedTab() {
           </label>
 
           {enableMaxHeight && (
-            <div className="form-control w-full mb-2">
+            <div className="form-control w-full mb-2 pl-8">
               <label className="label">
                 <span className="label-text text-sm">(Max) Height in px</span>
               </label>
@@ -183,18 +254,6 @@ export default function EditProjectEmbedTab() {
           <label className="label cursor-pointer justify-start">
             <input
               type="checkbox"
-              checked={rounded}
-              onChange={(e) => {
-                setRounded(e.currentTarget.checked);
-              }}
-              className="checkbox mr-2"
-            />
-            <span className="label-text">Rounded project viewer</span>
-          </label>
-
-          <label className="label cursor-pointer justify-start mb-4">
-            <input
-              type="checkbox"
               checked={useInlinedExport}
               onChange={(e) => {
                 setUseInlinedExport(e.currentTarget.checked);
@@ -204,35 +263,54 @@ export default function EditProjectEmbedTab() {
             <span className="label-text">Use inlined Pan'n'Zoom export</span>
           </label>
 
-          <hr className={"mb-4"} />
-
-          <div className="form-control mb-4">
-            <label className="label">
-              <span className="label-text">
-                Embed the project using the following code
-              </span>
-            </label>
-            <textarea
-              ref={textareaRef}
-              value={htmlCode}
-              className="textarea textarea-bordered h-[6rem] font-mono text-xs"
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="checkbox"
+              checked={enableLoop}
+              onChange={(e) => {
+                setEnableLoop(e.currentTarget.checked);
+              }}
+              className="checkbox mr-2"
             />
-          </div>
+            <span className="label-text">Enable loop mode</span>
+          </label>
 
-          <button
-            className={classNames("btn btn-sm", {
-              "btn-neutral": !copied,
-              "btn-success": copied,
-            })}
-            onClick={copyToClipboard}
-          >
-            Copy HTML code{" "}
-            {copied ? (
-              <IonIcon name={"checkmark-outline"} />
-            ) : (
-              <IonIcon name={"copy-outline"} />
+          <div className={"mb-4"}>
+            <label className="label cursor-pointer justify-start">
+              <input
+                type="checkbox"
+                checked={enableAutoplay}
+                onChange={(e) => {
+                  setEnableAutoplay(e.currentTarget.checked);
+                }}
+                className="checkbox mr-2"
+              />
+              <span className="label-text">Autoplay</span>
+            </label>
+
+            {enableAutoplay && (
+              <div className="form-control w-full mb-2 pl-8">
+                <label className="label">
+                  <span className="label-text text-sm">
+                    Autoplay delay (ms)
+                  </span>
+                </label>
+                <input
+                  disabled={!enableAutoplay}
+                  value={autoplayDelay}
+                  onInput={(e) => {
+                    setAutoplayDelay(
+                      e.currentTarget.value.length === 0
+                        ? 0
+                        : parseInt(e.currentTarget.value),
+                    );
+                  }}
+                  type="number"
+                  className={"input input-sm input-bordered w-full"}
+                />
+              </div>
             )}
-          </button>
+          </div>
         </>
       )}
     </EditProjectTab>

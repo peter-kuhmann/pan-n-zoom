@@ -8,6 +8,9 @@
  *
  * Optional attributes:
  *    - data-debug: empty or string – If present, it enables debug logs.
+ *    - data-autoplay: string - "true" or "false" > "false" has the same effect like when this attribute is missing.
+ *    - data-autoplay-delay: number - Autoplay delay time in milliseconds.
+ *    - data-loop: string - "true" or "false" > If "true" lets you jump across the first/last slide.
  *    - data-theme: string – One of the following values: system, light, dark (default = system)
  *    - data-canvas-aspect-ratio: string – CSS aspect ratio (e.g. "16/9")
  *    - data-canvas-max-height: string - CSS max-height value (e.g. 500px)
@@ -31,10 +34,15 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
 
       this.enableDebugLogs =
         !!this.dataset.debug && this.dataset.debug.toLowerCase() === "true";
-
       this.theme = ["system", "light", "dark"].includes(this.dataset.theme)
         ? this.dataset.theme
         : "system";
+      this.loopEnabled =
+        !!this.dataset.loop && this.dataset.loop.toLowerCase() === "true";
+      this.autoplayEnabled =
+        !!this.dataset.autoplay &&
+        this.dataset.autoplay.toLowerCase() === "true";
+      this.autoplayDelay = parseInt(this.dataset.autoplayDelay ?? "2000");
 
       this.wrapper = null;
       this.firstButton = null;
@@ -52,6 +60,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.currentKeyframe = null;
       this.canPrevious = false;
       this.canNext = false;
+      this.autoplayTimeout = null;
 
       this.log("Creating shadow DOM...");
       this.attachShadow({ mode: "open" });
@@ -74,8 +83,30 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
           this.startWrapperResizeTracking();
           setTimeout(() => {
             this.applyTransitionConfigs();
+            this.autoplayTick(true);
           }, 150);
         });
+    }
+
+    autoplayTick(isFirst) {
+      if (this.autoplayEnabled) {
+        if (this.autoplayTimeout) {
+          clearTimeout(this.autoplayTimeout);
+          this.autoplayTimeout = null;
+        }
+
+        if (this.canNext) {
+          this.autoplayTimeout = setTimeout(
+            () => {
+              this.autoplayTimeout = null;
+              this.nextKeyframe();
+              this.autoplayTick();
+            },
+            this.autoplayDelay +
+              (isFirst ? 0 : this.export.project.animationDuration),
+          );
+        }
+      }
     }
 
     firstKeyframe() {
@@ -92,13 +123,20 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
 
     nextKeyframe() {
       if (this.canNext) {
-        this.setKeyframe(this.currentKeyframeIndex + 1);
+        this.setKeyframe(
+          (this.currentKeyframeIndex + 1) %
+            this.export.project.keyframes.length,
+        );
       }
     }
 
     previousKeyframe() {
       if (this.canPrevious) {
-        this.setKeyframe(this.currentKeyframeIndex - 1);
+        this.setKeyframe(
+          this.currentKeyframeIndex === 0
+            ? this.export.project.keyframes.length - 1
+            : this.currentKeyframeIndex - 1,
+        );
       }
     }
 
@@ -122,9 +160,12 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         );
       }
 
-      this.log("Updating canPrevious and canNext...");
-      this.canPrevious = this.currentKeyframeIndex > 0;
+      this.log(
+        `Updating canPrevious and canNext (loop enabled = ${this.loopEnabled})...`,
+      );
+      this.canPrevious = this.loopEnabled || this.currentKeyframeIndex > 0;
       this.canNext =
+        this.loopEnabled ||
         this.currentKeyframeIndex < this.export.project.keyframes.length - 1;
 
       this.log(
