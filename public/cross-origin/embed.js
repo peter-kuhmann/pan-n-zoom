@@ -28,7 +28,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       super();
       this.log("Initializing <pan-n-zoom> tag.");
 
-      this.enableDebugLogs = !!this.dataset.debug;
+      this.enableDebugLogs = !!this.dataset.debug && this.dataset.debug.toLowerCase() === "true";
       this.wrapper = null;
       this.firstButton = null;
       this.previousButton = null;
@@ -463,25 +463,38 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     async readAndDecodeConfig() {
       this.log(`Reading and decoding Pan'n'Zoom export...`);
 
-      const rawExport = this.dataset.export;
-      if (!rawExport) {
-        throw this.error(`Attribute "config" was missing on "pan-n-zoom" tag.`);
-      }
+      // We prefer a data export URL
+      const exportUrl = this.dataset.exportUrl
+      const exportInlined = this.dataset.exportInlined
 
       let rawConfigJson;
 
-      try {
-        const url = new URL(rawExport)
-        rawConfigJson = await window.fetch(url).then(result => result.text())
-      } catch (e) {
-        this.error(e)
-        this.log("Export value is not an URL or fetch failed, trying to parse inlined export.")
+      if( exportUrl ) {
+        this.log("Export URL is given.")
+        let url;
 
+        if (/^https?:\/\//.test(exportUrl)) {
+          url = new URL(exportUrl);
+        } else if ( exportUrl.startsWith("/") ) {
+          url = new URL(location.origin + exportUrl);
+        } else {
+          url = new URL(location.origin + location.pathname.replace(/\/$/, "") + "/" + exportUrl);
+        }
+
+        this.log(`Trying to fetch data from: ${url.href}`)
         try {
-          rawConfigJson = base64ToUtf8(rawExport);
+          rawConfigJson = await window.fetch(url.href).then(result => result.text());
+        } catch (e) {
+          throw this.error(`Loading data from export URL failed: ${e}`);
+        }
+      } else if ( exportInlined ) {
+        try {
+          rawConfigJson = base64ToUtf8(exportInlined);
         } catch (e) {
           throw this.error(`Error while decoding raw config: ${e}`);
         }
+      } else {
+        throw this.error("Neither 'data-export-url' nor 'data-export-inlined' attributes were set.")
       }
 
       try {

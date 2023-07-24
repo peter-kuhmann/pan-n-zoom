@@ -51,11 +51,11 @@ export default function EditProjectEmbedTab() {
 
     return `<pan-n-zoom-present data-canvas-aspect-ratio="${aspectRatio}"${
       rounded ? ` data-rounded="8px"` : ""
-    }${
-      enableMaxHeight ? ` data-canvas-max-height="${maxHeight}px"` : ""
-    } data-export="${
-      useInlinedExport ? base64Export : "REPLACE_WITH_LINK_TO_YOUR_EXPORT"
-    }"></pan-n-zoom-present>
+    }${enableMaxHeight ? ` data-canvas-max-height="${maxHeight}px"` : ""} ${
+      useInlinedExport
+        ? `data-export-inlined="${base64Export}"`
+        : 'data-export-url="REPLACE_WITH_LINK_TO_YOUR_EXPORT"'
+    }></pan-n-zoom-present>
 <script src="${location.origin}/cross-origin/embed.js"></script>`;
   }, [
     project,
