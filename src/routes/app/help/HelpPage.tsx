@@ -13,6 +13,7 @@ import HelpExportSingleProject from "@/assets/help-videos/Help-ExportSingleProje
 import HelpImportSingleProject from "@/assets/help-videos/Help-ImportSingleProject.mp4";
 import HelpFastProjectCreation from "@/assets/help-videos/Help-FastProjectCreation.mp4";
 import HelpNativeSvgEmbeds from "@/assets/help-videos/Help-NativeSvgEmbed.mp4";
+import HelpEmbed from "@/assets/help-videos/Help-Embed.mp4";
 
 import { useState } from "react";
 import IonIcon from "@/components/IonIcon.tsx";
@@ -64,6 +65,7 @@ export default function HelpPage() {
       />
       <HelpVideo heading={"Offline mode"} src={HelpOfflineMode} />
       <HelpVideo heading={"Desktop app"} src={HelpDesktopApp} />
+      <HelpVideo heading={"Embed in HTML"} src={HelpEmbed} />
     </AppPage>
   );
 }
