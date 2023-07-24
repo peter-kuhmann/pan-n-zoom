@@ -16,6 +16,7 @@ export default function ProductPage() {
       <Hero />
       <Demo />
       <Features />
+      <Embed />
       <PeterKuhmann />
     </>
   );
@@ -129,14 +130,14 @@ function Features() {
   const navigate = useNavigate();
 
   return (
-    <div className={"flex flex-col items-start gap-12 mt-28"}>
+    <div className={"flex flex-col items-start gap-12 mt-28 mb-32"}>
       <h1 className={"font-semibold text-5xl"}>Features</h1>
 
       <div className={"grid grid-cols-2 gap-16 w-full justify-between"}>
         <ul className={"text-2xl"}>
           <Feature>Free and Open Source</Feature>
-          <Feature>No Account Needed</Feature>
-          <Feature>Embed in HTML</Feature>
+          <Feature>Data stays in Browser</Feature>
+          <Feature>Embeddable in HTML</Feature>
           <Feature>Works Offline</Feature>
           <Feature>Desktop App</Feature>
         </ul>
@@ -170,9 +171,39 @@ function Feature({ children }: { children?: React.ReactNode }) {
   );
 }
 
+function Embed() {
+  return (
+    <div className={"mb-32"}>
+      <h1 className={"font-semibold text-5xl mb-8"}>
+        Embeddable ... but how? 😦
+      </h1>
+
+      <p className={"text-2xl mb-8"}>
+        <b>It's your data.</b> 🛡️
+        <br />
+        As your projects are only living in your browser, this app can't give
+        someone simply access to one of your projects.
+      </p>
+
+      <p className={"text-2xl mb-8"}>
+        <b>Still, it works. ⭐️</b>
+        <br />
+        The following embedded Pan'n'Zoom project explains how it works:
+      </p>
+
+      <div
+        className={"mb-8"}
+        dangerouslySetInnerHTML={{
+          __html: `<pan-n-zoom-present data-debug="true" data-theme="system" data-rounded="8px" data-canvas-aspect-ratio="16/10" data-export-url="/HowDoEmbedsWork.pannzoom"></pan-n-zoom-present>`,
+        }}
+      ></div>
+    </div>
+  );
+}
+
 function PeterKuhmann() {
   return (
-    <div className={"flex flex-col items-start gap-12 mt-32"}>
+    <div className={"flex flex-col items-start gap-12"}>
       <h1 className={"font-semibold text-5xl"}>Crafted by</h1>
 
       <div className={"flex flex-row flex-wrap gap-6"}>
