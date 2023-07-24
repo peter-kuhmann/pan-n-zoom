@@ -41,11 +41,10 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.wrapperHeight = 0;
       this.imageNaturalWidth = 0;
       this.imageNaturalHeight = 0;
-      this.currentKeyframeId = null;
       this.currentKeyframeIndex = null;
       this.currentKeyframe = null;
-      this.previousKeyframeId = null;
-      this.nextKeyframeId = null;
+      this.canPrevious = false;
+      this.canNext = false;
 
       this.log("Creating shadow DOM...");
       this.attachShadow({ mode: "open" });
@@ -69,59 +68,52 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     }
 
     firstKeyframe() {
-      this.setKeyframe(this.export.project.keyframes[0].id);
+      if ( this.canPrevious ) {
+        this.setKeyframe(0);
+      }
     }
 
     lastKeyframe() {
-      this.setKeyframe(
-        this.export.project.keyframes[this.export.project.keyframes.length - 1]
-          .id,
-      );
+      if ( this.canNext ) {
+        this.setKeyframe(
+            this.export.project.keyframes.length - 1
+        );
+      }
     }
 
     nextKeyframe() {
-      if (this.nextKeyframeId) {
-        this.setKeyframe(this.nextKeyframeId);
+      if (this.canNext) {
+        this.setKeyframe(this.currentKeyframeIndex + 1);
       }
     }
 
     previousKeyframe() {
-      if (this.previousKeyframeId) {
-        this.setKeyframe(this.previousKeyframeId);
+      if (this.canPrevious) {
+        this.setKeyframe(this.currentKeyframeIndex - 1);
       }
     }
 
-    setKeyframe(keyframeId) {
-      this.log(`Set current keyframe to ID = ${keyframeId}`);
+    setKeyframe(keyframeIndex) {
+      this.log(`Set keyframe index to = ${keyframeIndex}`);
 
-      this.currentKeyframeId = keyframeId;
-      this.currentKeyframeIndex = this.export.project.keyframes.findIndex(
-        (keyframe) => keyframe.id === keyframeId,
-      );
+      this.currentKeyframeIndex = keyframeIndex;
 
-      if (this.currentKeyframeIndex >= 0) {
-        this.currentKeyframe =
-          this.export.project.keyframes[this.currentKeyframeIndex];
+      if (keyframeIndex >= 0 && keyframeIndex <= this.export.project.keyframes.length-1) {
+        this.currentKeyframeIndex = keyframeIndex;
+        this.currentKeyframe = this.export.project.keyframes[keyframeIndex];
         this.log("Keyframe found and successfully set ✅");
       } else {
         this.currentKeyframeIndex = 0;
         this.currentKeyframe = this.export.project.keyframes[0];
-        this.currentKeyframeId = this.currentKeyframe.id;
-
-        this.log("Keyframe not found. Set current keyframe to first keyframe.");
+        this.log("Keyframe not found. Setting current keyframe to first keyframe.");
       }
 
-      this.log("Updating previous and next keyframe IDs...");
-      this.previousKeyframeId =
-        this.currentKeyframeIndex > 0
-          ? this.export.project.keyframes[this.currentKeyframeIndex - 1].id
-          : null;
-      this.nextKeyframeId =
-        this.currentKeyframeIndex < this.export.project.keyframes.length - 1
-          ? this.export.project.keyframes[this.currentKeyframeIndex + 1].id
-          : null;
+      this.log("Updating canPrevious and canNext...");
+      this.canPrevious = this.currentKeyframeIndex > 0
+      this.canNext = this.currentKeyframeIndex < this.export.project.keyframes.length - 1
+
       this.log(
-        `Updated previous (${this.previousKeyframeId}) and next (${this.nextKeyframeId}) keyframe ID.`,
+        `Updated flags canPrevious = ${this.canPrevious} and canNext (${this.canNext}).`,
       );
 
       this.updateControls();
@@ -175,11 +167,10 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     }
 
     updateControls() {
-      this.firstButton.disabled = this.currentKeyframeIndex === 0;
-      this.previousButton.disabled = !this.previousKeyframeId;
-      this.nextButton.disabled = !this.nextKeyframeId;
-      this.lastButton.disabled =
-        this.currentKeyframeIndex === this.export.project.keyframes.length - 1;
+      this.firstButton.disabled = !this.canPrevious;
+      this.previousButton.disabled = !this.canPrevious;
+      this.nextButton.disabled = !this.canNext;
+      this.lastButton.disabled = !this.canNext;
 
       this.keyframeInfo.innerText = `${this.currentKeyframeIndex + 1} / ${
         this.export.project.keyframes.length
@@ -264,6 +255,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         this.firstKeyframe();
       };
       this.firstButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="currentColor" d="M30.71 229.47l188.87-113a30.54 30.54 0 0131.09-.39 33.74 33.74 0 0116.76 29.47v79.05l180.72-108.16a30.54 30.54 0 0131.09-.39A33.74 33.74 0 01496 145.52v221A33.73 33.73 0 01479.24 396a30.54 30.54 0 01-31.09-.39L267.43 287.4v79.08A33.73 33.73 0 01250.67 396a30.54 30.54 0 01-31.09-.39l-188.87-113a31.27 31.27 0 010-53z"/></svg>`;
+      this.firstButton.disabled = true
       this.controls.append(this.firstButton);
 
       this.previousButton = document.createElement("button");
@@ -272,6 +264,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         this.previousKeyframe();
       };
       this.previousButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="currentColor"  d="M112 64a16 16 0 0116 16v136.43L360.77 77.11a35.13 35.13 0 0135.77-.44c12 6.8 19.46 20 19.46 34.33v290c0 14.37-7.46 27.53-19.46 34.33a35.14 35.14 0 01-35.77-.45L128 295.57V432a16 16 0 01-32 0V80a16 16 0 0116-16z"/></svg>`;
+      this.previousButton.disabled = true
       this.controls.append(this.previousButton);
 
       this.keyframeInfo = document.createElement("div");
@@ -284,6 +277,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         this.nextKeyframe();
       };
       this.nextButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="currentColor"  d="M400 64a16 16 0 00-16 16v136.43L151.23 77.11a35.13 35.13 0 00-35.77-.44C103.46 83.47 96 96.63 96 111v290c0 14.37 7.46 27.53 19.46 34.33a35.14 35.14 0 0035.77-.45L384 295.57V432a16 16 0 0032 0V80a16 16 0 00-16-16z"/></svg>`;
+      this.nextButton.disabled = true
       this.controls.append(this.nextButton);
 
       this.lastButton = document.createElement("button");
@@ -292,6 +286,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         this.lastKeyframe();
       };
       this.lastButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="currentColor"  d="M481.29 229.47l-188.87-113a30.54 30.54 0 00-31.09-.39 33.74 33.74 0 00-16.76 29.47v79.05L63.85 116.44a30.54 30.54 0 00-31.09-.39A33.74 33.74 0 0016 145.52v221A33.74 33.74 0 0032.76 396a30.54 30.54 0 0031.09-.39L244.57 287.4v79.08A33.74 33.74 0 00261.33 396a30.54 30.54 0 0031.09-.39l188.87-113a31.27 31.27 0 000-53z"/></svg>`;
+      this.lastButton.disabled = true
       this.controls.append(this.lastButton);
 
       this.log("Created control elements successfully ✅");

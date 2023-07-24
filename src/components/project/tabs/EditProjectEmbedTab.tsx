@@ -56,7 +56,7 @@ export default function EditProjectEmbedTab() {
     } data-export="${
       useInlinedExport ? base64Export : "REPLACE_WITH_LINK_TO_YOUR_EXPORT"
     }"></pan-n-zoom-present>
-<script src="${location.origin}/embed.js"></script>`;
+<script src="${location.origin}/cross-origin/embed.js"></script>`;
   }, [
     project,
     base64Export,
