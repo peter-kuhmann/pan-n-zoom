@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [react(), VitePWA({
     registerType: 'autoUpdate',
     workbox: {
-      globPatterns: ['**/*.{webp,png,svg,ico,html,js,ts,jsx,tsx,css,scss,ttf,woff,woff2}'],
+      globPatterns: ['**/*.{webp,png,svg,ico,html,js,ts,jsx,tsx,css,scss,ttf,woff,woff2,pannzoom}'],
     },
     manifest: {
       "name": "Pan'n'Zoom",
