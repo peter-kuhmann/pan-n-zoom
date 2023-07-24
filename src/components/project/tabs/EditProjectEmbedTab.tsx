@@ -14,6 +14,10 @@ export default function EditProjectEmbedTab() {
   const storedImage = useStoredImage(project?.image.storageId);
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>("16/10");
   const [rounded, setRounded] = useState(true);
+  const [enableMaxHeight, setEnableMaxHeight] = useState(false);
+  const [maxHeight, setMaxHeight] = useState<number>(600);
+  const [useInlinedExport, setUseInlinedExport] = useState(false);
+
   const [copied, setCopied] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -29,7 +33,7 @@ export default function EditProjectEmbedTab() {
     }
   }, [copied]);
 
-  const embedConfig = useMemo<string>(() => {
+  const base64Export = useMemo<string>(() => {
     if (
       !project ||
       project.keyframes.length === 0 ||
@@ -47,9 +51,21 @@ export default function EditProjectEmbedTab() {
 
     return `<pan-n-zoom-present data-canvas-aspect-ratio="${aspectRatio}"${
       rounded ? ` data-rounded="8px"` : ""
-    } data-config="${embedConfig}"></pan-n-zoom-present>
+    }${
+      enableMaxHeight ? ` data-canvas-max-height="${maxHeight}px"` : ""
+    } data-export="${
+      useInlinedExport ? base64Export : "REPLACE_WITH_LINK_TO_YOUR_EXPORT"
+    }"></pan-n-zoom-present>
 <script src="${location.origin}/embed.js"></script>`;
-  }, [project, embedConfig, aspectRatio, rounded]);
+  }, [
+    project,
+    base64Export,
+    aspectRatio,
+    rounded,
+    enableMaxHeight,
+    maxHeight,
+    useInlinedExport,
+  ]);
 
   const copyToClipboard = useCallback(() => {
     const textarea = textareaRef.current;
@@ -64,26 +80,62 @@ export default function EditProjectEmbedTab() {
   }, [htmlCode]);
 
   return (
-    <EditProjectTab title={"Embed"} bigger>
+    <EditProjectTab title={"Embed Export"} bigger>
       {!project ? (
         <>Error: Project not found</>
       ) : project.keyframes.length === 0 ? (
         <>You first need to create keyframes to copy to HTML embed code.</>
       ) : (
         <>
-          <select
-            className="select select-bordered w-full mb-8"
-            value={aspectRatio}
-            onChange={(e) => {
-              setAspectRatio(e.currentTarget.value as AspectRatio);
-            }}
-          >
-            <option>16/9</option>
-            <option>16/10</option>
-            <option>4/3</option>
-          </select>
+          <div className="form-control w-full mb-4">
+            <label className="label">
+              <span className="label-text text-sm">Aspect ratio</span>
+            </label>
+            <select
+              className="select select-sm select-bordered w-full"
+              value={aspectRatio}
+              onChange={(e) => {
+                setAspectRatio(e.currentTarget.value as AspectRatio);
+              }}
+            >
+              <option>16/9</option>
+              <option>16/10</option>
+              <option>4/3</option>
+            </select>
+          </div>
 
-          <label className="label cursor-pointer justify-start mb-8">
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="checkbox"
+              checked={enableMaxHeight}
+              onChange={(e) => {
+                setEnableMaxHeight(e.currentTarget.checked);
+              }}
+              className="checkbox mr-2"
+            />
+            <span className="label-text">Use (max) height</span>
+          </label>
+
+          <div className="form-control w-full mb-4">
+            <label className="label">
+              <span className="label-text text-sm">(Max) Height in px</span>
+            </label>
+            <input
+              disabled={!enableMaxHeight}
+              value={maxHeight}
+              onInput={(e) => {
+                setMaxHeight(
+                  e.currentTarget.value.length === 0
+                    ? 0
+                    : parseInt(e.currentTarget.value),
+                );
+              }}
+              type="number"
+              className={"input input-sm input-bordered w-full"}
+            />
+          </div>
+
+          <label className="label cursor-pointer justify-start mb-4">
             <input
               type="checkbox"
               checked={rounded}
@@ -95,9 +147,21 @@ export default function EditProjectEmbedTab() {
             <span className="label-text">Rounded project viewer</span>
           </label>
 
-          <hr className={"mb-8"} />
+          <label className="label cursor-pointer justify-start mb-4">
+            <input
+              type="checkbox"
+              checked={useInlinedExport}
+              onChange={(e) => {
+                setUseInlinedExport(e.currentTarget.checked);
+              }}
+              className="checkbox mr-2"
+            />
+            <span className="label-text">Use inlined Pan'n'Zoom export</span>
+          </label>
 
-          <div className="form-control mb-8">
+          <hr className={"mb-4"} />
+
+          <div className="form-control mb-4">
             <label className="label">
               <span className="label-text">
                 Embed the project using the following code
@@ -106,7 +170,7 @@ export default function EditProjectEmbedTab() {
             <textarea
               ref={textareaRef}
               value={htmlCode}
-              className="textarea textarea-bordered h-[10rem] font-mono text-xs"
+              className="textarea textarea-bordered h-[6rem] font-mono text-xs"
             />
           </div>
 

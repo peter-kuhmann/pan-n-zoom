@@ -35,7 +35,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.keyframeInfo = null;
       this.nextButton = null;
       this.lastButton = null;
-      this.config = null;
+      this.export = null;
       this.image = null;
       this.wrapperWidth = 0;
       this.wrapperHeight = 0;
@@ -55,11 +55,12 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.createLayout();
       this.createWrapper();
       this.createControls();
-      this.readAndDecodeConfig();
-      this.applyStyleConfigs();
-
-      void this.createImage().then(() => {
-        this.setKeyframe(this.config.project.keyframes[0].id);
+      this.readAndDecodeConfig().then(() => {
+        this.applyStyleConfigs();
+      }).then(() => {
+        return this.createImage()
+      }).then(() => {
+        this.setKeyframe(this.export.project.keyframes[0].id);
         this.startWrapperResizeTracking();
         setTimeout(() => {
           this.applyTransitionConfigs();
@@ -68,12 +69,12 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     }
 
     firstKeyframe() {
-      this.setKeyframe(this.config.project.keyframes[0].id);
+      this.setKeyframe(this.export.project.keyframes[0].id);
     }
 
     lastKeyframe() {
       this.setKeyframe(
-        this.config.project.keyframes[this.config.project.keyframes.length - 1]
+        this.export.project.keyframes[this.export.project.keyframes.length - 1]
           .id,
       );
     }
@@ -94,17 +95,17 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.log(`Set current keyframe to ID = ${keyframeId}`);
 
       this.currentKeyframeId = keyframeId;
-      this.currentKeyframeIndex = this.config.project.keyframes.findIndex(
+      this.currentKeyframeIndex = this.export.project.keyframes.findIndex(
         (keyframe) => keyframe.id === keyframeId,
       );
 
       if (this.currentKeyframeIndex >= 0) {
         this.currentKeyframe =
-          this.config.project.keyframes[this.currentKeyframeIndex];
+          this.export.project.keyframes[this.currentKeyframeIndex];
         this.log("Keyframe found and successfully set ✅");
       } else {
         this.currentKeyframeIndex = 0;
-        this.currentKeyframe = this.config.project.keyframes[0];
+        this.currentKeyframe = this.export.project.keyframes[0];
         this.currentKeyframeId = this.currentKeyframe.id;
 
         this.log("Keyframe not found. Set current keyframe to first keyframe.");
@@ -113,11 +114,11 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.log("Updating previous and next keyframe IDs...");
       this.previousKeyframeId =
         this.currentKeyframeIndex > 0
-          ? this.config.project.keyframes[this.currentKeyframeIndex - 1].id
+          ? this.export.project.keyframes[this.currentKeyframeIndex - 1].id
           : null;
       this.nextKeyframeId =
-        this.currentKeyframeIndex < this.config.project.keyframes.length - 1
-          ? this.config.project.keyframes[this.currentKeyframeIndex + 1].id
+        this.currentKeyframeIndex < this.export.project.keyframes.length - 1
+          ? this.export.project.keyframes[this.currentKeyframeIndex + 1].id
           : null;
       this.log(
         `Updated previous (${this.previousKeyframeId}) and next (${this.nextKeyframeId}) keyframe ID.`,
@@ -178,25 +179,25 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.previousButton.disabled = !this.previousKeyframeId;
       this.nextButton.disabled = !this.nextKeyframeId;
       this.lastButton.disabled =
-        this.currentKeyframeIndex === this.config.project.keyframes.length - 1;
+        this.currentKeyframeIndex === this.export.project.keyframes.length - 1;
 
       this.keyframeInfo.innerText = `${this.currentKeyframeIndex + 1} / ${
-        this.config.project.keyframes.length
+        this.export.project.keyframes.length
       }`;
     }
 
     applyStyleConfigs() {
       this.log("Applying style configs...");
-      this.wrapper.style.backgroundColor = this.config.project.backgroundColor;
+      this.wrapper.style.backgroundColor = this.export.project.backgroundColor;
       this.log("Applied style configs successfully ✅");
     }
 
     applyTransitionConfigs() {
       this.log("Applying animation configs...");
       this.image.style.transitionProperty = "width, height, left, top";
-      this.image.style.transitionDuration = `${this.config.project.animationDuration}ms`;
+      this.image.style.transitionDuration = `${this.export.project.animationDuration}ms`;
       this.image.style.transitionTimingFunction =
-        this.config.project.animationType;
+        this.export.project.animationType;
       this.log("Applied animation configs successfully ✅");
     }
 
@@ -299,15 +300,15 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     async createImage() {
       this.log("Creating image element...");
       const image = document.createElement("img");
-      image.src = this.config.imageDataUrl;
+      image.src = this.export.imageDataUrl;
 
       await image.decode().then(() => {
         this.imageNaturalWidth = image.naturalWidth;
         this.imageNaturalHeight = image.naturalHeight;
 
-        if (this.config.project.embedSvgNatively === true) {
+        if (this.export.project.embedSvgNatively === true) {
           const dataUrlMatch = /data:([^;]+);base64,(.+)/.exec(
-            this.config.imageDataUrl,
+            this.export.imageDataUrl,
           );
 
           if (dataUrlMatch) {
@@ -464,44 +465,60 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.log("Created styles successfully ✅");
     }
 
-    readAndDecodeConfig() {
-      this.log(`Reading and decoding Pan'n'Zoom config...`);
+    async readAndDecodeConfig() {
+      this.log(`Reading and decoding Pan'n'Zoom export...`);
 
-      const encodedConfig = this.dataset.config;
-      if (!encodedConfig) {
+      const rawExport = this.dataset.export;
+      if (!rawExport) {
         throw this.error(`Attribute "config" was missing on "pan-n-zoom" tag.`);
       }
 
       let rawConfigJson;
+
       try {
-        rawConfigJson = base64ToUtf8(encodedConfig);
+        const url = new URL(rawExport)
+        rawConfigJson = await window.fetch(url).then(result => result.text())
       } catch (e) {
-        throw this.error(`Error while decoding raw config: ${e}`);
+        this.error(e)
+        this.log("Export value is not an URL or fetch failed, trying to parse inlined export.")
+
+        try {
+          rawConfigJson = base64ToUtf8(rawExport);
+        } catch (e) {
+          throw this.error(`Error while decoding raw config: ${e}`);
+        }
       }
 
       try {
-        this.config = JSON.parse(rawConfigJson);
+        this.export = JSON.parse(rawConfigJson);
+        if ( Array.isArray(this.export?.projects) ) {
+          if ( this.export.projects.length === 0 ) {
+            throw new Error("Export did not contain any projects.")
+          }
+
+          this.export = this.export.projects[0]
+        }
       } catch (e) {
         throw this.error(`Error occurred while parsing JSON string: ${e}`);
       }
 
-      if (typeof this.config !== "object") {
+      if (typeof this.export !== "object") {
         throw this.error("Config JSON does not represent an object.");
       }
 
-      if (typeof this.config.project !== "object") {
+      if (typeof this.export.project !== "object") {
         throw this.error("config.project is not an object.");
       }
 
-      if (typeof this.config.imageDataUrl !== "string") {
+      if (typeof this.export.imageDataUrl !== "string") {
         throw this.error("config.imageDataUrl is not a string.");
       }
 
-      if (this.config.project.keyframes.length === 0) {
+      if (this.export.project.keyframes.length === 0) {
         throw this.error("The Pan'n'Zoom project does not have any keyframes.");
       }
 
-      this.log("Successfully read and decoded config ✅");
+      this.log("Successfully read and decoded inlined export ✅");
     }
 
     error(message) {

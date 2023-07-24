@@ -136,15 +136,16 @@ function Features() {
         <ul className={"text-2xl"}>
           <Feature>Free and Open Source</Feature>
           <Feature>No Account Needed</Feature>
+          <Feature>Embed in HTML</Feature>
           <Feature>Works Offline</Feature>
           <Feature>Desktop App</Feature>
-          <Feature>Excalidraw BFF</Feature>
         </ul>
         <ul className={"text-2xl"}>
           <Feature>Help Videos</Feature>
           <Feature>Export and Import</Feature>
           <Feature>Convenience Functions</Feature>
           <Feature>Light + Dark Mode</Feature>
+          <Feature>Excalidraw BFF</Feature>
         </ul>
       </div>
 
