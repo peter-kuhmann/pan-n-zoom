@@ -27,6 +27,8 @@ export default function EditProjectEmbedTab() {
   const [enableAutoplay, setEnableAutoplay] = useState(false);
   const [autoplayDelay, setAutoplayDelay] = useState<number>(2000);
 
+  const [useStarterProject, setUseStarterProject] = useState(false);
+
   const [copied, setCopied] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -90,7 +92,12 @@ export default function EditProjectEmbedTab() {
       });
     }
 
-    if (useInlinedExport) {
+    if (useStarterProject) {
+      attributes.push({
+        name: "data-export-url",
+        value: `${location.origin}/cross-origin/StarterProject.pannzoom`,
+      });
+    } else if (useInlinedExport) {
       attributes.push({
         name: "data-export-inlined",
         value: base64Export,
@@ -108,6 +115,7 @@ export default function EditProjectEmbedTab() {
 
     return `<pan-n-zoom-present ${attributesString}></pan-n-zoom-present>\n<script src="${location.origin}/cross-origin/embed.js"></script>`;
   }, [
+    useStarterProject,
     project,
     base64Export,
     aspectRatio,
@@ -275,7 +283,7 @@ export default function EditProjectEmbedTab() {
             <span className="label-text">Enable loop mode</span>
           </label>
 
-          <div className={"mb-4"}>
+          <div>
             <label className="label cursor-pointer justify-start">
               <input
                 type="checkbox"
@@ -311,6 +319,18 @@ export default function EditProjectEmbedTab() {
               </div>
             )}
           </div>
+
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="checkbox"
+              checked={useStarterProject}
+              onChange={(e) => {
+                setUseStarterProject(e.currentTarget.checked);
+              }}
+              className="checkbox mr-2"
+            />
+            <span className="label-text">Use "Starter Project" example</span>
+          </label>
         </>
       )}
     </EditProjectTab>
