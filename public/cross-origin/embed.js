@@ -414,6 +414,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   border: 1px solid #1e2937;
   color: #1e2937;
   overflow: hidden;
+  user-select: none;
 }
 
 .controls {
