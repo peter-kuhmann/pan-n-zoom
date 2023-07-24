@@ -1,5 +1,6 @@
 import {
   createBrowserRouter,
+  Outlet,
   RouterProvider,
   useNavigate,
 } from "react-router-dom";
@@ -22,8 +23,14 @@ import ShortcutsPage from "@/routes/app/shortcuts/ShortcutsPage.tsx";
 import { getProjectOverviewLink } from "@/navigation/links.ts";
 import { isRunningStandalone } from "@/utils/standalone.ts";
 import { ResetPage } from "@/routes/app/reset/ResetPage.tsx";
+import DevEmbedPage from "@/routes/dev/embed/DevEmbedPage.tsx";
 
 const router = createBrowserRouter([
+  {
+    path: "/dev",
+    element: <Outlet />,
+    children: [{ path: "embed", element: <DevEmbedPage /> }],
+  },
   {
     path: "/",
     element: isRunningStandalone ? (
