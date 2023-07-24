@@ -25,7 +25,8 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    "public/cross-origin/embed.js",
   ],
   "references": [{ "path": "./tsconfig.node.json"}]
 }

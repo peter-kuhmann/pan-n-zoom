@@ -7,10 +7,11 @@
  *    - config: Base64(JSON.stringify({ project: {...projectData}, imageDataUrl: "data:..." }))
  *
  * Optional attributes:
- *    - debug: empty or string – If present, it enables debug logs.
- *    - canvasAspectRation: string – CSS aspect ratio (e.g. "16/9")
- *    - canvasMaxHeight: string - CSS max-height value (e.g. 500px)
- *    - rounded: empty or string - CSS border-radius (examples: 'rounded' (uses default 8px), 'rounded="24px"')
+ *    - data-debug: empty or string – If present, it enables debug logs.
+ *    - data-theme: string – One of the following values: system, light, dark (default = system)
+ *    - data-canvas-aspect-ratio: string – CSS aspect ratio (e.g. "16/9")
+ *    - data-canvas-max-height: string - CSS max-height value (e.g. 500px)
+ *    - data-rounded: empty or string - CSS border-radius (examples: 'data-rounded' (uses default 8px), 'data-rounded="24px"')
  *
  * How to control size:
  *    - either set 'style="height: 600px;"' and the presentation canvas will take up the assigned width (minus the controls height)
@@ -28,7 +29,13 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       super();
       this.log("Initializing <pan-n-zoom> tag.");
 
-      this.enableDebugLogs = !!this.dataset.debug && this.dataset.debug.toLowerCase() === "true";
+      this.enableDebugLogs =
+        !!this.dataset.debug && this.dataset.debug.toLowerCase() === "true";
+
+      this.theme = ["system", "light", "dark"].includes(this.dataset.theme)
+        ? this.dataset.theme
+        : "system";
+
       this.wrapper = null;
       this.firstButton = null;
       this.previousButton = null;
@@ -54,30 +61,32 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.createLayout();
       this.createWrapper();
       this.createControls();
-      this.readAndDecodeConfig().then(() => {
-        this.applyStyleConfigs();
-      }).then(() => {
-        return this.createImage()
-      }).then(() => {
-        this.setKeyframe(this.export.project.keyframes[0].id);
-        this.startWrapperResizeTracking();
-        setTimeout(() => {
-          this.applyTransitionConfigs();
-        }, 150);
-      });
+
+      void this.readAndDecodeConfig()
+        .then(() => {
+          this.applyStyleConfigs();
+        })
+        .then(async () => {
+          await this.createImage();
+        })
+        .then(() => {
+          this.setKeyframe(this.export.project.keyframes[0].id);
+          this.startWrapperResizeTracking();
+          setTimeout(() => {
+            this.applyTransitionConfigs();
+          }, 150);
+        });
     }
 
     firstKeyframe() {
-      if ( this.canPrevious ) {
+      if (this.canPrevious) {
         this.setKeyframe(0);
       }
     }
 
     lastKeyframe() {
-      if ( this.canNext ) {
-        this.setKeyframe(
-            this.export.project.keyframes.length - 1
-        );
+      if (this.canNext) {
+        this.setKeyframe(this.export.project.keyframes.length - 1);
       }
     }
 
@@ -98,19 +107,25 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
 
       this.currentKeyframeIndex = keyframeIndex;
 
-      if (keyframeIndex >= 0 && keyframeIndex <= this.export.project.keyframes.length-1) {
+      if (
+        keyframeIndex >= 0 &&
+        keyframeIndex <= this.export.project.keyframes.length - 1
+      ) {
         this.currentKeyframeIndex = keyframeIndex;
         this.currentKeyframe = this.export.project.keyframes[keyframeIndex];
         this.log("Keyframe found and successfully set ✅");
       } else {
         this.currentKeyframeIndex = 0;
         this.currentKeyframe = this.export.project.keyframes[0];
-        this.log("Keyframe not found. Setting current keyframe to first keyframe.");
+        this.log(
+          "Keyframe not found. Setting current keyframe to first keyframe.",
+        );
       }
 
       this.log("Updating canPrevious and canNext...");
-      this.canPrevious = this.currentKeyframeIndex > 0
-      this.canNext = this.currentKeyframeIndex < this.export.project.keyframes.length - 1
+      this.canPrevious = this.currentKeyframeIndex > 0;
+      this.canNext =
+        this.currentKeyframeIndex < this.export.project.keyframes.length - 1;
 
       this.log(
         `Updated flags canPrevious = ${this.canPrevious} and canNext (${this.canNext}).`,
@@ -255,7 +270,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         this.firstKeyframe();
       };
       this.firstButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="currentColor" d="M30.71 229.47l188.87-113a30.54 30.54 0 0131.09-.39 33.74 33.74 0 0116.76 29.47v79.05l180.72-108.16a30.54 30.54 0 0131.09-.39A33.74 33.74 0 01496 145.52v221A33.73 33.73 0 01479.24 396a30.54 30.54 0 01-31.09-.39L267.43 287.4v79.08A33.73 33.73 0 01250.67 396a30.54 30.54 0 01-31.09-.39l-188.87-113a31.27 31.27 0 010-53z"/></svg>`;
-      this.firstButton.disabled = true
+      this.firstButton.disabled = true;
       this.controls.append(this.firstButton);
 
       this.previousButton = document.createElement("button");
@@ -264,7 +279,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         this.previousKeyframe();
       };
       this.previousButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="currentColor"  d="M112 64a16 16 0 0116 16v136.43L360.77 77.11a35.13 35.13 0 0135.77-.44c12 6.8 19.46 20 19.46 34.33v290c0 14.37-7.46 27.53-19.46 34.33a35.14 35.14 0 01-35.77-.45L128 295.57V432a16 16 0 01-32 0V80a16 16 0 0116-16z"/></svg>`;
-      this.previousButton.disabled = true
+      this.previousButton.disabled = true;
       this.controls.append(this.previousButton);
 
       this.keyframeInfo = document.createElement("div");
@@ -277,7 +292,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         this.nextKeyframe();
       };
       this.nextButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="currentColor"  d="M400 64a16 16 0 00-16 16v136.43L151.23 77.11a35.13 35.13 0 00-35.77-.44C103.46 83.47 96 96.63 96 111v290c0 14.37 7.46 27.53 19.46 34.33a35.14 35.14 0 0035.77-.45L384 295.57V432a16 16 0 0032 0V80a16 16 0 00-16-16z"/></svg>`;
-      this.nextButton.disabled = true
+      this.nextButton.disabled = true;
       this.controls.append(this.nextButton);
 
       this.lastButton = document.createElement("button");
@@ -286,7 +301,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         this.lastKeyframe();
       };
       this.lastButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="currentColor"  d="M481.29 229.47l-188.87-113a30.54 30.54 0 00-31.09-.39 33.74 33.74 0 00-16.76 29.47v79.05L63.85 116.44a30.54 30.54 0 00-31.09-.39A33.74 33.74 0 0016 145.52v221A33.74 33.74 0 0032.76 396a30.54 30.54 0 0031.09-.39L244.57 287.4v79.08A33.74 33.74 0 00261.33 396a30.54 30.54 0 0031.09-.39l188.87-113a31.27 31.27 0 000-53z"/></svg>`;
-      this.lastButton.disabled = true
+      this.lastButton.disabled = true;
       this.controls.append(this.lastButton);
 
       this.log("Created control elements successfully ✅");
@@ -341,7 +356,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
 
       const style = document.createElement("style");
 
-      style.textContent = `
+      const baseLightModeStyle = `
 .layout {
   width: 100%;
   
@@ -422,89 +437,110 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   left: 0;
   top: 0;
 }
+`;
 
-@media (prefers-color-scheme: dark) {
-  .layout {    
-    border: 1px solid #e5e7ea;
-    color: #e5e7ea;
-  }
-  
-  .controls {    
-    border-top: 1px solid #e5e7ea;
-  }
-  
-  .controls .first, .controls .previous { border-right: 1px solid #e5e7ea; }
-  .controls .next, .controls .last { border-left: 1px solid #e5e7ea; }
-  
-  .controls button {
-    background: #1e2937;
-    color: #e5e7ea;
-  }
-  
-  .controls button[disabled] {
-    color: #595f66;
-    background: #1e2937;
-  }
-  
-  .controls button:not([disabled]):hover {
-    background: #2f3d4e;
-  }
-  
-  .controls .keyframeInfo {
-    background: #1e2937;
-  }
+      const darkModeStyle = `
+.layout {    
+  border: 1px solid #e5e7ea;
+  color: #e5e7ea;
+}
+
+.controls {    
+  border-top: 1px solid #e5e7ea;
+}
+
+.controls .first, .controls .previous { border-right: 1px solid #e5e7ea; }
+.controls .next, .controls .last { border-left: 1px solid #e5e7ea; }
+
+.controls button {
+  background: #1e2937;
+  color: #e5e7ea;
+}
+
+.controls button[disabled] {
+  color: #595f66;
+  background: #1e2937;
+}
+
+.controls button:not([disabled]):hover {
+  background: #2f3d4e;
+}
+
+.controls .keyframeInfo {
+  background: #1e2937;
 }
 `;
+
+      let finalStyle = baseLightModeStyle;
+      if (this.theme === "system") {
+        finalStyle += `
+@media (prefers-color-scheme: dark) {
+${darkModeStyle}
+}`;
+      } else if (this.theme === "dark") {
+        finalStyle += darkModeStyle;
+      }
+
+      style.textContent = finalStyle;
       this.shadowRoot.append(style);
 
-      this.log("Created styles successfully ✅");
+      this.log(`Created styles successfully for theme "${this.theme}" ✅`);
     }
 
     async readAndDecodeConfig() {
       this.log(`Reading and decoding Pan'n'Zoom export...`);
 
       // We prefer a data export URL
-      const exportUrl = this.dataset.exportUrl
-      const exportInlined = this.dataset.exportInlined
+      const exportUrl = this.dataset.exportUrl;
+      const exportInlined = this.dataset.exportInlined;
 
       let rawConfigJson;
 
-      if( exportUrl ) {
-        this.log("Export URL is given.")
+      if (exportUrl) {
+        this.log("Export URL is given.");
         let url;
 
         if (/^https?:\/\//.test(exportUrl)) {
           url = new URL(exportUrl);
-        } else if ( exportUrl.startsWith("/") ) {
+        } else if (exportUrl.startsWith("/")) {
           url = new URL(location.origin + exportUrl);
         } else {
-          url = new URL(location.origin + location.pathname.replace(/\/$/, "") + "/" + exportUrl);
+          url = new URL(
+            location.origin +
+              location.pathname.replace(/\/$/, "") +
+              "/" +
+              exportUrl,
+          );
         }
 
-        this.log(`Trying to fetch data from: ${url.href}`)
+        this.log(`Trying to fetch data from: ${url.href}`);
         try {
-          rawConfigJson = await window.fetch(url.href).then(result => result.text());
+          rawConfigJson = await window
+            .fetch(url.href)
+            .then(async (result) => await result.text());
         } catch (e) {
           throw this.error(`Loading data from export URL failed: ${e}`);
         }
-      } else if ( exportInlined ) {
+      } else if (exportInlined) {
         try {
           rawConfigJson = base64ToUtf8(exportInlined);
         } catch (e) {
           throw this.error(`Error while decoding raw config: ${e}`);
         }
       } else {
-        throw this.error("Neither 'data-export-url' nor 'data-export-inlined' attributes were set.")
+        throw this.error(
+          "Neither 'data-export-url' nor 'data-export-inlined' attributes were set.",
+        );
       }
 
       try {
         this.export = JSON.parse(rawConfigJson);
-        if ( Array.isArray(this.export?.projects) ) {
-          if ( this.export.projects.length === 0 ) {
-            throw new Error("Export did not contain any projects.")
+        if (Array.isArray(this.export?.projects)) {
+          if (this.export.projects.length === 0) {
+            throw new Error("Export did not contain any projects.");
           }
 
-          this.export = this.export.projects[0]
+          this.export = this.export.projects[0];
         }
       } catch (e) {
         throw this.error(`Error occurred while parsing JSON string: ${e}`);

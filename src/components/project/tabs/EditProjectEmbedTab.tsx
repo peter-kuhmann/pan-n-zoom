@@ -7,12 +7,14 @@ import { encode } from "js-base64";
 import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import classNames from "classnames";
 
-type AspectRatio = "16/9" | "16/10" | "4/3";
+type AspectRatio = "16/9" | "16/10" | "4/3" | "1/1";
+type Theme = "system" | "light" | "dark";
 
 export default function EditProjectEmbedTab() {
   const { project } = useProject(useParams().projectId);
   const storedImage = useStoredImage(project?.image.storageId);
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>("16/10");
+  const [theme, setTheme] = useState<Theme>("system");
   const [rounded, setRounded] = useState(true);
   const [enableMaxHeight, setEnableMaxHeight] = useState(false);
   const [maxHeight, setMaxHeight] = useState<number>(600);
@@ -49,14 +51,36 @@ export default function EditProjectEmbedTab() {
   const htmlCode = useMemo<string>(() => {
     if (!project || project.keyframes.length === 0) return "";
 
-    return `<pan-n-zoom-present data-canvas-aspect-ratio="${aspectRatio}"${
-      rounded ? ` data-rounded="8px"` : ""
-    }${enableMaxHeight ? ` data-canvas-max-height="${maxHeight}px"` : ""} ${
-      useInlinedExport
-        ? `data-export-inlined="${base64Export}"`
-        : 'data-export-url="REPLACE_WITH_LINK_TO_YOUR_EXPORT"'
-    }></pan-n-zoom-present>
-<script src="${location.origin}/cross-origin/embed.js"></script>`;
+    const attributes: Array<{ name: string; value: string }> = [];
+
+    attributes.push({ name: "data-theme", value: theme });
+    attributes.push({ name: "data-rounded", value: rounded ? "8px" : "0px" });
+    attributes.push({ name: "data-canvas-aspect-ratio", value: aspectRatio });
+
+    if (enableMaxHeight) {
+      attributes.push({
+        name: "data-canvas-max-height",
+        value: `${maxHeight}px`,
+      });
+    }
+
+    if (useInlinedExport) {
+      attributes.push({
+        name: "data-export-inlined",
+        value: base64Export,
+      });
+    } else {
+      attributes.push({
+        name: "data-export-url",
+        value: "REPLACE_WITH_LINK_TO_YOUR_EXPORT",
+      });
+    }
+
+    const attributesString = attributes
+      .map((attribute) => `${attribute.name}="${attribute.value}"`)
+      .join(" ");
+
+    return `<pan-n-zoom-present ${attributesString}></pan-n-zoom-present>\n<script src="${location.origin}/cross-origin/embed.js"></script>`;
   }, [
     project,
     base64Export,
@@ -65,6 +89,7 @@ export default function EditProjectEmbedTab() {
     enableMaxHeight,
     maxHeight,
     useInlinedExport,
+    theme,
   ]);
 
   const copyToClipboard = useCallback(() => {
@@ -87,7 +112,7 @@ export default function EditProjectEmbedTab() {
         <>You first need to create keyframes to copy to HTML embed code.</>
       ) : (
         <>
-          <div className="form-control w-full mb-4">
+          <div className="form-control w-full mb-1">
             <label className="label">
               <span className="label-text text-sm">Aspect ratio</span>
             </label>
@@ -98,9 +123,27 @@ export default function EditProjectEmbedTab() {
                 setAspectRatio(e.currentTarget.value as AspectRatio);
               }}
             >
-              <option>16/9</option>
-              <option>16/10</option>
-              <option>4/3</option>
+              <option value="16/9">16/9</option>
+              <option value="16/10">16/10</option>
+              <option value="4/3">4/3</option>
+              <option value="1/1">1/1</option>
+            </select>
+          </div>
+
+          <div className="form-control w-full mb-3">
+            <label className="label">
+              <span className="label-text text-sm">Appearance</span>
+            </label>
+            <select
+              className="select select-sm select-bordered w-full"
+              value={theme}
+              onChange={(e) => {
+                setTheme(e.currentTarget.value as Theme);
+              }}
+            >
+              <option value={"system"}>Automatic based on system</option>
+              <option value={"light"}>Light mode</option>
+              <option value={"dark"}>Dark mode</option>
             </select>
           </div>
 
@@ -116,26 +159,28 @@ export default function EditProjectEmbedTab() {
             <span className="label-text">Use (max) height</span>
           </label>
 
-          <div className="form-control w-full mb-4">
-            <label className="label">
-              <span className="label-text text-sm">(Max) Height in px</span>
-            </label>
-            <input
-              disabled={!enableMaxHeight}
-              value={maxHeight}
-              onInput={(e) => {
-                setMaxHeight(
-                  e.currentTarget.value.length === 0
-                    ? 0
-                    : parseInt(e.currentTarget.value),
-                );
-              }}
-              type="number"
-              className={"input input-sm input-bordered w-full"}
-            />
-          </div>
+          {enableMaxHeight && (
+            <div className="form-control w-full mb-2">
+              <label className="label">
+                <span className="label-text text-sm">(Max) Height in px</span>
+              </label>
+              <input
+                disabled={!enableMaxHeight}
+                value={maxHeight}
+                onInput={(e) => {
+                  setMaxHeight(
+                    e.currentTarget.value.length === 0
+                      ? 0
+                      : parseInt(e.currentTarget.value),
+                  );
+                }}
+                type="number"
+                className={"input input-sm input-bordered w-full"}
+              />
+            </div>
+          )}
 
-          <label className="label cursor-pointer justify-start mb-4">
+          <label className="label cursor-pointer justify-start">
             <input
               type="checkbox"
               checked={rounded}
