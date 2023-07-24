@@ -28,7 +28,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       super();
       this.log("Initializing <pan-n-zoom> tag.");
 
-      this.enableDebugLogs = !!this.getAttribute("debug");
+      this.enableDebugLogs = !!this.dataset.debug;
       this.wrapper = null;
       this.firstButton = null;
       this.previousButton = null;
@@ -204,7 +204,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.log("Creating layout element ...");
       this.layout = document.createElement("div");
       this.layout.classList.add("layout");
-      const rounded = this.getAttribute("rounded");
+      const rounded = this.dataset.rounded;
       if (rounded !== undefined && rounded !== null) {
         this.layout.style.borderRadius = rounded.length === 0 ? "8px" : rounded;
       }
@@ -228,8 +228,8 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     createWrapper() {
       this.log("Creating presentation wrapper element...");
 
-      const aspectRatio = this.getAttribute("canvasAspectRatio");
-      const maxHeight = this.getAttribute("canvasMaxHeight");
+      const aspectRatio = this.dataset.canvasAspectRatio;
+      const maxHeight = this.dataset.canvasMaxHeight;
 
       this.wrapper = document.createElement("div");
       this.wrapper.classList.add("wrapper");
@@ -241,6 +241,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.wrapper.style.maxHeight = maxHeight;
 
       if (!aspectRatio && !maxHeight) {
+        this.layout.style.height = "100%";
         this.wrapper.style.height = "1px";
         this.wrapper.style.flexGrow = "1";
       } else if (!aspectRatio) {
@@ -347,7 +348,6 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       style.textContent = `
 .layout {
   width: 100%;
-  height: 100%;
   
   display: flex;
   flex-direction: column;
@@ -467,7 +467,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     readAndDecodeConfig() {
       this.log(`Reading and decoding Pan'n'Zoom config...`);
 
-      const encodedConfig = this.getAttribute("config");
+      const encodedConfig = this.dataset.config;
       if (!encodedConfig) {
         throw this.error(`Attribute "config" was missing on "pan-n-zoom" tag.`);
       }

@@ -24,6 +24,10 @@ export function getProjectEditorSettingsLink(projectId: string) {
   return `${getProjectEditorLink(projectId)}/settings`;
 }
 
+export function getProjectEditorEmbedLink(projectId: string) {
+  return `${getProjectEditorLink(projectId)}/embed`;
+}
+
 export function getProjectPresentLink(projectId: string) {
   return `${getProjectBasePath()}/${projectId}/present`;
 }

@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import IonIcon from "@/components/IonIcon.tsx";
 import {
+  getProjectEditorEmbedLink,
   getProjectEditorLink,
   getProjectEditorSettingsLink,
   getProjectOverviewLink,
@@ -139,6 +140,22 @@ export function EditProjectPageLayout() {
               >
                 <IonIcon name={"cog-outline"} />
                 Settings
+              </button>
+
+              <button
+                className={classNames(
+                  "btn btn-sm inline-flex items-center gap-2 font-normal",
+                  {
+                    "btn-neutral":
+                      pathname === getProjectEditorEmbedLink(projectId),
+                  },
+                )}
+                onClick={() => {
+                  navigate(getProjectEditorEmbedLink(projectId));
+                }}
+              >
+                <IonIcon name={"code-download-outline"} />
+                Embed
               </button>
             </div>
           </div>
