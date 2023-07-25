@@ -4,7 +4,11 @@ import classNames from "classnames";
 
 export default function IndexLayout() {
   return (
-    <div className={"flex flex-row h-full bg-gray-50 dark:bg-gray-900"}>
+    <div
+      className={
+        "flex flex-row h-full bg-gray-50 dark:bg-gray-900 min-w-[820px]"
+      }
+    >
       <div className={"w-fit h-full"}>
         <IndexSidebar />
       </div>

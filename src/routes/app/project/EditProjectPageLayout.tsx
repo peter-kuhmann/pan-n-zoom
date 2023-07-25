@@ -72,13 +72,13 @@ export function EditProjectPageLayout() {
     <ProjectEditorStoreProvider store={projectEditorStore}>
       <div
         className={classNames(
-          "w-full h-full bg-gray-50 dark:bg-gray-900",
+          "w-full min-w-[820px] h-full bg-gray-50 dark:bg-gray-900",
           "flex flex-col",
         )}
       >
         <div
           className={classNames(
-            "flex flex-row gap-8 justify-between items-center",
+            "flex flex-row gap-y-4 gap-x-8 justify-between items-center flex-wrap",
             "px-6 py-4",
           )}
         >
@@ -94,7 +94,11 @@ export function EditProjectPageLayout() {
             Leave editor
           </button>
 
-          <div className={"flex-grow w-1 flex justify-center items-center"}>
+          <div
+            className={
+              "flex-grow w-1 flex justify-center items-center min-w-[10rem]"
+            }
+          >
             {project.name}
           </div>
 
