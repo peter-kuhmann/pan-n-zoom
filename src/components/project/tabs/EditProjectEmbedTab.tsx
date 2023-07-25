@@ -156,6 +156,7 @@ export default function EditProjectEmbedTab() {
               </span>
             </label>
             <textarea
+              readOnly
               ref={textareaRef}
               value={htmlCode}
               className="textarea textarea-bordered h-[6rem] font-mono text-xs"
