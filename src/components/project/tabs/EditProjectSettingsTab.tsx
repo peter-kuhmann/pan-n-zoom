@@ -198,7 +198,7 @@ function ReplaceImage() {
                   newAspectRatio - currentAspectRatio,
                 );
 
-                if (aspectRatioDifference < 0.01) {
+                if (aspectRatioDifference < 0.015) {
                   void storeImage(newImageDataUrl).then((newStoredImage) => {
                     update({
                       image: {
@@ -210,7 +210,9 @@ function ReplaceImage() {
                     setSuccess(true);
                   });
                 } else {
-                  setError("Aspect ratio of new image was too off.");
+                  setError(
+                    `Aspect ratio of new image was too off (${aspectRatioDifference}).`,
+                  );
                 }
               },
             );
@@ -240,13 +242,6 @@ function ReplaceImage() {
           Replace image (same aspect ratio required)
         </span>
       </label>
-      <input
-        disabled={loading}
-        onChange={onFileChange}
-        type="file"
-        className="file-input file-input-neutral file-input-bordered w-full max-w-md"
-        accept="image/*"
-      />
       {(!!error || success) && (
         <label className="label">
           {!!error && (
@@ -259,6 +254,13 @@ function ReplaceImage() {
           )}
         </label>
       )}
+      <input
+        disabled={loading}
+        onChange={onFileChange}
+        type="file"
+        className="file-input file-input-neutral file-input-bordered w-full max-w-md"
+        accept="image/*"
+      />
     </div>
   );
 }
