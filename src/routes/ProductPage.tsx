@@ -113,17 +113,17 @@ function Features() {
 
       <div
         className={
-          "grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16 w-full justify-between"
+          "grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16 w-full justify-between text-xl md:text-2xl"
         }
       >
-        <ul className={"text-2xl"}>
+        <ul>
           <Feature>Free and Open Source</Feature>
           <Feature>Data stays in Browser</Feature>
           <Feature>Embeddable in HTML</Feature>
           <Feature>Works Offline</Feature>
           <Feature>Desktop App</Feature>
         </ul>
-        <ul className={"text-2xl"}>
+        <ul>
           <Feature>Help Videos</Feature>
           <Feature>Export and Import</Feature>
           <Feature>Convenience Functions</Feature>
