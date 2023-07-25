@@ -442,7 +442,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
 
 .controls .first { flex-grow: 1; }
 .controls .previous { flex-grow: 3; }
-.controls .keyframeInfo { padding: 0 2em; min-width: 5em; }
+.controls .keyframeInfo { padding: 0 0.5em; flex-grow: 1; }
 .controls .next { flex-grow: 3; }
 .controls .last { flex-grow: 1; }
 
@@ -459,6 +459,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  padding: 0 0.25em;
   
   transition: color 0.2s ease, background 0.2s ease;
 }
