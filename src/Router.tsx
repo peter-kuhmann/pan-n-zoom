@@ -40,7 +40,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/app",
-    element: <HideBelowBreakpointLayout breakpoint={580} />,
+    element: <HideBelowBreakpointLayout breakpoint={650} />,
     children: [
       {
         path: "project/:projectId/present/:keyframeId?",
