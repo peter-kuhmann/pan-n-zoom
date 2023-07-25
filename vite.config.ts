@@ -49,5 +49,8 @@ export default defineConfig({
   },
   preview: {
     port: 4562
+  },
+  server: {
+    host: true
   }
 })

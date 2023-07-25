@@ -43,6 +43,11 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         !!this.dataset.autoplay &&
         this.dataset.autoplay.toLowerCase() === "true";
       this.autoplayDelay = parseInt(this.dataset.autoplayDelay ?? "2000");
+      this.borderRadius = !this.dataset.rounded
+        ? "0px"
+        : this.dataset.rounded.length === 0
+        ? "8px"
+        : this.dataset.rounded;
 
       this.wrapper = null;
       this.firstButton = null;
@@ -265,10 +270,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.log("Creating layout element ...");
       this.layout = document.createElement("div");
       this.layout.classList.add("layout");
-      const rounded = this.dataset.rounded;
-      if (rounded !== undefined && rounded !== null) {
-        this.layout.style.borderRadius = rounded.length === 0 ? "8px" : rounded;
-      }
+      this.layout.style.borderRadius = this.borderRadius;
       this.shadowRoot.append(this.layout);
       this.log("Created layout successfully ✅");
     }
@@ -298,6 +300,8 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
         this.nextKeyframe();
       };
 
+      this.wrapper.style.borderTopLeftRadius = this.borderRadius;
+      this.wrapper.style.borderTopRightRadius = this.borderRadius;
       this.wrapper.style.aspectRatio = aspectRatio;
       this.wrapper.style.maxHeight = maxHeight;
 
