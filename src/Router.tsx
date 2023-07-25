@@ -23,6 +23,7 @@ import { getProjectOverviewLink } from "@/navigation/links.ts";
 import { isRunningStandalone } from "@/utils/standalone.ts";
 import { ResetPage } from "@/routes/app/reset/ResetPage.tsx";
 import EditProjectEmbedTab from "@/components/project/tabs/EditProjectEmbedTab.tsx";
+import HideBelowBreakpointLayout from "@/components/HideBelowBreakpointLayout.tsx";
 
 const router = createBrowserRouter([
   {
@@ -38,38 +39,78 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/app/project/:projectId/present/:keyframeId?",
-    element: <PresentProjectPage />,
-  },
-  {
-    path: "/app/project/:projectId",
-    element: <EditProjectPageLayout />,
-    children: [
-      { path: "", element: <EditProjectKeyframesTab /> },
-      { path: "settings", element: <EditProjectSettingsTabs /> },
-      { path: "embed", element: <EditProjectEmbedTab /> },
-    ],
-  },
-  {
     path: "/app",
-    element: <IndexLayout />,
+    element: <HideBelowBreakpointLayout breakpoint={580} />,
     children: [
-      { path: "", element: <IndexPage /> },
       {
-        path: "project",
+        path: "project/:projectId/present/:keyframeId?",
+        element: <PresentProjectPage />,
+      },
+      {
+        path: "project/:projectId",
+        element: <EditProjectPageLayout />,
         children: [
-          { path: "", element: <Redirect to={"/app"} /> },
-          { path: "create", element: <CreateProjectPage /> },
+          { path: "", element: <EditProjectKeyframesTab /> },
+          { path: "settings", element: <EditProjectSettingsTabs /> },
+          { path: "embed", element: <EditProjectEmbedTab /> },
         ],
       },
-      { path: "settings", element: <SettingsPage /> },
-      { path: "export", element: <ExportPage /> },
-      { path: "import", element: <ImportPage /> },
-      { path: "shortcuts", element: <ShortcutsPage /> },
-      { path: "help", element: <HelpPage /> },
-      { path: "reset", element: <ResetPage /> },
+      {
+        path: "",
+        element: <IndexLayout />,
+        children: [
+          { path: "", element: <IndexPage /> },
+          {
+            path: "project",
+            children: [
+              { path: "", element: <Redirect to={"/app"} /> },
+              { path: "create", element: <CreateProjectPage /> },
+            ],
+          },
+          { path: "settings", element: <SettingsPage /> },
+          { path: "export", element: <ExportPage /> },
+          { path: "import", element: <ImportPage /> },
+          { path: "shortcuts", element: <ShortcutsPage /> },
+          { path: "help", element: <HelpPage /> },
+          { path: "reset", element: <ResetPage /> },
+        ],
+      },
     ],
   },
+  // ####
+  // {
+  //   path: "/app/project/:projectId/present/:keyframeId?",
+  //   element: <PresentProjectPage />,
+  // },
+  // {
+  //   path: "/app/project/:projectId",
+  //   element: <EditProjectPageLayout />,
+  //   children: [
+  //     { path: "", element: <EditProjectKeyframesTab /> },
+  //     { path: "settings", element: <EditProjectSettingsTabs /> },
+  //     { path: "embed", element: <EditProjectEmbedTab /> },
+  //   ],
+  // },
+  // {
+  //   path: "/app",
+  //   element: <IndexLayout />,
+  //   children: [
+  //     { path: "", element: <IndexPage /> },
+  //     {
+  //       path: "project",
+  //       children: [
+  //         { path: "", element: <Redirect to={"/app"} /> },
+  //         { path: "create", element: <CreateProjectPage /> },
+  //       ],
+  //     },
+  //     { path: "settings", element: <SettingsPage /> },
+  //     { path: "export", element: <ExportPage /> },
+  //     { path: "import", element: <ImportPage /> },
+  //     { path: "shortcuts", element: <ShortcutsPage /> },
+  //     { path: "help", element: <HelpPage /> },
+  //     { path: "reset", element: <ResetPage /> },
+  //   ],
+  // },
 ]);
 
 function Redirect({ to }: { to: string }) {
