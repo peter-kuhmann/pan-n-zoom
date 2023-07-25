@@ -20,12 +20,17 @@ The app is purely client-based.
 
 # ⭐️ Let me convince you
 - ✅ Free and Open Source
-- ✅ Offline Mode
+- ✅ Data stays in Browser
+- ✅ Embeddable in HTML
+- ✅ Works Offline
 - ✅ Desktop App
+
+
 - ✅ Help Videos
 - ✅ Export and Import
 - ✅ Convenience Functions
 - ✅ Light + Dark Mode
+- ✅ Excalidraw BFF
 
 # 👨‍🎨 Author
 <p align="center">
