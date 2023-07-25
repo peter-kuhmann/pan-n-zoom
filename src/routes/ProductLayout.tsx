@@ -10,7 +10,10 @@ import IonIcon from "@/components/IonIcon.tsx";
 export default function ProductLayout() {
   return (
     <div
-      className={"w-full min-h-full py-32 px-16 bg-gray-50 dark:bg-gray-900"}
+      className={classNames(
+        "w-full min-h-full bg-gray-50 dark:bg-gray-900",
+        "py-32 px-6 md:px-16",
+      )}
     >
       <Navigation />
 
@@ -29,7 +32,7 @@ function Navigation() {
     <div
       className={classNames(
         "w-full fixed left-0 top-0 z-50",
-        "px-16 py-4",
+        "px-4 md:px-16 py-4",
         "bg-white dark:bg-gray-800 border-b border-gray-200 shadow",
       )}
     >
@@ -45,19 +48,10 @@ function Navigation() {
           }}
         >
           <CuteCat className={"w-[3rem]"} />
-          <h1 className={"text-xl font-semibold"}>Pan'n'Zoom</h1>
+          <h1 className={"max-sm:hidden text-xl font-semibold"}>Pan'n'Zoom</h1>
         </button>
 
-        <div className={"flex flex-row items-center gap-8"}>
-          <button
-            className={"btn btn-sm btn-neutral flex-nowrap whitespace-nowrap"}
-            onClick={() => {
-              navigate(getProjectOverviewLink());
-            }}
-          >
-            Open app <IonIcon name={"chevron-forward-outline"} />
-          </button>
-
+        <div className={"flex flex-row items-center gap-4 md:gap-8"}>
           <a
             href={"https://github.com/peter-kuhmann/pan-n-zoom"}
             target={"_blank"}
@@ -66,6 +60,15 @@ function Navigation() {
           >
             <IonIcon name={"logo-github"} />
           </a>
+
+          <button
+            className={"btn btn-sm btn-neutral flex-nowrap whitespace-nowrap"}
+            onClick={() => {
+              navigate(getProjectOverviewLink());
+            }}
+          >
+            Open app <IonIcon name={"chevron-forward-outline"} />
+          </button>
         </div>
       </div>
     </div>

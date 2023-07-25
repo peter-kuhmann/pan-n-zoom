@@ -105,7 +105,11 @@ function Features() {
     <div className={"flex flex-col items-start gap-12 mt-28 mb-32"}>
       <h1 className={"font-semibold text-5xl"}>Features</h1>
 
-      <div className={"grid grid-cols-2 gap-16 w-full justify-between"}>
+      <div
+        className={
+          "grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16 w-full justify-between"
+        }
+      >
         <ul className={"text-2xl"}>
           <Feature>Free and Open Source</Feature>
           <Feature>Data stays in Browser</Feature>
