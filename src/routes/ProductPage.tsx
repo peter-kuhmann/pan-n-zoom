@@ -166,7 +166,7 @@ function Embed() {
       <div
         className={"mb-8"}
         dangerouslySetInnerHTML={{
-          __html: `<pan-n-zoom-present data-theme="system" data-rounded="8px" data-canvas-aspect-ratio="16/9" data-export-url="/HowDoEmbedsWork.pannzoom"></pan-n-zoom-present>`,
+          __html: `<pan-n-zoom-present data-theme="system" data-rounded="8px" data-canvas-aspect-ratio="16/9" data-export-url="/HowEmbedsWork.pannzoom"></pan-n-zoom-present>`,
         }}
       />
     </div>
