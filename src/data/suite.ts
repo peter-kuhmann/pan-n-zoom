@@ -1,8 +1,7 @@
 import { type Suite } from "@/types/suite.ts";
 import { SuiteSchema } from "@/validation/suite.ts";
-import { type Project } from "@/types/project.ts";
-import { storeImage } from "@/data/imageStorage.ts";
-import { createId } from "@paralleldrive/cuid2";
+import { DataExportSchema } from "@/validation/export.ts";
+import { importDataExport } from "@/utils/import.ts";
 
 const SuiteLocalStorageKey = "pan-n-zoom-suite";
 
@@ -55,63 +54,13 @@ function createSuite(): Suite {
 }
 
 async function addStandardProjectToSuite() {
-  await import("./starterProjectDataUrl.ts")
-    .then(async (result) => {
-      return await storeImage(result.starterProjectDataUrl);
-    })
-    .then((storedImage) => {
-      const standardProject: Project = {
-        version: 1,
-        id: createId(),
-        name: "Pan'n'Zoom Starter Project 🐈",
-        backgroundColor: "#ffffff",
-        embedSvgNatively: true,
-        animationDuration: 1000,
-        animationType: "ease",
-        image: {
-          fileName: "StarterProject.svg",
-          mimeType: "image/svg+xml",
-          storageId: storedImage.id,
-        },
-        keyframes: [
-          {
-            id: createId(),
-            emoji: "🚀",
-            x: -0.0027687156593406595,
-            y: -0.008584576810176126,
-            width: 1.0076783567994505,
-            height: 1.0192101883561644,
-          },
-          {
-            id: createId(),
-            emoji: "🥳",
-            x: 0.13757726648351648,
-            y: 0.06094820205479452,
-            width: 0.3905069539835165,
-            height: 0.32913405088062625,
-          },
-          {
-            id: createId(),
-            emoji: "⭐",
-            x: 0.4937542925824176,
-            y: 0.3179045376712329,
-            width: 0.4604760473901099,
-            height: 0.36227219911937375,
-          },
-          {
-            id: createId(),
-            emoji: "🎬",
-            x: 0.053861177884615384,
-            y: 0.6100018346379648,
-            width: 0.5164835164835164,
-            height: 0.3426033512720157,
-          },
-        ],
-        createdAt: new Date().toISOString(),
-      };
-
-      updateSuite({
-        projects: [...getSuite().projects, standardProject],
+  await fetch("/cross-origin/StarterProject.pannzoom")
+    .then(async (res) => await res.json())
+    .then(async (rawExport) => {
+      const dataExport = DataExportSchema.parse(rawExport);
+      await importDataExport(dataExport, {
+        projectsImportStrategy: "add",
+        newProjectDefaultSettingsStrategy: "ignore",
       });
     });
 }
