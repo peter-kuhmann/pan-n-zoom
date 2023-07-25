@@ -25,7 +25,7 @@ function Hero() {
     <div className={"flex flex-col items-center mb-28"}>
       <div
         className={
-          "flex flex-row items-center justify-center gap-16 mb-8 flex-wrap"
+          "flex flex-col md:flex-row items-center justify-center gap-16 mb-8 flex-wrap"
         }
       >
         <div>
@@ -33,9 +33,15 @@ function Hero() {
         </div>
 
         <div className={"pt-6 max-w-[20rem]"}>
-          <h1 className={"text-5xl font-bold mb-6"}>Pan'n'Zoom</h1>
+          <h1 className={"text-5xl font-bold mb-6 text-center md:text-left"}>
+            Pan'n'Zoom
+          </h1>
 
-          <div className={"flex flex-row items-center gap-2 mb-8 flex-wrap"}>
+          <div
+            className={
+              "flex flex-row justify-center md:justify-start items-center gap-2 mb-8 flex-wrap"
+            }
+          >
             <div
               className={
                 "bg-emerald-300 dark:bg-emerald-600 font-semibold px-3 py-0.5 rounded-lg"
@@ -154,16 +160,20 @@ function Embed() {
         Embeddable ... but how? 😦
       </h1>
 
-      <p className={"text-2xl mb-8"}>
+      <p className={"text-2xl mb-4"}>
         <b>It's your data.</b> 🛡️
-        <br />
+      </p>
+
+      <p className={"text-xl mb-8"}>
         As your projects are only living in your browser, this app can't give
         someone simply access to one of your projects.
       </p>
 
-      <p className={"text-2xl mb-8"}>
+      <p className={"text-2xl mb-4"}>
         <b>Still, it works. ⭐️</b>
-        <br />
+      </p>
+
+      <p className={"text-xl mb-12"}>
         The following embedded Pan'n'Zoom project explains how it works:
       </p>
 
