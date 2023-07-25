@@ -55,24 +55,22 @@ function createSuite(): Suite {
 }
 
 async function addStandardProjectToSuite() {
-  const suite = getSuite();
-
-  await import("./standardProjectDataUrl.ts")
+  await import("./starterProjectDataUrl.ts")
     .then(async (result) => {
-      return await storeImage(result.standardProjectDataUrl);
+      return await storeImage(result.starterProjectDataUrl);
     })
     .then((storedImage) => {
       const standardProject: Project = {
         version: 1,
         id: createId(),
-        name: "Your Pan'n'Zoom Starter Project 🐈",
-        backgroundColor: suite.newProjectDefaultSettings.backgroundColor,
-        embedSvgNatively: suite.newProjectDefaultSettings.embedSvgNatively,
-        animationDuration: suite.newProjectDefaultSettings.animationDuration,
-        animationType: suite.newProjectDefaultSettings.animationType,
+        name: "Pan'n'Zoom Starter Project 🐈",
+        backgroundColor: "#ffffff",
+        embedSvgNatively: true,
+        animationDuration: 1000,
+        animationType: "ease",
         image: {
-          fileName: "PanNZoomStarterProject.webp",
-          mimeType: "image/webp",
+          fileName: "StarterProject.svg",
+          mimeType: "image/svg+xml",
           storageId: storedImage.id,
         },
         keyframes: [
@@ -129,7 +127,7 @@ export function getSuite(): Suite {
 export function updateSuite(update: Partial<Suite>): Suite {
   const rawNewSuiteState: Suite = { ...getSuite(), ...update };
 
-  // Let's check udpated suite
+  // Let's check updated suite
   const parseResult = SuiteSchema.safeParse(rawNewSuiteState);
   if (!parseResult.success) {
     throw new Error("Updating suite failed: " + parseResult.error.message);
