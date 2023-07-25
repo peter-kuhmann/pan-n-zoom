@@ -54,7 +54,7 @@ function Hero() {
 
             <div
               className={
-                "bg-amber-300 dark:bg-violet-600 font-semibold px-3 py-0.5 rounded-lg"
+                "bg-amber-300 dark:bg-amber-600 font-semibold px-3 py-0.5 rounded-lg"
               }
             >
               Open Source <IonIcon name={"planet-outline"} />
