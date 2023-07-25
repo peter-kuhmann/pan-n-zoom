@@ -530,6 +530,15 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   width: 1.8em;
 }
 
+@media (max-width: 600px) {
+  .header { 
+    font-size: 0.9em;
+    gap: 1em;
+    padding: 0.1em 0.5em;
+  }
+  .header .filler { width: 0; height: 0; }
+}
+
 .controls {
   width: 100%;
   min-height: 2em;
