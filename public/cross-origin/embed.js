@@ -32,7 +32,13 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   class PanNZoom extends HTMLElement {
     constructor() {
       super();
-      this.log("Initializing <pan-n-zoom> tag.");
+      this.log(
+        "<pan-n-zoom-present> tag has been created. Waiting for connect...",
+      );
+    }
+
+    connectedCallback() {
+      this.log("<pan-n-zoom-present> tag has been connected. Initializing...");
 
       this.enableDebugLogs = this.getDatasetBoolean("debug", false);
       this.loopEnabled = this.getDatasetBoolean("loop", false);
@@ -435,6 +441,8 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.log("Creating image element...");
 
       await decodeImage(this.export.imageDataUrl).then((image) => {
+        image.style.width = "0";
+        image.style.height = "0";
         this.imageNaturalWidth = image.naturalWidth;
         this.imageNaturalHeight = image.naturalHeight;
 
@@ -455,8 +463,8 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
               const svgElement = dummyContainer.querySelector("svg");
 
               if (svgElement) {
-                svgElement.style.width = "100%";
-                svgElement.style.height = "100%";
+                svgElement.style.width = "0";
+                svgElement.style.height = "0";
                 this.image = svgElement;
                 this.wrapper.append(svgElement);
                 this.log("Created an SVG element successfully ✅");
@@ -473,7 +481,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     }
 
     initStyles() {
-      this.log("Adding <pan-n-zoom> styles...");
+      this.log("Adding styles...");
       this.style.display = "block";
 
       const style = document.createElement("style");

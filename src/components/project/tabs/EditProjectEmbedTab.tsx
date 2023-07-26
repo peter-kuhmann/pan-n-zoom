@@ -129,7 +129,7 @@ export default function EditProjectEmbedTab() {
       .map((attribute) => `${attribute.name}="${attribute.value}"`)
       .join(" ");
 
-    return `<pan-n-zoom-present ${attributesString}></pan-n-zoom-present>\n<script src="${location.origin}/cross-origin/embed.js"></script>`;
+    return `<script src="${location.origin}/cross-origin/embed.js"></script>\n<pan-n-zoom-present ${attributesString}></pan-n-zoom-present>`;
   }, [
     useStarterProject,
     project,
