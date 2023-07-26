@@ -9,6 +9,7 @@ import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import { useProjectEditorStore } from "@/context/ProjectEditorStore.tsx";
 import { useStore } from "zustand";
 import IonIcon from "@/components/IonIcon.tsx";
+import { decodeImage } from "@/utils/images.ts";
 
 interface FittingScale {
   scaleFactor: number;
@@ -132,17 +133,12 @@ export default function EditProjectCanvas({
       }
     }
 
-    const image = new Image();
-    image.decoding = "async";
-    image.src = imgSrc;
-    image.style.width = "100%";
-    image.style.height = "100%";
-
     setLoading(true);
 
-    void image
-      .decode()
-      .then(() => {
+    void decodeImage(imgSrc)
+      .then((image) => {
+        image.style.width = "100%";
+        image.style.height = "100%";
         setImageWidth(image.naturalWidth);
         setImageHeight(image.naturalHeight);
         if (imageContainerRef.current) {

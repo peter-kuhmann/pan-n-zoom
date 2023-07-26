@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { fileToDataUrl } from "@/utils/files.ts";
 import { useStoredImage } from "@/hooks/useStoredImage.ts";
 import { storeImage } from "@/data/imageStorage.ts";
+import { decodeImage } from "@/utils/images.ts";
 
 function useCurrentProject() {
   return useProject(useParams().projectId);
@@ -181,41 +182,36 @@ function ReplaceImage() {
             setLoading(true);
             setError(null);
 
-            const newImage = new Image();
-            newImage.src = newImageDataUrl;
+            void Promise.all([
+              decodeImage(newImageDataUrl),
+              decodeImage(storedImage.dataUrl),
+            ]).then(([newImage, currentImage]) => {
+              const newAspectRatio =
+                newImage.naturalWidth / newImage.naturalHeight;
+              const currentAspectRatio =
+                currentImage.naturalWidth / currentImage.naturalHeight;
 
-            const currentImage = new Image();
-            currentImage.src = storedImage.dataUrl;
+              const aspectRatioDifference = Math.abs(
+                newAspectRatio - currentAspectRatio,
+              );
 
-            void Promise.all([newImage.decode(), currentImage.decode()]).then(
-              () => {
-                const newAspectRatio =
-                  newImage.naturalWidth / newImage.naturalHeight;
-                const currentAspectRatio =
-                  currentImage.naturalWidth / currentImage.naturalHeight;
-
-                const aspectRatioDifference = Math.abs(
-                  newAspectRatio - currentAspectRatio,
-                );
-
-                if (aspectRatioDifference < 0.015) {
-                  void storeImage(newImageDataUrl).then((newStoredImage) => {
-                    update({
-                      image: {
-                        fileName: newFile.name,
-                        mimeType: newFile.type,
-                        storageId: newStoredImage.id,
-                      },
-                    });
-                    setSuccess(true);
+              if (aspectRatioDifference < 0.015) {
+                void storeImage(newImageDataUrl).then((newStoredImage) => {
+                  update({
+                    image: {
+                      fileName: newFile.name,
+                      mimeType: newFile.type,
+                      storageId: newStoredImage.id,
+                    },
                   });
-                } else {
-                  setError(
-                    `Aspect ratio of new image was too off (${aspectRatioDifference}).`,
-                  );
-                }
-              },
-            );
+                  setSuccess(true);
+                });
+              } else {
+                setError(
+                  `Aspect ratio of new image was too off (${aspectRatioDifference}).`,
+                );
+              }
+            });
           })
           .catch((err) => {
             console.error(err);

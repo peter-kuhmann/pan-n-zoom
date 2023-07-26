@@ -11,6 +11,7 @@ import {
   getProjectPresentLinkWithKeyframe,
 } from "@/navigation/links.ts";
 import IonIcon from "@/components/IonIcon.tsx";
+import { decodeImage } from "@/utils/images.ts";
 
 export default function PresentProjectPage() {
   const navigate = useNavigate();
@@ -159,15 +160,11 @@ export default function PresentProjectPage() {
         }
       }
 
-      const image = new Image();
-      image.src = storedImage.dataUrl;
-      image.classList.add("w-full", "h-full", "max-w-none", "max-h-none");
-
       setDecoding(true);
 
-      image
-        .decode()
-        .then(() => {
+      decodeImage(storedImage.dataUrl)
+        .then((image) => {
+          image.classList.add("w-full", "h-full", "max-w-none", "max-h-none");
           setImageNaturalWidth(image.naturalWidth);
           setImageNaturalHeight(image.naturalHeight);
 
