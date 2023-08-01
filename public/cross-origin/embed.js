@@ -984,19 +984,19 @@ ${darkModeStyle}
 }
 
 function normalizeExportUrl(rawUrl) {
-  let normalizedUrl = rawUrl;
+  let exportUrl = rawUrl;
 
   if (/^https?:\/\//.test(exportUrl)) {
-    normalizedUrl = new URL(exportUrl);
+    exportUrl = new URL(exportUrl);
   } else if (exportUrl.startsWith("/")) {
-    normalizedUrl = new URL(location.origin + exportUrl);
+    exportUrl = new URL(location.origin + exportUrl);
   } else {
-    normalizedUrl = new URL(
+    exportUrl = new URL(
       location.origin + location.pathname.replace(/\/$/, "") + "/" + exportUrl,
     );
   }
 
-  return normalizedUrl;
+  return exportUrl;
 }
 
 function base64ToUtf8(base64EncodedString) {
