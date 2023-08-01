@@ -62,6 +62,15 @@ function Navigation() {
           </a>
 
           <button
+            className={"btn btn-sm btn-outline flex-nowrap whitespace-nowrap"}
+            onClick={() => {
+              navigate("/viewer");
+            }}
+          >
+            Viewer
+          </button>
+
+          <button
             className={"btn btn-sm btn-neutral flex-nowrap whitespace-nowrap"}
             onClick={() => {
               navigate(getProjectOverviewLink());

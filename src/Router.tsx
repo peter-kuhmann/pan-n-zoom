@@ -37,15 +37,8 @@ const router = createBrowserRouter([
     children: [
       { path: "", element: <ProductPage /> },
       { path: "privacy-policy", element: <PrivacyPolicyPage /> },
+      { path: "viewer", element: <ViewPage /> },
     ],
-  },
-  {
-    path: "/view",
-    element: isRunningStandalone ? (
-      <Redirect to={getProjectOverviewLink()} />
-    ) : (
-      <ViewPage />
-    ),
   },
   {
     path: "/app",

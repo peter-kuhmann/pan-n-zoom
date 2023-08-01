@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import CuteCat from "@/components/cat/CuteCat.tsx";
 
 const SearchParamName = "exportUrl";
 
@@ -56,47 +55,44 @@ export default function ViewPage() {
   }, [exportUrl, isValidUrl]);
 
   return (
-    <div className={"w-full py-8 md:py-16 px-4 md:px-16"}>
-      <div className={"w-full max-w-[70rem] mx-auto"}>
-        <h1
-          className={
-            "text-2xl md:text-4xl font-semibold mb-4 md:mb-8 flex gap-4 md:gap-8 items-center"
-          }
-        >
-          <CuteCat className={"w-[3rem] md:w-[5rem] inline"} /> View a
-          Pan'n'Zoom Project{" "}
-        </h1>
-        <div className={"mb-8"}>
-          <input
-            type="text"
-            value={exportUrl}
-            onInput={(e) => {
-              setExportUrlAndNormalize(e.currentTarget.value);
-            }}
-            placeholder="Pan'n'Zoom export URL"
-            className="input input-bordered w-full max-md:input-sm"
-          />
+    <div>
+      <h1
+        className={
+          "text-2xl md:text-4xl font-semibold mb-4 md:mb-8 flex gap-4 md:gap-8 items-center"
+        }
+      >
+        View uploaded Pan'n'Zoom
+      </h1>
+      <div className={"mb-8"}>
+        <input
+          type="text"
+          value={exportUrl}
+          onInput={(e) => {
+            setExportUrlAndNormalize(e.currentTarget.value);
+          }}
+          placeholder="Pan'n'Zoom export URL"
+          className="input input-bordered w-full max-md:input-sm"
+        />
 
-          {exportUrl.length > 0 && !isValidUrl && (
-            <div className={"text-red-500 mt-4 text-sm"}>
-              Please enter a valid URL.
-            </div>
-          )}
-        </div>
-
-        {exportUrl.length > 0 && isValidUrl ? (
-          <div
-            className={"w-full"}
-            dangerouslySetInnerHTML={{
-              __html: `<pan-n-zoom-present data-theme="system" data-canvas-max-height="70vh" data-rounded="8px" data-canvas-aspect-ratio="16/9" data-export-url="${exportUrl}"></pan-n-zoom-present>`,
-            }}
-          ></div>
-        ) : (
-          <div>
-            In order to view a Pan'n'Zoom project, please enter an export URL.
+        {exportUrl.length > 0 && !isValidUrl && (
+          <div className={"text-red-500 mt-4 text-sm"}>
+            Please enter a valid URL.
           </div>
         )}
       </div>
+
+      {exportUrl.length > 0 && isValidUrl ? (
+        <div
+          className={"w-full"}
+          dangerouslySetInnerHTML={{
+            __html: `<pan-n-zoom-present data-theme="system" data-canvas-max-height="75vh" data-rounded="8px" data-canvas-aspect-ratio="16/10" data-export-url="${exportUrl}"></pan-n-zoom-present>`,
+          }}
+        ></div>
+      ) : (
+        <div>
+          In order to view a Pan'n'Zoom project, please enter an export URL.
+        </div>
+      )}
     </div>
   );
 }
