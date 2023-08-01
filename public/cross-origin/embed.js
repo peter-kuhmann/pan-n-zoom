@@ -17,6 +17,7 @@
  *    - data-rounded: empty or string - CSS border-radius (examples: 'data-rounded' (uses default 8px), 'data-rounded="24px"')
  *    - data-hide-title: boolean "true" or "false" (same as missing attribute)
  *    - data-hide-branding: boolean "true" or "false" (same as missing attribute)
+ *    - data-hide-copy-link-to-viewer: boolean "true" or "false" (same as missing attribute)
  *    - data-hide-image-download: boolean "true" or "false" (same as missing attribute)
  *    - data-hide-export-download: boolean "true" or "false" (same as missing attribute)
  *
@@ -47,6 +48,10 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.autoplayEnabled = this.getDatasetBoolean("autoplay", false);
       this.hideTitle = this.getDatasetBoolean("hideTitle", false);
       this.hideBranding = this.getDatasetBoolean("hideBranding", false);
+      this.hideCopyLinkToViewer = this.getDatasetBoolean(
+        "hideCopyLinkToViewer",
+        false,
+      );
       this.hideImageDownload = this.getDatasetBoolean(
         "hideImageDownload",
         false,
@@ -76,6 +81,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.headerShare = null;
       this.headerShareButton = null;
       this.headerSharePopup = null;
+      this.headerCopyLinkToViewerOption = null;
       this.headerDownloadImageOption = null;
       this.headerDownloadExportOption = null;
       this.wrapper = null;
@@ -411,12 +417,31 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
             }, 150);
           };
 
+          if (!this.hideCopyLinkToViewer && this.dataset.exportUrl) {
+            this.log("Adding copy link to viewer option...");
+            this.headerCopyLinkToViewerOption =
+              document.createElement("button");
+            this.headerCopyLinkToViewerOption.classList.add(
+              "copyLinkToViewerOption",
+            );
+            this.headerCopyLinkToViewerOption.title =
+              "Copy viewer link to your clipboard";
+            this.headerCopyLinkToViewerOption.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M208 352h-64a96 96 0 010-192h64M304 160h64a96 96 0 010 192h-64M163.29 256h187.42" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/></svg>`;
+            this.headerCopyLinkToViewerOption.innerHTML +=
+              "Copy link to viewer";
+            this.headerCopyLinkToViewerOption.onclick = () => {
+              this.copyLinkToViewer();
+            };
+            this.headerSharePopup.append(this.headerCopyLinkToViewerOption);
+          }
+
           if (!this.hideImageDownload) {
             this.log("Adding download image option...");
             this.headerDownloadImageOption = document.createElement("button");
             this.headerDownloadImageOption.classList.add("downloadImageOption");
             this.headerDownloadImageOption.title = "Save image to your disk";
-            this.headerDownloadImageOption.innerText = "Download image";
+            this.headerDownloadImageOption.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><rect x="48" y="80" width="416" height="352" rx="48" ry="48" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/><circle cx="336" cy="176" r="32" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path d="M304 335.79l-90.66-90.49a32 32 0 00-43.87-1.3L48 352M224 432l123.34-123.34a32 32 0 0143.11-2L464 368" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>`;
+            this.headerDownloadImageOption.innerHTML += "Download image";
             this.headerDownloadImageOption.onclick = () => {
               this.downloadImage();
             };
@@ -431,7 +456,8 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
             );
             this.headerDownloadExportOption.title =
               "Save Pan'n'Zoom project to your disk";
-            this.headerDownloadExportOption.innerText =
+            this.headerDownloadExportOption.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M336 176h40a40 40 0 0140 40v208a40 40 0 01-40 40H136a40 40 0 01-40-40V216a40 40 0 0140-40h40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M176 272l80 80 80-80M256 48v288"/></svg>`;
+            this.headerDownloadExportOption.innerHTML +=
               "Download Pan'n'Zoom project";
             this.headerDownloadExportOption.onclick = () => {
               this.downloadExport();
@@ -526,6 +552,15 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.controls.append(this.lastButton);
 
       this.log("Created control elements successfully ✅");
+    }
+
+    copyLinkToViewer() {
+      this.log("Triggering copy link to viewer...");
+      if (this.dataset.exportUrl) {
+        const viewerUrl = new URL("https://pan-n-zoom.peter-kuhmann.de/viewer");
+        viewerUrl.searchParams.set("exportUrl", this.dataset.exportUrl);
+        copyTextToClipboard(viewerUrl.href);
+      }
     }
 
     downloadImage() {
@@ -691,17 +726,29 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
 }
 
 .header .sharePopup button {
-  text-align: left;
-  cursor: pointer;
   width: 100%;
+  cursor: pointer;
   border: none;
   outline: none;
   white-space: pre;
   word-break: keep-all;
+  
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  gap: 0.5em;
+  
   padding: 0.5em 1em;
   border-radius: 4px;
+  
   background: #f3f3f3;
   color: #1e2937;
+}
+
+.header .sharePopup button svg {
+  width: 1.5em;
+  height: 1.5em;
 }
 
 @media (max-width: 600px) {
@@ -1009,4 +1056,26 @@ function downloadDataExportToDisk(dataExport, name) {
       encodeURIComponent(JSON.stringify(dataExport, null, 4)),
     name + ".pannzoom",
   );
+}
+
+function copyTextToClipboard(text) {
+  function copyDeprecated() {
+    const input = document.createElement("input");
+    input.style.position = "absolute";
+    input.style.left = "-9999px";
+    input.style.opacity = "0.01";
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand("copy");
+    document.body.removeChild(input);
+  }
+
+  if (window.navigator) {
+    window.navigator.clipboard.writeText(text).catch(() => {
+      copyDeprecated();
+    });
+  } else {
+    copyDeprecated();
+  }
 }

@@ -30,6 +30,7 @@ export default function EditProjectEmbedTab() {
   const [useStarterProject, setUseStarterProject] = useState(false);
   const [hideTitle, setHideTitle] = useState(false);
   const [hideBranding, setHideBranding] = useState(false);
+  const [hideCopyLinkToViewer, setHideCopyLinkToViewer] = useState(false);
   const [hideImageDownload, setHideImageDownload] = useState(false);
   const [hideExportDownload, setHideExportDownload] = useState(false);
 
@@ -96,6 +97,13 @@ export default function EditProjectEmbedTab() {
       });
     }
 
+    if (hideCopyLinkToViewer) {
+      attributes.push({
+        name: "data-hide-copy-link-to-viewer",
+        value: "true",
+      });
+    }
+
     if (hideImageDownload) {
       attributes.push({
         name: "data-hide-image-download",
@@ -159,6 +167,7 @@ export default function EditProjectEmbedTab() {
     enableLoop,
     enableAutoplay,
     autoplayDelay,
+    hideCopyLinkToViewer,
     hideImageDownload,
     hideExportDownload,
     hideTitle,
@@ -367,6 +376,18 @@ export default function EditProjectEmbedTab() {
               className="checkbox checkbox-sm mr-2"
             />
             <span className="label-text">Use "Starter Project" example</span>
+          </label>
+
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="checkbox"
+              checked={hideCopyLinkToViewer}
+              onChange={(e) => {
+                setHideCopyLinkToViewer(e.currentTarget.checked);
+              }}
+              className="checkbox checkbox-sm mr-2"
+            />
+            <span className="label-text">Hide copy link to viewer</span>
           </label>
 
           <label className="label cursor-pointer justify-start">
