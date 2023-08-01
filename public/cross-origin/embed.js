@@ -556,9 +556,10 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
 
     copyLinkToViewer() {
       this.log("Triggering copy link to viewer...");
-      if (this.dataset.exportUrl) {
+      const exportUrl = this.dataset.exportUrl;
+      if (exportUrl) {
         const viewerUrl = new URL("https://pan-n-zoom.peter-kuhmann.de/viewer");
-        viewerUrl.searchParams.set("exportUrl", this.dataset.exportUrl);
+        viewerUrl.searchParams.set("exportUrl", normalizeExportUrl(exportUrl));
         copyTextToClipboard(viewerUrl.href);
       }
     }
@@ -911,20 +912,7 @@ ${darkModeStyle}
 
       if (exportUrl) {
         this.log("Export URL is given.");
-        let url;
-
-        if (/^https?:\/\//.test(exportUrl)) {
-          url = new URL(exportUrl);
-        } else if (exportUrl.startsWith("/")) {
-          url = new URL(location.origin + exportUrl);
-        } else {
-          url = new URL(
-            location.origin +
-              location.pathname.replace(/\/$/, "") +
-              "/" +
-              exportUrl,
-          );
-        }
+        const url = normalizeExportUrl(exportUrl);
 
         this.log(`Trying to fetch data from: ${url.href}`);
         try {
@@ -993,6 +981,22 @@ ${darkModeStyle}
   }
 
   window.customElements.define(PanNZoomPresentWebComponentTag, PanNZoom);
+}
+
+function normalizeExportUrl(rawUrl) {
+  let normalizedUrl = rawUrl;
+
+  if (/^https?:\/\//.test(exportUrl)) {
+    normalizedUrl = new URL(exportUrl);
+  } else if (exportUrl.startsWith("/")) {
+    normalizedUrl = new URL(location.origin + exportUrl);
+  } else {
+    normalizedUrl = new URL(
+      location.origin + location.pathname.replace(/\/$/, "") + "/" + exportUrl,
+    );
+  }
+
+  return normalizedUrl;
 }
 
 function base64ToUtf8(base64EncodedString) {
