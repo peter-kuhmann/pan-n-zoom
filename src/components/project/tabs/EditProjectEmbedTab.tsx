@@ -30,9 +30,9 @@ export default function EditProjectEmbedTab() {
   const [useStarterProject, setUseStarterProject] = useState(false);
   const [hideTitle, setHideTitle] = useState(false);
   const [hideBranding, setHideBranding] = useState(false);
-  const [hideCopyLinkToViewer, setHideCopyLinkToViewer] = useState(false);
   const [hideImageDownload, setHideImageDownload] = useState(false);
   const [hideExportDownload, setHideExportDownload] = useState(false);
+  const [showCopyLinkToViewer, setShowCopyLinkToViewer] = useState(false);
 
   const [copied, setCopied] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -97,13 +97,6 @@ export default function EditProjectEmbedTab() {
       });
     }
 
-    if (hideCopyLinkToViewer) {
-      attributes.push({
-        name: "data-hide-copy-link-to-viewer",
-        value: "true",
-      });
-    }
-
     if (hideImageDownload) {
       attributes.push({
         name: "data-hide-image-download",
@@ -128,6 +121,13 @@ export default function EditProjectEmbedTab() {
     if (hideBranding) {
       attributes.push({
         name: "data-hide-branding",
+        value: "true",
+      });
+    }
+
+    if (showCopyLinkToViewer) {
+      attributes.push({
+        name: "data-show-copy-link-to-viewer",
         value: "true",
       });
     }
@@ -167,7 +167,7 @@ export default function EditProjectEmbedTab() {
     enableLoop,
     enableAutoplay,
     autoplayDelay,
-    hideCopyLinkToViewer,
+    showCopyLinkToViewer,
     hideImageDownload,
     hideExportDownload,
     hideTitle,
@@ -381,18 +381,6 @@ export default function EditProjectEmbedTab() {
           <label className="label cursor-pointer justify-start">
             <input
               type="checkbox"
-              checked={hideCopyLinkToViewer}
-              onChange={(e) => {
-                setHideCopyLinkToViewer(e.currentTarget.checked);
-              }}
-              className="checkbox checkbox-sm mr-2"
-            />
-            <span className="label-text">Hide copy link to viewer</span>
-          </label>
-
-          <label className="label cursor-pointer justify-start">
-            <input
-              type="checkbox"
               checked={hideImageDownload}
               onChange={(e) => {
                 setHideImageDownload(e.currentTarget.checked);
@@ -436,6 +424,20 @@ export default function EditProjectEmbedTab() {
               className="checkbox checkbox-sm mr-2"
             />
             <span className="label-text">Hide Pan'n'Zoom branding</span>
+          </label>
+
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="checkbox"
+              checked={showCopyLinkToViewer}
+              onChange={(e) => {
+                setShowCopyLinkToViewer(e.currentTarget.checked);
+              }}
+              className="checkbox checkbox-sm mr-2"
+            />
+            <span className="label-text">
+              Show copy link to viewer (experimental)
+            </span>
           </label>
         </>
       )}

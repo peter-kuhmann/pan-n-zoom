@@ -17,9 +17,9 @@
  *    - data-rounded: empty or string - CSS border-radius (examples: 'data-rounded' (uses default 8px), 'data-rounded="24px"')
  *    - data-hide-title: boolean "true" or "false" (same as missing attribute)
  *    - data-hide-branding: boolean "true" or "false" (same as missing attribute)
- *    - data-hide-copy-link-to-viewer: boolean "true" or "false" (same as missing attribute)
  *    - data-hide-image-download: boolean "true" or "false" (same as missing attribute)
  *    - data-hide-export-download: boolean "true" or "false" (same as missing attribute)
+ *    - data-show-copy-link-to-viewer: boolean "true" or "false" (same as missing attribute)
  *
  * How to control size:
  *    - either set 'style="height: 600px;"' and the presentation canvas will take up the assigned width (minus the controls height)
@@ -48,8 +48,8 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.autoplayEnabled = this.getDatasetBoolean("autoplay", false);
       this.hideTitle = this.getDatasetBoolean("hideTitle", false);
       this.hideBranding = this.getDatasetBoolean("hideBranding", false);
-      this.hideCopyLinkToViewer = this.getDatasetBoolean(
-        "hideCopyLinkToViewer",
+      this.showCopyLinkToViewer = this.getDatasetBoolean(
+        "showCopyLinkToViewer",
         false,
       );
       this.hideImageDownload = this.getDatasetBoolean(
@@ -340,7 +340,10 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     }
 
     createHeader() {
-      const showShare = !this.hideImageDownload || !this.hideExportDownload;
+      const showShare =
+        !this.hideImageDownload ||
+        !this.hideExportDownload ||
+        this.showCopyLinkToViewer;
       const showHeader = !this.hideTitle || !this.hideBranding || showShare;
 
       if (showHeader) {
@@ -417,24 +420,6 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
             }, 150);
           };
 
-          if (!this.hideCopyLinkToViewer && this.dataset.exportUrl) {
-            this.log("Adding copy link to viewer option...");
-            this.headerCopyLinkToViewerOption =
-              document.createElement("button");
-            this.headerCopyLinkToViewerOption.classList.add(
-              "copyLinkToViewerOption",
-            );
-            this.headerCopyLinkToViewerOption.title =
-              "Copy viewer link to your clipboard";
-            this.headerCopyLinkToViewerOption.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M208 352h-64a96 96 0 010-192h64M304 160h64a96 96 0 010 192h-64M163.29 256h187.42" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/></svg>`;
-            this.headerCopyLinkToViewerOption.innerHTML +=
-              "Copy link to viewer";
-            this.headerCopyLinkToViewerOption.onclick = () => {
-              this.copyLinkToViewer();
-            };
-            this.headerSharePopup.append(this.headerCopyLinkToViewerOption);
-          }
-
           if (!this.hideImageDownload) {
             this.log("Adding download image option...");
             this.headerDownloadImageOption = document.createElement("button");
@@ -463,6 +448,24 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
               this.downloadExport();
             };
             this.headerSharePopup.append(this.headerDownloadExportOption);
+          }
+
+          if (this.showCopyLinkToViewer && this.dataset.exportUrl) {
+            this.log("Adding copy link to viewer option...");
+            this.headerCopyLinkToViewerOption =
+              document.createElement("button");
+            this.headerCopyLinkToViewerOption.classList.add(
+              "copyLinkToViewerOption",
+            );
+            this.headerCopyLinkToViewerOption.title =
+              "Copy viewer link to your clipboard";
+            this.headerCopyLinkToViewerOption.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M208 352h-64a96 96 0 010-192h64M304 160h64a96 96 0 010 192h-64M163.29 256h187.42" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/></svg>`;
+            this.headerCopyLinkToViewerOption.innerHTML +=
+              "Copy link to viewer";
+            this.headerCopyLinkToViewerOption.onclick = () => {
+              this.copyLinkToViewer();
+            };
+            this.headerSharePopup.append(this.headerCopyLinkToViewerOption);
           }
         }
 
