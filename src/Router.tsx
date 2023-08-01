@@ -24,6 +24,7 @@ import { isRunningStandalone } from "@/utils/standalone.ts";
 import { ResetPage } from "@/routes/app/reset/ResetPage.tsx";
 import EditProjectEmbedTab from "@/components/project/tabs/EditProjectEmbedTab.tsx";
 import HideBelowBreakpointLayout from "@/components/HideBelowBreakpointLayout.tsx";
+import ViewPage from "@/routes/view/ViewPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,14 @@ const router = createBrowserRouter([
       { path: "", element: <ProductPage /> },
       { path: "privacy-policy", element: <PrivacyPolicyPage /> },
     ],
+  },
+  {
+    path: "/view",
+    element: isRunningStandalone ? (
+      <Redirect to={getProjectOverviewLink()} />
+    ) : (
+      <ViewPage />
+    ),
   },
   {
     path: "/app",
