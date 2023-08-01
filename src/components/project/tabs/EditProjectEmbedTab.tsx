@@ -30,6 +30,8 @@ export default function EditProjectEmbedTab() {
   const [useStarterProject, setUseStarterProject] = useState(false);
   const [hideTitle, setHideTitle] = useState(false);
   const [hideBranding, setHideBranding] = useState(false);
+  const [hideImageDownload, setHideImageDownload] = useState(false);
+  const [hideExportDownload, setHideExportDownload] = useState(false);
 
   const [copied, setCopied] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -94,6 +96,20 @@ export default function EditProjectEmbedTab() {
       });
     }
 
+    if (hideImageDownload) {
+      attributes.push({
+        name: "data-hide-image-download",
+        value: "true",
+      });
+    }
+
+    if (hideExportDownload) {
+      attributes.push({
+        name: "data-hide-export-download",
+        value: "true",
+      });
+    }
+
     if (hideTitle) {
       attributes.push({
         name: "data-hide-title",
@@ -143,6 +159,8 @@ export default function EditProjectEmbedTab() {
     enableLoop,
     enableAutoplay,
     autoplayDelay,
+    hideImageDownload,
+    hideExportDownload,
     hideTitle,
     hideBranding,
   ]);
@@ -349,6 +367,30 @@ export default function EditProjectEmbedTab() {
               className="checkbox checkbox-sm mr-2"
             />
             <span className="label-text">Use "Starter Project" example</span>
+          </label>
+
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="checkbox"
+              checked={hideImageDownload}
+              onChange={(e) => {
+                setHideImageDownload(e.currentTarget.checked);
+              }}
+              className="checkbox checkbox-sm mr-2"
+            />
+            <span className="label-text">Hide image download</span>
+          </label>
+
+          <label className="label cursor-pointer justify-start">
+            <input
+              type="checkbox"
+              checked={hideExportDownload}
+              onChange={(e) => {
+                setHideExportDownload(e.currentTarget.checked);
+              }}
+              className="checkbox checkbox-sm mr-2"
+            />
+            <span className="label-text">Hide export download</span>
           </label>
 
           <label className="label cursor-pointer justify-start">
