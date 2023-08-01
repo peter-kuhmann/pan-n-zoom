@@ -73,9 +73,9 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
       this.headerRight = null;
       this.headerTitle = null;
       this.headerBranding = null;
-      this.headerDownload = null;
-      this.headerDownloadButton = null;
-      this.headerDownloadPopup = null;
+      this.headerShare = null;
+      this.headerShareButton = null;
+      this.headerSharePopup = null;
       this.headerDownloadImageOption = null;
       this.headerDownloadExportOption = null;
       this.wrapper = null;
@@ -334,8 +334,8 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
     }
 
     createHeader() {
-      const showDownload = !this.hideImageDownload || !this.hideExportDownload;
-      const showHeader = !this.hideTitle || !this.hideBranding || showDownload;
+      const showShare = !this.hideImageDownload || !this.hideExportDownload;
+      const showHeader = !this.hideTitle || !this.hideBranding || showShare;
 
       if (showHeader) {
         this.log("Creating header element ...");
@@ -378,34 +378,34 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
           this.headerCenter.append(this.headerTitle);
         }
 
-        if (showDownload) {
-          this.log("Adding download button...");
-          this.headerDownload = document.createElement("div");
-          this.headerDownload.classList.add("download");
-          this.headerRight.append(this.headerDownload);
+        if (showShare) {
+          this.log("Adding share button...");
+          this.headerShare = document.createElement("div");
+          this.headerShare.classList.add("share");
+          this.headerRight.append(this.headerShare);
 
-          this.headerDownloadButton = document.createElement("button");
-          this.headerDownloadButton.classList.add("downloadButton");
-          this.headerDownloadButton.title = "Show download options";
-          this.headerDownloadButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M336 176h40a40 40 0 0140 40v208a40 40 0 01-40 40H136a40 40 0 01-40-40V216a40 40 0 0140-40h40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M176 272l80 80 80-80M256 48v288"/></svg>`;
-          this.headerDownload.append(this.headerDownloadButton);
+          this.headerShareButton = document.createElement("button");
+          this.headerShareButton.classList.add("shareButton");
+          this.headerShareButton.title = "Show share options";
+          this.headerShareButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M336 192h40a40 40 0 0140 40v192a40 40 0 01-40 40H136a40 40 0 01-40-40V232a40 40 0 0140-40h40M336 128l-80-80-80 80M256 321V48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>`;
+          this.headerShare.append(this.headerShareButton);
 
-          this.headerDownloadPopup = document.createElement("div");
-          this.headerDownloadPopup.classList.add("downloadPopup");
-          this.headerDownload.append(this.headerDownloadPopup);
+          this.headerSharePopup = document.createElement("div");
+          this.headerSharePopup.classList.add("sharePopup");
+          this.headerShare.append(this.headerSharePopup);
 
           const togglePopup = (hide) => {
-            if (hide || this.headerDownloadPopup.classList.contains("open")) {
-              this.headerDownloadPopup.classList.remove("open");
+            if (hide || this.headerSharePopup.classList.contains("open")) {
+              this.headerSharePopup.classList.remove("open");
             } else {
-              this.headerDownloadPopup.classList.add("open");
+              this.headerSharePopup.classList.add("open");
             }
           };
 
-          this.headerDownloadButton.onclick = () => {
+          this.headerShareButton.onclick = () => {
             togglePopup();
           };
-          this.headerDownloadButton.onblur = () => {
+          this.headerShareButton.onblur = () => {
             setTimeout(() => {
               togglePopup(true);
             }, 150);
@@ -420,7 +420,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
             this.headerDownloadImageOption.onclick = () => {
               this.downloadImage();
             };
-            this.headerDownloadPopup.append(this.headerDownloadImageOption);
+            this.headerSharePopup.append(this.headerDownloadImageOption);
           }
 
           if (!this.hideExportDownload) {
@@ -436,7 +436,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
             this.headerDownloadExportOption.onclick = () => {
               this.downloadExport();
             };
-            this.headerDownloadPopup.append(this.headerDownloadExportOption);
+            this.headerSharePopup.append(this.headerDownloadExportOption);
           }
         }
 
@@ -644,20 +644,16 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   height: 100%;
 }
 
-.header .download {
-  display: block;
+.header .share {
+  display: flex;
   height: 1.8em;
   width: 1.8em;
-}
-
-.header .download {
-  display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
 }
 
-.header .downloadButton {
+.header .shareButton {
   background: transparent;
   border: none;
   outline: none;
@@ -665,12 +661,12 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   color: #1e2937;
 }
 
-.header .downloadButton svg {
+.header .shareButton svg {
   width: 1.6em;
   height: 1.6em;
 }
 
-.header .downloadPopup {
+.header .sharePopup {
   display: none;
   z-index: 100;
   position: absolute;
@@ -690,11 +686,11 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
-.header .downloadPopup.open {
+.header .sharePopup.open {
   display: flex;
 }
 
-.header .downloadPopup button {
+.header .sharePopup button {
   text-align: left;
   cursor: pointer;
   width: 100%;
@@ -798,11 +794,11 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   border-bottom: 1px solid #e5e7ea;
 }
 
-.header .downloadButton {
+.header .shareButton {
   color: #e5e7ea;
 }
 
-.header .downloadPopup {  
+.header .sharePopup {  
   background: #1e2937;
   color: #e5e7ea;
   border-radius: 8px;
@@ -810,7 +806,7 @@ if (!window.customElements.get(PanNZoomPresentWebComponentTag)) {
   box-shadow: 0 10px 15px -3px rgb(255 255 255 / 0.1), 0 4px 6px -4px rgb(255 255 255 / 0.1);
 }
 
-.header .downloadPopup button {
+.header .sharePopup button {
   background: #333f4e;
   color: #e5e7ea;
 }
